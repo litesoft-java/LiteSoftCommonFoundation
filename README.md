@@ -1,4 +1,4 @@
-LitesoftCommonFoundation
+LiteSoftCommonFoundation
 ========================
 
-LitesoftCommonFoundation
+LiteSoftCommonFoundation
