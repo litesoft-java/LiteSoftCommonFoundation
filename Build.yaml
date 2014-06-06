@@ -1,0 +1,9 @@
+Onejar: LiteSoftCommonFoundation
+
+classpath:
+- libs/LiteSoftUtilDateAdaptor.jar
+
+resources: 
+- $source$
+- LICENSE
+
