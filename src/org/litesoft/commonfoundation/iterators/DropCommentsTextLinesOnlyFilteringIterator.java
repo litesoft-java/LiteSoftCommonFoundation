@@ -1,5 +1,5 @@
 // This Source Code is in the Public Domain per: http://unlicense.org
-package org.litesoft.commonfoundation.interators;
+package org.litesoft.commonfoundation.iterators;
 
 import org.litesoft.commonfoundation.typeutils.*;
 

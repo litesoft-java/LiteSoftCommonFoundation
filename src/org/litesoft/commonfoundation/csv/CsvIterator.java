@@ -1,7 +1,7 @@
 // This Source Code is in the Public Domain per: http://unlicense.org
 package org.litesoft.commonfoundation.csv;
 
-import org.litesoft.commonfoundation.interators.*;
+import org.litesoft.commonfoundation.iterators.*;
 
 /**
  * An Iterator of the values in a String encoded as Comma Separated Values.<p>
