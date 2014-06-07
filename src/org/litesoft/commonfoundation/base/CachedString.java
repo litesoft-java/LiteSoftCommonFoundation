@@ -1,23 +1,19 @@
 // This Source Code is in the Public Domain per: http://unlicense.org
 package org.litesoft.commonfoundation.base;
 
-public class CachedString
-{
+public class CachedString {
     private boolean mValid = false;
     private String mValue = null;
 
-    public boolean isValid()
-    {
+    public boolean isValid() {
         return mValid;
     }
 
-    public String getValue()
-    {
+    public String getValue() {
         return mValue;
     }
 
-    public void setValue( String pValue )
-    {
+    public void setValue( String pValue ) {
         mValid = true;
         mValue = pValue;
     }

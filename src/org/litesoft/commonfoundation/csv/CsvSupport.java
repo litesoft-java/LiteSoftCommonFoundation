@@ -21,8 +21,7 @@ import java.util.*;
  * @version 1.0 7/28/01
  */
 
-public class CsvSupport
-{
+public class CsvSupport {
     /**
      * Constructor primarily used with decode, and encode with NO support
      * for null substitution.<p>
@@ -35,8 +34,7 @@ public class CsvSupport
      * @see #encode(String[])
      * @see #decode(String)
      */
-    public CsvSupport()
-    {
+    public CsvSupport() {
         this( null );
     }
 
@@ -54,8 +52,7 @@ public class CsvSupport
      * @see #encode(String[])
      * @see #decode(String)
      */
-    public CsvSupport( String pForNulls )
-    {
+    public CsvSupport( String pForNulls ) {
         this( pForNulls, pForNulls );
     }
 
@@ -82,8 +79,7 @@ public class CsvSupport
      * @see #encode(String[])
      * @see #decode(String)
      */
-    public CsvSupport( String pForMidNulls, String pForEndNulls )
-    {
+    public CsvSupport( String pForMidNulls, String pForEndNulls ) {
         zForMidNulls = pForMidNulls;
         zForEndNulls = pForEndNulls;
     }
@@ -91,29 +87,23 @@ public class CsvSupport
     private String zForMidNulls;
     private String zForEndNulls;
 
-    private String[] replaceNulls( String[] source )
-    {
+    private String[] replaceNulls( String[] source ) {
         int i, sLen = source.length;
 
-        if ( zForEndNulls == null )
-        {
-            for ( i = sLen - 1; (i >= 0) && (source[i] == null); i-- )
-            {
+        if ( zForEndNulls == null ) {
+            for ( i = sLen - 1; (i >= 0) && (source[i] == null); i-- ) {
                 sLen--;
             }
         }
 
         String[] newArray = new String[sLen];
 
-        for ( i = sLen - 1; (i >= 0) && (source[i] == null); i-- )
-        {
+        for ( i = sLen - 1; (i >= 0) && (source[i] == null); i-- ) {
             newArray[i] = zForEndNulls;
         }
 
-        for (; i >= 0; i-- )
-        {
-            if ( null == (newArray[i] = (source[i] == null) ? zForMidNulls : source[i]) )
-            {
+        for (; i >= 0; i-- ) {
+            if ( null == (newArray[i] = (source[i] == null) ? zForMidNulls : source[i]) ) {
                 throw new IllegalArgumentException( "null unacceptable in element: " + i );
             }
         }
@@ -121,14 +111,10 @@ public class CsvSupport
         return newArray;
     }
 
-    private String[] deNull( String[] source )
-    {
-        if ( source != null )
-        {
-            for ( int i = source.length; i-- > 0; )
-            {
-                if ( source[i] == null )
-                {
+    private String[] deNull( String[] source ) {
+        if ( source != null ) {
+            for ( int i = source.length; i-- > 0; ) {
+                if ( source[i] == null ) {
                     return replaceNulls( source );
                 }
             }
@@ -137,11 +123,9 @@ public class CsvSupport
         return source;
     }
 
-    private int sumLengths( String[] source )
-    {
+    private int sumLengths( String[] source ) {
         int retval = 0;
-        for ( int i = source.length; i-- > 0; )
-        {
+        for ( int i = source.length; i-- > 0; ) {
             retval += source[i].length();
         }
         return retval;
@@ -170,22 +154,19 @@ public class CsvSupport
      * @see #CsvSupport(String, String)
      */
     public String encode( String[] pSource )
-            throws NullPointerException, IllegalArgumentException
-    {
+            throws NullPointerException, IllegalArgumentException {
         pSource = deNull( pSource ); // might produce a new Array
 
         int sLen = pSource.length;  // can throw NullPointerException
 
-        if ( sLen == 0 )
-        {
+        if ( sLen == 0 ) {
             return null;
         }
 
         StringBuilder sb = new StringBuilder( sLen + sumLengths( pSource ) );
         appendCsvField( pSource[0], sb );
 
-        for ( int i = 1; i < sLen; i++ )
-        {
+        for ( int i = 1; i < sLen; i++ ) {
             sb.append( ',' );
             appendCsvField( pSource[i], sb );
         }
@@ -218,22 +199,18 @@ public class CsvSupport
      * @see #encode(String[])
      */
     public String[] decode( String pSource )
-            throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         List<String> list = new ArrayList<String>();
 
-        while ( pSource != null )
-        {
+        while ( pSource != null ) {
             pSource = extractAndAddCsvField( pSource.trim(), list );
         }
 
         return list.toArray( new String[list.size()] );
     }
 
-    private String extractAndAddCsvField( String source, List<String> list )
-    {
-        if ( (source.length() > 0) && (source.charAt( 0 ) == '"') )
-        {
+    private String extractAndAddCsvField( String source, List<String> list ) {
+        if ( (source.length() > 0) && (source.charAt( 0 ) == '"') ) {
             return extractAndAddCsvQuotedField( source, list );
         }
 
@@ -252,8 +229,7 @@ public class CsvSupport
         return source.substring( comma + 1 );
     }
 
-    private String extractAndAddCsvQuotedField( String source, List<String> list )
-    {
+    private String extractAndAddCsvQuotedField( String source, List<String> list ) {
         String retval, field;
 
         int comma = findCommaAfterQuoted( source );
@@ -261,9 +237,7 @@ public class CsvSupport
         {
             field = source;
             retval = null;
-        }
-        else
-        {
+        } else {
             field = source.substring( 0, comma );
             retval = source.substring( comma + 1 );
         }
@@ -276,15 +250,12 @@ public class CsvSupport
         return retval;
     }
 
-    private int findCommaAfterQuoted( String source )
-    {
+    private int findCommaAfterQuoted( String source ) {
         int sLen = source.length();
         int startIndex = 0;
-        do
-        {
+        do {
             int quote = source.indexOf( '"', ++startIndex );
-            if ( quote == -1 )
-            {
+            if ( quote == -1 ) {
                 throw new UnclosedQuoteException( "Apparently Quoted Field no closing quote, starting at: " + source );
             }
 
@@ -295,39 +266,32 @@ public class CsvSupport
         return source.indexOf( ',', startIndex );  // Find comma AFTER closing quote
     }
 
-    private String removeDoubleQuotes( String field )
-    {
+    private String removeDoubleQuotes( String field ) {
         int startIndex = 0;
-        for ( int doubleQuote; 0 != (doubleQuote = field.indexOf( "\"\"", startIndex ) + 1); startIndex = doubleQuote )
-        {
+        for ( int doubleQuote; 0 != (doubleQuote = field.indexOf( "\"\"", startIndex ) + 1); startIndex = doubleQuote ) {
             field = field.substring( 0, doubleQuote ) + field.substring( doubleQuote + 1 );
         }
 
         return field;
     }
 
-    private String removeWrappingQuotes( String field )
-    {
+    private String removeWrappingQuotes( String field ) {
         int sLast = (field = field.trim()).length() - 1;
-        if ( field.charAt( sLast ) != '"' )
-        {
+        if ( field.charAt( sLast ) != '"' ) {
             throw new MalformedQuotedFieldException( "Appearently Quoted Field, but something after closing quote, in field: " + field );
         }
 
         return field.substring( 1, sLast );
     }
 
-    private void appendCsvField( String field, StringBuilder sb )
-    {
-        if ( field.length() == 0 )
-        {
+    private void appendCsvField( String field, StringBuilder sb ) {
+        if ( field.length() == 0 ) {
             return;
         }
 
         int quote = field.indexOf( '"' );
 
-        if ( (quote == -1) && !field.startsWith( " " ) && !field.endsWith( " " ) && (-1 == field.indexOf( ',' )) )
-        {
+        if ( (quote == -1) && !field.startsWith( " " ) && !field.endsWith( " " ) && (-1 == field.indexOf( ',' )) ) {
             sb.append( field );
             return;
         }

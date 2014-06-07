@@ -1,8 +1,7 @@
 // This Source Code is in the Public Domain per: http://unlicense.org
 package org.litesoft.commonfoundation.typeutils.gregorian;
 
-public class Year
-{
+public class Year {
     /**
      * True if pYear is thought to be a Leap Year (based on the rules that apply from 1800 thru 2100 in the "Gregorian" calendar).
      * <p/>
@@ -18,8 +17,7 @@ public class Year
      * The following are Leap Years: 1800, 1804, 1896, 1900, 1904, 1996, 2004, 2096, 2100, 2104
      * The following are NOT Leap Years: 1801, 1903, 1998, 2000, 2002
      */
-    public static boolean isLeap( int pYear )
-    {
+    public static boolean isLeap( int pYear ) {
         if ( 0 != (pYear & 3) ) // Every 4
         {
             return false;

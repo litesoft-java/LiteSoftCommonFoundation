@@ -15,8 +15,7 @@ import java.util.*;
  * @version 1.0 7/28/01
  */
 
-public final class DropCommentsTextLinesOnlyFilteringIterator extends Iterators.AbstractFiltering<String>
-{
+public final class DropCommentsTextLinesOnlyFilteringIterator extends Iterators.AbstractFiltering<String> {
     public static final String HASH_COMMENT_PREFIX = "#";
     public static final String SLASH_SLASH_COMMENT_PREFIX = "//";
 
@@ -26,18 +25,14 @@ public final class DropCommentsTextLinesOnlyFilteringIterator extends Iterators.
      *
      * @param pIterator the filtered Iterator.
      */
-    public DropCommentsTextLinesOnlyFilteringIterator( Iterator<String> pIterator, String... pCommentPrefixes )
-    {
+    public DropCommentsTextLinesOnlyFilteringIterator( Iterator<String> pIterator, String... pCommentPrefixes ) {
         super( pIterator );
-        for ( String zPrefix : Strings.deNull( pCommentPrefixes ) )
-        {
-            if ( null != (zPrefix = Strings.noEmpty( zPrefix )) )
-            {
+        for ( String zPrefix : Strings.deNull( pCommentPrefixes ) ) {
+            if ( null != (zPrefix = Strings.noEmpty( zPrefix )) ) {
                 mCommentPrefixes.add( zPrefix );
             }
         }
-        if ( mCommentPrefixes.isEmpty() )
-        {
+        if ( mCommentPrefixes.isEmpty() ) {
             mCommentPrefixes.add( HASH_COMMENT_PREFIX );
         }
     }
@@ -55,16 +50,13 @@ public final class DropCommentsTextLinesOnlyFilteringIterator extends Iterators.
      * should be kept.<p>
      */
     @Override
-    protected boolean keepThis( String pPossibleValue )
-    {
+    protected boolean keepThis( String pPossibleValue ) {
         if ( (pPossibleValue == null) || (pPossibleValue = pPossibleValue.trim()).isEmpty() ) // weed out null
         {
             return false;
         }
-        for ( String zPrefix : mCommentPrefixes )
-        {
-            if ( pPossibleValue.startsWith( zPrefix ) )
-            {
+        for ( String zPrefix : mCommentPrefixes ) {
+            if ( pPossibleValue.startsWith( zPrefix ) ) {
                 return false;
             }
         }

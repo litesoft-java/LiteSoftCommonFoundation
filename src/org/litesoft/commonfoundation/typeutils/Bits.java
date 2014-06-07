@@ -1,8 +1,7 @@
 // This Source Code is in the Public Domain per: http://unlicense.org
 package org.litesoft.commonfoundation.typeutils;
 
-public class Bits
-{
+public class Bits {
     /**
      * Calculate the new "AccumulatedBitFlags" by Overriding the appropriate bit flags in
      * pPreviousAccumulatedBitFlags (based on the bits in pValidBitsOfNewBitFlags) from the pNewBitFlags.
@@ -13,8 +12,7 @@ public class Bits
      *
      * @return The new "AccumulatedBitFlags".
      */
-    public static int mutateAccumulatedBitFlags( int pPreviousAccumulatedBitFlags, int pValidBitsOfNewBitFlags, int pNewBitFlags )
-    {
+    public static int mutateAccumulatedBitFlags( int pPreviousAccumulatedBitFlags, int pValidBitsOfNewBitFlags, int pNewBitFlags ) {
         return (pPreviousAccumulatedBitFlags & (~pValidBitsOfNewBitFlags)) //
                | (pValidBitsOfNewBitFlags & pNewBitFlags);
     }

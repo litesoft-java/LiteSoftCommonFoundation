@@ -1,32 +1,26 @@
 // This Source Code is in the Public Domain per: http://unlicense.org
 package org.litesoft.commonfoundation.exceptions;
 
-public class PersistenceException extends RuntimeException
-{
-    public PersistenceException( String message )
-    {
+public class PersistenceException extends RuntimeException {
+    public PersistenceException( String message ) {
         super( message );
     }
 
-    public PersistenceException( String message, Throwable cause )
-    {
+    public PersistenceException( String message, Throwable cause ) {
         super( message, cause );
     }
 
-    public PersistenceException( Throwable cause )
-    {
+    public PersistenceException( Throwable cause ) {
         super( cause );
     }
 
     private String mAugmentedMessage = null;
 
-    public String getAugmentedMessage()
-    {
+    public String getAugmentedMessage() {
         return mAugmentedMessage;
     }
 
-    public void setAugmentedMessage( String pAugmentedMessage )
-    {
+    public void setAugmentedMessage( String pAugmentedMessage ) {
         mAugmentedMessage = pAugmentedMessage;
     }
 
@@ -37,11 +31,9 @@ public class PersistenceException extends RuntimeException
      * (which may be <tt>null</tt>).
      */
     @Override
-    public String getMessage()
-    {
+    public String getMessage() {
         String zMessage = super.getMessage();
-        if ( mAugmentedMessage != null )
-        {
+        if ( mAugmentedMessage != null ) {
             zMessage += mAugmentedMessage;
         }
         return zMessage;

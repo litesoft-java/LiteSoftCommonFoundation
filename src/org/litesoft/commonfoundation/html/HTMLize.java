@@ -3,8 +3,7 @@ package org.litesoft.commonfoundation.html;
 
 import org.litesoft.commonfoundation.base.*;
 
-public class HTMLize implements HTMLConstants
-{
+public class HTMLize implements HTMLConstants {
     /**
      * HTML Encodes any markup in input (Spaces are left as Spaces).
      *
@@ -12,8 +11,7 @@ public class HTMLize implements HTMLConstants
      *
      * @return Processed pText with any markup properly HTML Encoded.
      */
-    public static String escape( String pText )
-    {
+    public static String escape( String pText ) {
         return INSTANCE.process( pText );
     }
 
@@ -24,41 +22,32 @@ public class HTMLize implements HTMLConstants
      *
      * @return Processed pText with any markup properly HTML Encoded.
      */
-    public static String escapeNoWrap( String pText )
-    {
+    public static String escapeNoWrap( String pText ) {
         return INSTANCE_NO_WRAP.process( pText );
     }
 
     public static final HTMLize INSTANCE = new HTMLize();
-    public static final HTMLize INSTANCE_NO_WRAP = new HTMLize()
-    {
+    public static final HTMLize INSTANCE_NO_WRAP = new HTMLize() {
         @Override
-        protected String space()
-        {
+        protected String space() {
             return NBSP;
         }
     };
-    public static final HTMLize INSTANCE_NO_ESCAPE = new HTMLize()
-    {
+    public static final HTMLize INSTANCE_NO_ESCAPE = new HTMLize() {
         @Override
-        public String process( String pText )
-        {
+        public String process( String pText ) {
             return pText;
         }
     };
 
-    public String process( String pText )
-    {
-        if ( (pText == null) || (pText.length() == 0) )
-        {
+    public String process( String pText ) {
+        if ( (pText == null) || (pText.length() == 0) ) {
             return "";
         }
         StringBuilder zSB = new StringBuilder();
-        for ( int i = 0; i < pText.length(); i++ )
-        {
+        for ( int i = 0; i < pText.length(); i++ ) {
             char c = pText.charAt( i );
-            switch ( c )
-            {
+            switch ( c ) {
                 case ' ':
                     zSB.append( space() );
                     break;
@@ -78,16 +67,12 @@ public class HTMLize implements HTMLConstants
                     zSB.append( HTML_BR );
                     break;
                 default:
-                    if ( (' ' < c) && (c < 127) )
-                    {
+                    if ( (' ' < c) && (c < 127) ) {
                         zSB.append( c );
-                    }
-                    else
-                    {
+                    } else {
                         zSB.append( "&#x" );
                         char[] chars = Hex.to4Chars( c );
-                        for ( char aChar : chars )
-                        {
+                        for ( char aChar : chars ) {
                             zSB.append( aChar );
                         }
                         zSB.append( ';' );
@@ -98,12 +83,10 @@ public class HTMLize implements HTMLConstants
         return zSB.toString();
     }
 
-    protected HTMLize()
-    {
+    protected HTMLize() {
     }
 
-    protected String space()
-    {
+    protected String space() {
         return " ";
     }
 }

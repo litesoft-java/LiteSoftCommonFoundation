@@ -3,51 +3,41 @@ package org.litesoft.commonfoundation.stringmatching;
 
 import org.litesoft.commonfoundation.typeutils.*;
 
-public interface StringMatcher
-{
+public interface StringMatcher {
     public boolean matches( String pInQuestion );
 
-    public static final StringMatcher ALL = new StringMatcher()
-    {
+    public static final StringMatcher ALL = new StringMatcher() {
         @Override
-        public boolean matches( String pInQuestion )
-        {
+        public boolean matches( String pInQuestion ) {
             return true;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "ALL";
         }
     };
 
-    public static final StringMatcher NONE = new StringMatcher()
-    {
+    public static final StringMatcher NONE = new StringMatcher() {
         @Override
-        public boolean matches( String pInQuestion )
-        {
+        public boolean matches( String pInQuestion ) {
             return false;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "NONE";
         }
     };
 
-    public static final StringMatcher EMPTY = new StringMatcher()
-    {
+    public static final StringMatcher EMPTY = new StringMatcher() {
         @Override
-        public boolean matches( String pInQuestion )
-        {
+        public boolean matches( String pInQuestion ) {
             return (null == Strings.noEmpty( pInQuestion ));
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "EMPTY";
         }
     };

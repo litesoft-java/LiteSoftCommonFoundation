@@ -10,22 +10,19 @@ import java.util.*;
  * @version 1.0 31Aug2010
  */
 
-public final class NoNullsIterator<T> extends Iterators.AbstractFiltering<T>
-{
+public final class NoNullsIterator<T> extends Iterators.AbstractFiltering<T> {
     /**
      * Construct an Iterator (by wrapping another Iterator) that will NOT return any null values.<p>
      *
      * @param pIterator the wrapped Iterator (!null).
      */
     public NoNullsIterator( Iterator<T> pIterator )
-            throws NullPointerException
-    {
+            throws NullPointerException {
         super( pIterator );
     }
 
     @Override
-    protected boolean keepThis( T pPossibleValue )
-    {
+    protected boolean keepThis( T pPossibleValue ) {
         return pPossibleValue != null;
     }
 }

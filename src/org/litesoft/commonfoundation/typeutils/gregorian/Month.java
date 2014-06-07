@@ -5,17 +5,14 @@ import org.litesoft.commonfoundation.typeutils.*;
 
 import java.util.*;
 
-public enum Month
-{
+public enum Month {
     January( 31 ),
-    Febuary()
-            {
-                @Override
-                public int daysIn( int pYear )
-                {
-                    return Year.isLeap( pYear ) ? 29 : 28;
-                }
-            },
+    Febuary() {
+        @Override
+        public int daysIn( int pYear ) {
+            return Year.isLeap( pYear ) ? 29 : 28;
+        }
+    },
     March( 31 ),
     April( 30 ),
     May( 31 ),
@@ -31,25 +28,21 @@ public enum Month
     private final String mShortName;
     private final String mNameUpperCase;
 
-    private Month( int pDaysInMonth )
-    {
+    private Month( int pDaysInMonth ) {
         mDaysInMonth = pDaysInMonth;
         mShortName = name().substring( 0, 3 );
         mNameUpperCase = name().toUpperCase();
     }
 
-    private Month()
-    {
+    private Month() {
         this( -1 );
     }
 
-    public String shortName()
-    {
+    public String shortName() {
         return mShortName;
     }
 
-    public String nameUpperCase()
-    {
+    public String nameUpperCase() {
         return mNameUpperCase;
     }
 
@@ -58,52 +51,42 @@ public enum Month
      * <p/>
      * Dates prior to the year 1800 may get incorrect results!
      */
-    public int daysIn( int pYear )
-    {
+    public int daysIn( int pYear ) {
         return mDaysInMonth;
     }
 
-    public int toMonthNumber()
-    {
+    public int toMonthNumber() {
         return ordinal() + 1;
     }
 
-    public static Month fromMonthNumber( int pMonthNumber )
-    {
+    public static Month fromMonthNumber( int pMonthNumber ) {
         return ((1 <= pMonthNumber) && (pMonthNumber <= 12)) ? values()[pMonthNumber - 1] : null;
     }
 
-    public static Month valueOf( int pOrdinal )
-    {
-        while ( pOrdinal < 0 )
-        {
+    public static Month valueOf( int pOrdinal ) {
+        while ( pOrdinal < 0 ) {
             pOrdinal += 12;
         }
-        while ( 12 <= pOrdinal )
-        {
+        while ( 12 <= pOrdinal ) {
             pOrdinal -= 12;
         }
         return values()[pOrdinal];
     }
 
-    public Month prev()
-    {
+    public Month prev() {
         return valueOf( ordinal() - 1 );
     }
 
-    public Month next()
-    {
+    public Month next() {
         return valueOf( ordinal() + 1 );
     }
 
-    public static String shortNameFromMonthNumber( int pMonthNumber )
-    {
+    public static String shortNameFromMonthNumber( int pMonthNumber ) {
         Month zMonth = Month.fromMonthNumber( pMonthNumber );
         return (zMonth == null) ? "---" : zMonth.shortName();
     }
 
-    public static String nameFromMonthNumber( int pMonthNumber )
-    {
+    public static String nameFromMonthNumber( int pMonthNumber ) {
         Month zMonth = Month.fromMonthNumber( pMonthNumber );
         return (zMonth == null) ? "---" : zMonth.name();
     }
@@ -113,34 +96,25 @@ public enum Month
      * <p/>
      * Dates prior to the year 1800 may get incorrect results!
      */
-    public static int daysIn( int pYear, int pMonth )
-    {
+    public static int daysIn( int pYear, int pMonth ) {
         Month zMonth = fromMonthNumber( pMonth );
         return (zMonth == null) ? 0 : zMonth.daysIn( pYear );
     }
 
     public static int parseMonth( String pToParse, String pFrom )
-            throws IllegalArgumentException
-    {
+            throws IllegalArgumentException {
         pToParse = pToParse.trim().toUpperCase();
-        if ( pToParse.length() == 0 )
-        {
+        if ( pToParse.length() == 0 ) {
             throw new IllegalArgumentException( "No Month in '" + pFrom + "'" );
         }
         Month zFound = null;
         List<Month> zMultipleFounds = null;
-        for ( Month zMonth : values() )
-        {
-            if ( zMonth.nameUpperCase().startsWith( pToParse ) )
-            {
-                if ( zFound == null )
-                {
+        for ( Month zMonth : values() ) {
+            if ( zMonth.nameUpperCase().startsWith( pToParse ) ) {
+                if ( zFound == null ) {
                     zFound = zMonth;
-                }
-                else
-                {
-                    if ( zMultipleFounds == null )
-                    {
+                } else {
+                    if ( zMultipleFounds == null ) {
                         zMultipleFounds = Lists.newArrayList();
                         zMultipleFounds.add( zFound );
                     }
@@ -148,14 +122,12 @@ public enum Month
                 }
             }
         }
-        if ( zMultipleFounds != null )
-        {
+        if ( zMultipleFounds != null ) {
             String zMultiple = zMultipleFounds.toString();
             throw new IllegalArgumentException(
                     "Invalid Month '" + pToParse + "' in '" + pFrom + "': Matched-" + zMultiple.substring( 1, zMultiple.length() - 1 ) );
         }
-        if ( zFound == null )
-        {
+        if ( zFound == null ) {
             throw new IllegalArgumentException( "Month '" + pToParse + "' NOT recognized in '" + pFrom + "'" );
         }
         return zFound.toMonthNumber();

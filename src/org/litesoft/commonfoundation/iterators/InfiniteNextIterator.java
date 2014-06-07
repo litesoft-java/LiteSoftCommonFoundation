@@ -14,8 +14,7 @@ import java.util.*;
  * @version 1.0 7/28/01
  */
 
-public final class InfiniteNextIterator<T> extends Iterators.AbstractWrapping<T>
-{
+public final class InfiniteNextIterator<T> extends Iterators.AbstractWrapping<T> {
     /**
      * Construct an Iterator that will NEVER throw a NoSuchElementException
      * when next() is called.<p>
@@ -25,8 +24,7 @@ public final class InfiniteNextIterator<T> extends Iterators.AbstractWrapping<T>
      *                        NoSuchElementException would have been thown (null OK).
      */
     public InfiniteNextIterator( Iterator<T> pIterator, T pBeyondEndValue )
-            throws NullPointerException
-    {
+            throws NullPointerException {
         super( pIterator );
         zBeyondEndValue = pBeyondEndValue;
     }
@@ -38,8 +36,7 @@ public final class InfiniteNextIterator<T> extends Iterators.AbstractWrapping<T>
      * @param pIterator the wrapped Iterator (!null).
      */
     public InfiniteNextIterator( Iterator<T> pIterator )
-            throws NullPointerException
-    {
+            throws NullPointerException {
         this( pIterator, null );
     }
 
@@ -54,8 +51,7 @@ public final class InfiniteNextIterator<T> extends Iterators.AbstractWrapping<T>
      * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/Util/Iterator.html#next()">java.util.Iterator#next()</a>
      */
     @Override
-    public T next()
-    {
+    public T next() {
         return hasNext() ? super.next() : zBeyondEndValue;
     }
 

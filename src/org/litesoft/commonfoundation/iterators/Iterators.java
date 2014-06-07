@@ -12,17 +12,13 @@ import java.util.*;
  * @version 1.0 7/28/01
  */
 
-public class Iterators
-{
-    public static <T> Iterator<T> empty()
-    {
+public class Iterators {
+    public static <T> Iterator<T> empty() {
         return Cast.it( NULL_INSTANCE );
     }
 
-    public static <T> Iterator<T> deNull( Iterator<T> pIterator )
-    {
-        if ( pIterator != null )
-        {
+    public static <T> Iterator<T> deNull( Iterator<T> pIterator ) {
+        if ( pIterator != null ) {
             return pIterator;
         }
         return empty();
@@ -48,8 +44,7 @@ public class Iterators
      * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/Util/Iterator.html">java.util.Iterator</a>
      */
     public static abstract class AbstractReadOnly<T> implements Iterator<T>,
-                                                                Disposable
-    {
+                                                                Disposable {
         /**
          * hasNext() is part of the Iterator interface.  It is abstract here
          * because there is no reasonable, common, implementation and to
@@ -69,8 +64,7 @@ public class Iterators
          * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/Util/Iterator.html#next()">java.util.Iterator#next()</a>
          */
         @Override
-        public T next()
-        {
+        public T next() {
             throw new NoSuchElementException();
         }
 
@@ -85,14 +79,12 @@ public class Iterators
          * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/Util/Iterator.html#remove()">java.util.Iterator.remove()</a>
          */
         @Override
-        public final void remove()
-        {
+        public final void remove() {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void dispose()
-        {
+        public void dispose() {
         }
     }
 
@@ -103,8 +95,7 @@ public class Iterators
      * @author George Smith
      * @version 1.0 7/28/01
      */
-    public static abstract class AbstractWrapping<T> extends AbstractReadOnly<T>
-    {
+    public static abstract class AbstractWrapping<T> extends AbstractReadOnly<T> {
         /**
          * Construct an Iterator wrapping Iterator.<p>
          *
@@ -112,8 +103,7 @@ public class Iterators
          *
          * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/Util/Iterator.html">java.util.Iterator</a>
          */
-        protected AbstractWrapping( Iterator<T> pIterator )
-        {
+        protected AbstractWrapping( Iterator<T> pIterator ) {
             mIterator = deNull( pIterator );
         }
 
@@ -128,8 +118,7 @@ public class Iterators
          * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/Util/Iterator.html#hasNext()">java.util.Iterator#hasNext()</a>
          */
         @Override
-        public boolean hasNext()
-        {
+        public boolean hasNext() {
             return mIterator.hasNext();
         }
 
@@ -139,16 +128,13 @@ public class Iterators
          * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/Util/Iterator.html#next()">java.util.Iterator#next()</a>
          */
         @Override
-        public T next()
-        {
+        public T next() {
             return mIterator.next();
         }
 
         @Override
-        public void dispose()
-        {
-            if ( mIterator instanceof Disposable )
-            {
+        public void dispose() {
+            if ( mIterator instanceof Disposable ) {
                 ((Disposable) mIterator).dispose();
             }
             mIterator = empty();
@@ -157,8 +143,7 @@ public class Iterators
 
         @Override
         protected void finalize()
-                throws Throwable
-        {
+                throws Throwable {
             dispose();
             super.finalize();
         }
@@ -175,8 +160,7 @@ public class Iterators
      * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/Util/Iterator.html">java.util.Iterator</a>
      */
 
-    public static abstract class AbstractFiltering<T> extends AbstractWrapping<T>
-    {
+    public static abstract class AbstractFiltering<T> extends AbstractWrapping<T> {
         /**
          * Construct a Filtering (of another Iterator) Iterator.<p>
          *
@@ -185,8 +169,7 @@ public class Iterators
          * @see AbstractWrappingIterator
          * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/Util/Iterator.html">java.util.Iterator</a>
          */
-        protected AbstractFiltering( Iterator<T> pIterator )
-        {
+        protected AbstractFiltering( Iterator<T> pIterator ) {
             super( pIterator );
         }
 
@@ -218,10 +201,8 @@ public class Iterators
          * @see #keepThis(Object)
          */
         @Override
-        public final boolean hasNext()
-        {
-            while ( !lookAheadValid && super.hasNext() )
-            {
+        public final boolean hasNext() {
+            while ( !lookAheadValid && super.hasNext() ) {
                 lookAheadValid = keepThis( lookAheadObject = super.next() );
             }
             return lookAheadValid;
@@ -237,10 +218,8 @@ public class Iterators
          * @see #next()
          */
         @Override
-        public final T next()
-        {
-            if ( !hasNext() )
-            {
+        public final T next() {
+            if ( !hasNext() ) {
                 super.next(); // throw exception
             }
             lookAheadValid = false;
@@ -248,8 +227,7 @@ public class Iterators
         }
 
         @Override
-        public void dispose()
-        {
+        public void dispose() {
             lookAheadObject = null;
             super.dispose();
         }
@@ -264,33 +242,25 @@ public class Iterators
      *
      * @return A <i>label</i>ed String that represents <i>iterator</i>.
      */
-    public static String toString( Iterator pIterator, String pLabel )
-    {
+    public static String toString( Iterator pIterator, String pLabel ) {
         StringBuilder sb = new StringBuilder();
-        if ( pLabel != null )
-        {
+        if ( pLabel != null ) {
             sb.append( pLabel ).append( ": " );
         }
-        if ( pIterator == null )
-        {
+        if ( pIterator == null ) {
             sb.append( "null" );
-        }
-        else
-        {
+        } else {
             appendElementsWithCount( sb, pIterator );
         }
         return sb.toString();
     }
 
-    private static void appendElementsWithCount( StringBuilder pSb, Iterator pIterator )
-    {
+    private static void appendElementsWithCount( StringBuilder pSb, Iterator pIterator ) {
         StringBuilder zElements = new StringBuilder();
         int elements = 0;
-        if ( pIterator.hasNext() )
-        {
+        if ( pIterator.hasNext() ) {
             zElements.append( ":\n" );
-            while ( pIterator.hasNext() )
-            {
+            while ( pIterator.hasNext() ) {
                 elements++;
                 Object entry = pIterator.next();
                 zElements.append( "    [" );
@@ -303,12 +273,10 @@ public class Iterators
         pSb.append( zElements );
     }
 
-    private Iterators()
-    {
+    private Iterators() {
     }
 
-    private static final Iterator NULL_INSTANCE = new AbstractReadOnly()
-    {
+    private static final Iterator NULL_INSTANCE = new AbstractReadOnly() {
         /**
          * Returns <tt>false</tt>, because there is <b>never</b> another element.<p>
          * <p/>
@@ -319,8 +287,7 @@ public class Iterators
          * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/Util/Iterator.html#hasNext()">java.util.Iterator#hasNext()</a>
          */
         @Override
-        public boolean hasNext()
-        {
+        public boolean hasNext() {
             return false;
         }
 
@@ -330,8 +297,7 @@ public class Iterators
          * @return A String representation of this.
          */
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "NullIterator";
         }
     };

@@ -12,8 +12,7 @@ import java.util.*;
  * @version 1.0 7/28/01
  */
 
-public final class OnePushBackIterator<T> extends Iterators.AbstractWrapping<T>
-{
+public final class OnePushBackIterator<T> extends Iterators.AbstractWrapping<T> {
     /**
      * Construct an Iterator (by wrapping another Iterator) that adds the
      * ability of a one-deep push back.<p>
@@ -21,8 +20,7 @@ public final class OnePushBackIterator<T> extends Iterators.AbstractWrapping<T>
      * @param pIterator the wrapped Iterator (!null).
      */
     public OnePushBackIterator( Iterator<T> pIterator )
-            throws NullPointerException
-    {
+            throws NullPointerException {
         super( pIterator );
     }
 
@@ -32,8 +30,7 @@ public final class OnePushBackIterator<T> extends Iterators.AbstractWrapping<T>
      *
      * @return an <tt>true/false</tt> indicating if the push-back succeeded.<p>
      */
-    public boolean pushBack()
-    {
+    public boolean pushBack() {
         return (lastEverSet && !lastValid) && (lastValid = true); // Note Assignment!
     }
 
@@ -43,8 +40,7 @@ public final class OnePushBackIterator<T> extends Iterators.AbstractWrapping<T>
      * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/Util/Iterator.html#hasNext()">java.util.Iterator#hasNext()</a>
      */
     @Override
-    public boolean hasNext()
-    {
+    public boolean hasNext() {
         return lastValid || super.hasNext();
     }
 
@@ -54,14 +50,11 @@ public final class OnePushBackIterator<T> extends Iterators.AbstractWrapping<T>
      * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/Util/Iterator.html#next()">java.util.Iterator#next()</a>
      */
     @Override
-    public T next()
-    {
-        if ( !hasNext() )
-        {
+    public T next() {
+        if ( !hasNext() ) {
             super.next(); // throw exception
         }
-        if ( lastValid )
-        {
+        if ( lastValid ) {
             lastValid = false;
             return lastValue;
         }

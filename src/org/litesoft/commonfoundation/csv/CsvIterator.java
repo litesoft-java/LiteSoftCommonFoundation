@@ -13,15 +13,13 @@ import org.litesoft.commonfoundation.iterators.*;
  * @see CsvSupport
  */
 
-public final class CsvIterator extends ArrayIterator<String>
-{
+public final class CsvIterator extends ArrayIterator<String> {
     /**
      * Construct an Iterator of the values in a String encoded as Comma Separated Values.<p>
      *
      * @param pSource the String to CSV decode (null OK).
      */
-    public CsvIterator( String pSource )
-    {
+    public CsvIterator( String pSource ) {
         super( "CsvIterator", (new CsvSupport()).decode( pSource ) );
     }
 }

@@ -18,15 +18,13 @@ import java.util.*;
  * @version 1.0 7/28/01
  */
 
-public class ArrayIterator<T> extends Iterators.AbstractReadOnly<T>
-{
+public class ArrayIterator<T> extends Iterators.AbstractReadOnly<T> {
     /**
      * Construct an Iterator for an Array.<p>
      *
      * @param pArray the Array to Iterate thru (null OK).
      */
-    public ArrayIterator( T[] pArray )
-    {
+    public ArrayIterator( T[] pArray ) {
         this( "ArrayIterator", pArray );
     }
 
@@ -36,8 +34,7 @@ public class ArrayIterator<T> extends Iterators.AbstractReadOnly<T>
      * @param pInteratorName the Name for this Iterator (for toString) (null questionable).
      * @param pArray         the Array to Iterate thru (null OK).
      */
-    protected ArrayIterator( String pInteratorName, T[] pArray )
-    {
+    protected ArrayIterator( String pInteratorName, T[] pArray ) {
         zInteratorName = pInteratorName;
         arrayLen = ((zArray = pArray) == null) ? 0 : pArray.length;
     }
@@ -55,8 +52,7 @@ public class ArrayIterator<T> extends Iterators.AbstractReadOnly<T>
      * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/Util/Iterator.html#hasNext()">java.util.Iterator#hasNext()</a>
      */
     @Override
-    public final boolean hasNext()
-    {
+    public final boolean hasNext() {
         return (index < arrayLen);
     }
 
@@ -69,8 +65,7 @@ public class ArrayIterator<T> extends Iterators.AbstractReadOnly<T>
      * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/Util/Iterator.html#next()">java.util.Iterator#next()</a>
      */
     @Override
-    public final T next()
-    {
+    public final T next() {
         return hasNext() ? zArray[index++] : super.next();
     }
 
@@ -80,27 +75,20 @@ public class ArrayIterator<T> extends Iterators.AbstractReadOnly<T>
      * @return A String representation of this.
      */
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         StringBuilder sb = new StringBuilder( zInteratorName );
         sb.append( ": " );
-        if ( zArray == null )
-        {
+        if ( zArray == null ) {
             sb.append( "null" );
-        }
-        else
-        {
+        } else {
             sb.append( arrayLen );
             sb.append( " elements" );
-            if ( !hasNext() )
-            {
+            if ( !hasNext() ) {
                 sb.append( " AT END (NO MORE ELEMENTS)" );
             }
-            if ( arrayLen != 0 )
-            {
+            if ( arrayLen != 0 ) {
                 sb.append( '\n' );
-                for ( int i = 0; i < arrayLen; i++ )
-                {
+                for ( int i = 0; i < arrayLen; i++ ) {
                     T entry = zArray[i];
                     sb.append( (i == index) ? " -> [" : "    [" );
                     sb.append( (entry == null) ? "?null?" : entry.toString() );

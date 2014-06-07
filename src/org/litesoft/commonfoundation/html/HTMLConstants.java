@@ -1,8 +1,7 @@
 // This Source Code is in the Public Domain per: http://unlicense.org
 package org.litesoft.commonfoundation.html;
 
-public interface HTMLConstants
-{
+public interface HTMLConstants {
     public static final String NBSP = "&nbsp;";
     public static final String AMPERSAND = "&amp;";
     public static final String LESS_THAN = "&lt;";

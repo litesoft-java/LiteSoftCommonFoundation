@@ -4,8 +4,7 @@ package org.litesoft.commonfoundation.charstreams;
 /**
  * A CharSource is like a powerful version of a "char" based Iterator.
  */
-public interface CharSource
-{
+public interface CharSource {
     /**
      * Report if there are any more characters available to get().
      * <p/>

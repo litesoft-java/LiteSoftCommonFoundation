@@ -3,8 +3,7 @@ package org.litesoft.commonfoundation.stringmatching;
 
 import org.litesoft.commonfoundation.typeutils.*;
 
-public class StringMatcherFactory
-{
+public class StringMatcherFactory {
     /**
      * Is the string 'pInQuestion' made up of the 'pParts' where if only 1, then must be equal, otherwise
      * the pInQuestion.startsWith(first) && pInQuestion.endsWith(last) && the middle must be found in
@@ -14,8 +13,7 @@ public class StringMatcherFactory
      *
      * @return Appropriate matcher or 'null' if pParts is empty and all elements are empty
      */
-    public static StringMatcher createEquals( String... pParts )
-    {
+    public static StringMatcher createEquals( String... pParts ) {
         return createEquals( false, pParts );
     }
 
@@ -28,8 +26,7 @@ public class StringMatcherFactory
      *
      * @return Appropriate matcher or 'null' if pParts is empty and all elements are empty
      */
-    public static StringMatcher createEqualsIgnoreCase( String... pParts )
-    {
+    public static StringMatcher createEqualsIgnoreCase( String... pParts ) {
         return createEquals( true, pParts );
     }
 
@@ -43,8 +40,7 @@ public class StringMatcherFactory
      *
      * @return Appropriate matcher or 'null' if pParts is empty and all elements are empty
      */
-    public static StringMatcher createEquals( boolean pIgnoreCase, String... pParts )
-    {
+    public static StringMatcher createEquals( boolean pIgnoreCase, String... pParts ) {
         return LLcreate( pParts, false, pIgnoreCase );
     }
 
@@ -57,8 +53,7 @@ public class StringMatcherFactory
      *
      * @return Appropriate matcher or 'null' if pParts is empty and all elements are empty
      */
-    public static StringMatcher createStartsWith( String... pParts )
-    {
+    public static StringMatcher createStartsWith( String... pParts ) {
         return createStartsWith( false, pParts );
     }
 
@@ -71,8 +66,7 @@ public class StringMatcherFactory
      *
      * @return Appropriate matcher or 'null' if pParts is empty and all elements are empty
      */
-    public static StringMatcher createStartsWithIgnoreCase( String... pParts )
-    {
+    public static StringMatcher createStartsWithIgnoreCase( String... pParts ) {
         return createStartsWith( true, pParts );
     }
 
@@ -86,48 +80,37 @@ public class StringMatcherFactory
      *
      * @return Appropriate matcher or 'null' if pParts is empty and all elements are empty
      */
-    public static StringMatcher createStartsWith( boolean pIgnoreCase, String... pParts )
-    {
+    public static StringMatcher createStartsWith( boolean pIgnoreCase, String... pParts ) {
         return LLcreate( pParts, true, pIgnoreCase );
     }
 
-    private static StringMatcher LLcreate( String[] pParts, boolean pSingleIsNotEqualsButStartsWith, boolean pIgnoreCase )
-    {
+    private static StringMatcher LLcreate( String[] pParts, boolean pSingleIsNotEqualsButStartsWith, boolean pIgnoreCase ) {
         pParts = Strings.deNull( pParts );
         String[] zParts = new String[pParts.length];
         int zPartsLength = 0;
-        for ( int i = 0; i < pParts.length; i++ )
-        {
+        for ( int i = 0; i < pParts.length; i++ ) {
             String part = pParts[i];
-            if ( part == null )
-            {
+            if ( part == null ) {
                 part = "";
             }
             zParts[i] = pIgnoreCase ? part.toLowerCase() : part;
             zPartsLength += part.length();
         }
-        if ( zPartsLength == 0 )
-        {
+        if ( zPartsLength == 0 ) {
             return null;
         }
-        switch ( zParts.length )
-        {
+        switch ( zParts.length ) {
             case 1:
-                if ( pSingleIsNotEqualsButStartsWith )
-                {
+                if ( pSingleIsNotEqualsButStartsWith ) {
                     return new StartsWithStringMatcher( zPartsLength, pIgnoreCase, zParts[0] );
-                }
-                else
-                {
+                } else {
                     return new EqualsStringMatcher( zPartsLength, pIgnoreCase, zParts[0] );
                 }
             case 2:
-                if ( zParts[1].length() == 0 )
-                {
+                if ( zParts[1].length() == 0 ) {
                     return new StartsWithStringMatcher( zPartsLength, pIgnoreCase, zParts[0] );
                 }
-                if ( zParts[0].length() == 0 )
-                {
+                if ( zParts[0].length() == 0 ) {
                     return new EndsWithStringMatcher( zPartsLength, pIgnoreCase, zParts[1] );
                 }
                 return new StartsAndEndsWithStringMatcher( zPartsLength, pIgnoreCase, zParts[0], zParts[1] );

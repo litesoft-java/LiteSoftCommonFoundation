@@ -4,8 +4,7 @@ package org.litesoft.commonfoundation.charstreams;
 /**
  * A CharSink is a stand in for either a StringBuilder or an java.io.Writer.
  */
-public interface CharSink
-{
+public interface CharSink {
     /**
      * Add a character.
      */
