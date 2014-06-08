@@ -1,5 +1,5 @@
 // This Source Code is in the Public Domain per: http://unlicense.org
-package org.litesoft.commonfoundation.typeutils;
+package org.litesoft.commonfoundation.typeutils.gregorian;
 
 import java.sql.*;
 import java.text.*;

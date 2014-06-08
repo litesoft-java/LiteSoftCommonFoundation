@@ -151,99 +151,6 @@ public class Objects {
     }
 
     /**
-     * This method strips the package name off a fully qualified class name returning just the substring
-     * beginning one character beyond the last ".".
-     *
-     * @return the substring beginning one character beyond the last "."; null or no "." just returns pFullyQualifiedClassName
-     */
-    public static String justClassName( String pFullyQualifiedClassName ) {
-        int zAt = (pFullyQualifiedClassName != null) ? pFullyQualifiedClassName.lastIndexOf( '.' ) : -1;
-        return (zAt != -1) ? pFullyQualifiedClassName.substring( zAt + 1 ) : pFullyQualifiedClassName;
-    }
-
-    /**
-     * This method strips the package name off a fully qualified class name returning just the substring
-     * beginning one character beyond the last ".".
-     *
-     * @return the substring beginning one character beyond the last "."; null or no "." just returns
-     */
-    public static String justClassName( Class<?> pClass ) {
-        return (pClass != null) ? justClassName( pClass.getName() ) : null;
-    }
-
-    /**
-     * This method strips the package name off the class name of the pObject returning just the substring
-     * beginning one character beyond the last ".".
-     *
-     * @see Objects#justClassName(Class
-     */
-    public static String justClassNameOf( Object pObject ) {
-        return (pObject != null) ? justClassName( pObject.getClass() ) : null;
-    }
-
-    /**
-     * This method strips the package name off the class name of the pObject returning just the substring
-     * beginning one character beyond the last ".", and if it ends with "Impl" remove that.
-     *
-     * @see Objects#justClassName(Class
-     */
-    public static String justClassNameNoImplOf( Object pObject ) {
-        String zName = justClassNameOf( pObject );
-        return ((zName != null) && zName.endsWith( "Impl" )) ? zName.substring( 0, zName.length() - 4 ) : zName;
-    }
-
-    public static String justClassNameIfPackage( String pClassName, String pPackage ) {
-        if ( pClassName != null ) {
-            if ( (pPackage != null) && pPackage.endsWith( "." ) && (pPackage.length() < pClassName.length()) ) {
-                String zSimpleName = justClassName( pClassName );
-                if ( pClassName.equals( pPackage + zSimpleName ) ) {
-                    return zSimpleName;
-                }
-            }
-        }
-        return pClassName;
-    }
-
-    public static String justClassNameIfPackage( Class<?> pClass, String pPackage ) {
-        return (pClass != null) ? justClassNameIfPackage( pClass.getName(), pPackage ) : null;
-    }
-
-    /**
-     * This method strips the package name off a fully qualified class name returning just the substring
-     * beginning one character beyond the last "." (And removes the wrapping Class names if Any).
-     *
-     * @return the substring beginning one character beyond the last "$"; null or no "$" just returns justClassName( pFullyQualifiedClassName )
-     */
-    public static String justSimpleName( String pFullyQualifiedClassName ) {
-        int zAt = (pFullyQualifiedClassName != null) ? pFullyQualifiedClassName.lastIndexOf( '$' ) : -1;
-        return (zAt != -1) ? pFullyQualifiedClassName.substring( zAt + 1 ) : justClassName( pFullyQualifiedClassName );
-    }
-
-    /**
-     * This method strips the package name off the fully qualified class name of the pObject returning just the substring
-     * beginning one character beyond the last "." (And removes the wrapping Class names if Any).
-     *
-     * @return the substring beginning one character beyond the last "$"; null or no "$" just returns justClassName( pFullyQualifiedClassName )
-     */
-    public static String justSimpleName( Class pClass ) {
-        return justSimpleName( (pClass != null) ? pClass.getName() : null );
-    }
-
-    /**
-     * This method strips the package name off the fully qualified class name of the pObject returning just the substring
-     * beginning one character beyond the last "." (And removes the wrapping Class names if Any).
-     *
-     * @return the substring beginning one character beyond the last "$"; null or no "$" just returns justClassName( pFullyQualifiedClassName )
-     */
-    public static String justSimpleName( Object pObject ) {
-        return justSimpleName( (pObject != null) ? pObject.getClass() : null );
-    }
-
-    public static String classNameOf( Object pObject ) {
-        return (pObject != null) ? pObject.getClass().getName() : null;
-    }
-
-    /**
      * @param pCount     - < 1 means copy nothing
      * @param pTo        - is NOT extended
      * @param pFromIndex - 0 based, < 0 indicates from end (eg -1 == Last)
@@ -380,7 +287,7 @@ public class Objects {
     public static String assertNoEmptyToString( String what, Object value ) {
         String strValue = noEmptyToString( value );
         if ( strValue == null ) {
-            Strings.errorNullOrEmpty( what, String.valueOf( justClassNameOf( value ) ) );
+            Strings.errorNullOrEmpty( what, String.valueOf( ClassName.simple( value ) ) );
         }
         return strValue;
     }
