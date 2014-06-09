@@ -18,18 +18,22 @@ public class ExceptionStackTracePrintStream extends PrintStream {
     @Override
     public void println( Object x ) {
         mStringBuilder.append( x );
-        mStringBuilder.append( "\r\n" );
+        newLine();
     }
 
     @Override
     public void println( String x ) {
         mStringBuilder.append( x );
-        mStringBuilder.append( "\r\n" );
+        newLine();
     }
 
     @Override
     public String toString() {
         return mStringBuilder.toString();
+    }
+
+    private void newLine() {
+        mStringBuilder.append( '\n' );
     }
 
     private static class OutputStreamStub extends OutputStream {

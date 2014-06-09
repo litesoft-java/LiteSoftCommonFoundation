@@ -2,5 +2,5 @@
 package org.litesoft.commonfoundation.base;
 
 public interface Disposable {
-    public void dispose();
+    void dispose();
 }

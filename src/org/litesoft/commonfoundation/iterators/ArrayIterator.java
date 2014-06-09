@@ -69,13 +69,17 @@ public class ArrayIterator<T> extends Iterators.AbstractReadOnly<T> {
         return hasNext() ? zArray[index++] : super.next();
     }
 
+    public int getIndex() {
+        return index;
+    }
+
     /**
      * Returns a debug/human friendly String that represents this.<p>
      *
      * @return A String representation of this.
      */
     @Override
-    public final String toString() {
+    public String toString() {
         StringBuilder sb = new StringBuilder( zInteratorName );
         sb.append( ": " );
         if ( zArray == null ) {

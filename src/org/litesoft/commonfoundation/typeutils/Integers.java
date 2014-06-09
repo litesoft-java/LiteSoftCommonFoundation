@@ -1,12 +1,48 @@
 // This Source Code is in the Public Domain per: http://unlicense.org
 package org.litesoft.commonfoundation.typeutils;
 
+import org.litesoft.commonfoundation.base.*;
+
 public class Integers extends Numerics {
+    public static final int ZERO = 0;
+    public static final Integer OBJECT_ZERO = ZERO;
+    public static final int[] PRIMITIVE_EMPTY_ARRAY = new int[0];
     public static final int[] EMPTY_ARRAY_PRIMITIVES = new int[0];
     public static final Integer[] EMPTY_ARRAY = new Integer[0];
+    public static final TypeTransformer<Integer> TYPE_TRANSFORMER = new TypeTransformer<Integer>() {
+        @Override
+        public Integer transformNonNull( Object pObject ) {
+            return Integers.toInteger( pObject );
+        }
+    };
 
-    public static int deNull( Integer pValue ) {
-        return (pValue != null) ? pValue : 0;
+    public static int deNull( Integer pSource ) {
+        return deNull( pSource, ZERO );
+    }
+
+    public static int deNull( Integer pSource, int pDefault ) {
+        return (pSource != null) ? pSource : pDefault;
+    }
+
+    public static Integer toInteger( Object pObject ) {
+        if ( pObject instanceof Integer ) {
+            return Cast.it( pObject );
+        }
+        if ( pObject instanceof Number ) {
+            return ((Number) pObject).intValue();
+        }
+        if ( pObject != null ) {
+            String zString = Strings.noEmpty( pObject.toString() );
+            if ( zString != null ) {
+                try {
+                    return Integer.valueOf( zString );
+                }
+                catch ( NumberFormatException e ) {
+                    // Fall Thru
+                }
+            }
+        }
+        return null;
     }
 
     public static Integer assertNonNegative( String pName, Integer pValue )
@@ -25,13 +61,6 @@ public class Integers extends Numerics {
         return pValue;
     }
 
-    public static int assertPositive( String pWhat, int pValue ) {
-        if ( 0 < pValue ) {
-            return pValue;
-        }
-        throw new IllegalArgumentException( pWhat + MUST_BE_POSITIVE + ", but was: " + pValue );
-    }
-
     public static void assertNotEqual( String pObjectName, int pNotExpected, int pActual )
             throws IllegalArgumentException {
         if ( pNotExpected == pActual ) {
@@ -39,11 +68,22 @@ public class Integers extends Numerics {
         }
     }
 
-    public static void assertEqual( String pObjectName, int pExpected, int pActual )
-            throws IllegalArgumentException {
+    public static void assertEquals( int pExpected, int pActual ) {
+        assertEquals( "Values Mismatch", pExpected, pActual );
+    }
+
+    public static void assertEquals( String pWhat, int pExpected, int pActual ) {
         if ( pExpected != pActual ) {
-            throw new IllegalArgumentException( pObjectName + ": Expected '" + pExpected + "', but was '" + pActual + "'" );
+            throw new IllegalStateException( pWhat + "\n" +
+                                             "    Expected: " + pExpected + "\n" +
+                                             "     but was: " + pActual );
         }
+    }
+
+    public static String toStringPadZero( int pValue, int pMinLength ) {
+        boolean zNegative = (pValue < 0);
+        String zStr = Strings.padLeft( '0', Integer.toString( Math.abs( pValue ) ), pMinLength );
+        return zNegative ? "-" + zStr : zStr;
     }
 
     public static String zeroPadIt( int pMinDesiredLength, int pIt ) {
@@ -60,6 +100,50 @@ public class Integers extends Numerics {
 
     public static String iTpad( int pIt, int pMinDesiredLength ) {
         return Strings.iTpad( "" + pIt, pMinDesiredLength );
+    }
+
+    public static boolean isEven( int pInt ) {
+        return ((pInt & 1) == 0);
+    }
+
+    public static boolean isOdd( int pInt ) {
+        return ((pInt & 1) == 1);
+    }
+
+    public static Integer assertOptionalLength( String pWhat, Integer pLength ) {
+        return (pLength == null) ? null : assertLength( pWhat, pLength );
+    }
+
+    public static Integer assertOptionalLength( String pWhat, Integer pLength, int pMinLength ) {
+        return (pLength == null) ? null : assertLength( pWhat, pLength, pMinLength );
+    }
+
+    public static int assertPositive( String pWhat, int pInt ) {
+        return assertAtLeast( pWhat, pInt, 1 );
+    }
+
+    public static int assertLength( String pWhat, int pLength ) {
+        return assertAtLeast( pWhat, pLength, 1 );
+    }
+
+    public static int assertLength( String pWhat, int pLength, int pMinLength ) {
+        return assertAtLeast( pWhat, pLength, pMinLength );
+    }
+
+    public static int assertAtLeast( String pWhat, int pInt, int pAtLeast ) {
+        if ( pInt < pAtLeast ) {
+            throw new IllegalArgumentException( pWhat + " (" + pInt + ") Must be at least " + pAtLeast );
+        }
+        return pInt;
+    }
+
+    public static int constrainBetween( int pMin, int pMax, int pValue ) {
+        return (pValue < pMin) ? pMin : ((pMax < pValue) ? pMax : pValue);
+    }
+
+    public static int roundUp( double pValue ) {
+        Long zValue = Math.round( pValue + 0.5 );
+        return zValue.intValue();
     }
 
     public static boolean isNullOrEmpty( int[] pArrayToCheck ) {
@@ -178,13 +262,5 @@ public class Integers extends Numerics {
             return (int) pValue;
         }
         throw new IllegalArgumentException( "Value (" + pValue + ") is outside the acceptable Integer Range" );
-    }
-
-    public static boolean isEven( int pInt ) {
-        return ((pInt & 1) == 0);
-    }
-
-    public static boolean isOdd( int pInt ) {
-        return ((pInt & 1) == 1);
     }
 }

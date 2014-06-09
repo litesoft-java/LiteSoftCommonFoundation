@@ -2,14 +2,38 @@
 package org.litesoft.commonfoundation.typeutils;
 
 import org.litesoft.commonfoundation.annotations.*;
+import org.litesoft.commonfoundation.jdk8standins.function.*;
 import org.litesoft.commonfoundation.stringmatching.*;
 
 import java.util.*;
 
 public class Strings {
     public static final String[] EMPTY_ARRAY = new String[0];
+    public static final char CRchar = '\r';
+    public static final char NLchar = '\n';
+    public static final TypeTransformer<String> TYPE_TRANSFORMER = new TypeTransformer<String>() {
+        @Override
+        public String transformNonNull( Object pObject ) {
+            return pObject.toString();
+        }
+    };
 
     private static final String SPACES_32 = "                                "; // 32 count-em! spaces
+
+    private final String mFirstPart, mRest;
+
+    private Strings( String pFirstPart, String pRest ) {
+        mFirstPart = pFirstPart;
+        mRest = pRest;
+    }
+
+    public String getFirstPart() {
+        return mFirstPart;
+    }
+
+    public String getRest() {
+        return mRest;
+    }
 
     /**
      * Adjust a String Array so that it is either null (error condition) or has the <code>DesiredLength</code>.
@@ -79,6 +103,22 @@ public class Strings {
         return retval.toString();
     }
 
+    public static String path( String pSubDir, String pFileName ) {
+        return isNullOrEmpty( pSubDir ) ? pFileName : (pSubDir + "/" + pFileName);
+    }
+
+    public static Strings parsePrefixOptionalSep( String pResponseText, String pPrefix, String pSep ) {
+        if ( (null == (pPrefix = noEmpty( pPrefix ))) || !pResponseText.startsWith( pPrefix ) ) {
+            return null;
+        }
+        int zSepAt = (null == (pSep = noEmpty( pSep ))) ? -1 : pResponseText.indexOf( pSep );
+        if ( zSepAt == -1 ) {
+            return new Strings( pResponseText.substring( pPrefix.length() ), null );
+        }
+        return new Strings( pResponseText.substring( pPrefix.length(), zSepAt ),
+                            pResponseText.substring( zSepAt + pSep.length() ) );
+    }
+
     public static String dupChars( char pCharToDup, int pDupCount ) {
         if ( pDupCount < 1 ) {
             return "";
@@ -112,6 +152,30 @@ public class Strings {
         return Objects.isNotNull( pString ) && (-1 != pString.indexOf( pToFind ));
     }
 
+    public static boolean isNullOrEmpty( String pStringToCheck ) {
+        return ((pStringToCheck == null) || (pStringToCheck.trim().length() == 0));
+    }
+
+    public static boolean isNotNullOrEmpty( String pStringToCheck ) {
+        return ((pStringToCheck != null) && (pStringToCheck.trim().length() != 0));
+    }
+
+    public static String deNull( CharSequence pString ) {
+        return deNull( pString, "" );
+    }
+
+    public static String deNull( CharSequence pString, String pDefault ) {
+        return (pString != null) ? pString.toString() : pDefault;
+    }
+
+    public static String deNull( CharSequence pString, Supplier<String> pDefault ) {
+        return (pString != null) ? pString.toString() : pDefault.get();
+    }
+
+    public static String[] deNull( String[] pStrings ) {
+        return (pStrings != null) ? pStrings : EMPTY_ARRAY;
+    }
+
     public static String noEmpty( String pString ) {
         return noEmpty( pString, null );
     }
@@ -126,44 +190,7 @@ public class Strings {
         return pDefault;
     }
 
-    public static boolean isBlank( String pLine ) {
-        if ( pLine != null ) {
-            for ( int at = pLine.length(); --at >= 0; ) {
-                if ( pLine.charAt( at ) != ' ' ) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public static boolean areEqualIgnoreCase( String a, String b ) {
-        // noinspection StringEquality
-        return (a == b) || ((null != a) && a.equalsIgnoreCase( b ));
-    }
-
-    /**
-     * Return if <tt>pThis</tt> starts with <tt>pStartsWith</tt> ignoring
-     * the case of the strings
-     * <p/>
-     *
-     * @param pThis       The String to check the front of
-     * @param pStartsWith The String that <tt>pThis</tt>'s front must match
-     *
-     * @return <tt>true</tt> if <tt>pThis</tt> starts with <tt>pStartsWith</tt> ignoring
-     * the case
-     */
-    public static boolean startsWithIgnoreCase( String pThis, String pStartsWith ) {
-        if ( (pThis != null) && (pStartsWith != null) ) {
-            int lenStartsWith = pStartsWith.length();
-            if ( lenStartsWith <= pThis.length() ) {
-                return pStartsWith.equalsIgnoreCase( pThis.substring( 0, lenStartsWith ) );
-            }
-        }
-        return false;
-    }
-
-    public static String deEmpty( String pString, String pDefault ) {
+    public static String deEmpty( String pString, String pDefault ) { // TODO: DUP!
         pString = noEmpty( pString );
         return (pString != null) ? pString : pDefault;
     }
@@ -188,22 +215,6 @@ public class Strings {
         return pStrings;
     }
 
-    public static String[] deNull( String[] pStrings ) {
-        return (pStrings != null) ? pStrings : EMPTY_ARRAY;
-    }
-
-    public static String deNull( CharSequence pString ) {
-        return deNull( pString, "" );
-    }
-
-    public static String deNull( CharSequence pString, String pDefault ) {
-        return (pString != null) ? pString.toString() : pDefault;
-    }
-
-    public static boolean isNotNullOrEmpty( String pStringToCheck ) {
-        return ((pStringToCheck != null) && (pStringToCheck.trim().length() != 0));
-    }
-
     public static boolean allEmpty( String[] pParts ) {
         if ( pParts != null ) {
             for ( String part : pParts ) {
@@ -221,19 +232,105 @@ public class Strings {
                 (-1 != pStringToCheck.indexOf( ' ' )));
     }
 
-    public static boolean isNullOrEmpty( String pStringToCheck ) {
-        return ((pStringToCheck == null) || (pStringToCheck.trim().length() == 0));
+    public static boolean isBlank( String pLine ) {
+        if ( pLine != null ) {
+            for ( int at = pLine.length(); --at >= 0; ) {
+                if ( pLine.charAt( at ) != ' ' ) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean areEqualIgnoreCase( String a, String b ) {
+        // noinspection StringEquality
+        return (a == b) || ((null != a) && a.equalsIgnoreCase( b ));
+    }
+
+    public static String assertNotEmptyToString( String pWhat, Object pToCheck ) {
+        return assertNotEmpty( pWhat, (pToCheck != null) ? pToCheck.toString() : null );
+    }
+
+    public static String assertNotEmpty( String pWhat, String pToCheck ) {
+        if ( null == (pToCheck = noEmpty( pToCheck )) ) {
+            throw failNullOrEmpty( pWhat );
+        }
+        return pToCheck;
+    }
+
+    public static void assertEmpty( String pWhy, String pToCheck ) {
+        if ( null != noEmpty( pToCheck ) ) {
+            throw new IllegalArgumentException( pWhy );
+        }
+    }
+
+    private static IllegalArgumentException failNullOrEmpty( String pWhat ) {
+        return new IllegalArgumentException( pWhat + " Not allowed to be null or empty!" );
+    }
+
+    public static boolean hasNoSurroundingWhiteSpace( String pString ) {
+        return (pString == null) || (pString.length() == pString.trim().length()); // No Leading or trailing White Space
+    }
+
+    public static void assertEndsWith( String pWhat, String pToCheck, String pForString ) {
+        if ( !pToCheck.endsWith( pForString ) ) {
+            throw new IllegalArgumentException( pWhat + " '" + pToCheck + "' did not end with '" + pForString + "'!" );
+        }
+    }
+
+    public static String removeIfEndsWith( String pToCheck, String pForString ) {
+        return pToCheck.endsWith( pForString ) ? pToCheck.substring( 0, pToCheck.length() - pForString.length() ) : pToCheck;
+    }
+
+    public static int findIn( String pToSearch, String pFirstToFind, String... pAdditionalToFind ) {
+        Objects.assertNotNull( "ToSearch", pToSearch );
+        if ( deNull( pFirstToFind ).length() == 0 ) {
+            throw failNullOrEmpty( "FirstToFind" );
+        }
+        int zAt = pToSearch.indexOf( pFirstToFind );
+        if ( (zAt == -1) && (pAdditionalToFind != null) ) {
+            for ( int i = 0; i < pAdditionalToFind.length; i++ ) {
+                String zToFind = deNull( pAdditionalToFind[i] );
+                if ( zToFind.length() == 0 ) {
+                    throw failNullOrEmpty( "AdditionalToFind[" + i + "]" );
+                }
+                if ( -1 != (zAt = pToSearch.indexOf( zToFind )) ) {
+                    break;
+                }
+            }
+        }
+        return zAt;
+    }
+
+    public static String trimTrailing( String pLine ) {
+        if ( (pLine != null) && (pLine.length() != 0) ) {
+            if ( pLine.charAt( pLine.length() - 1 ) == ' ' ) {
+                pLine = ("." + pLine).trim().substring( 1 );
+            }
+        }
+        return pLine;
     }
 
     /**
-     * Returns a substring of the specified text.
+     * Return if <tt>pThis</tt> starts with <tt>pStartsWith</tt> ignoring
+     * the case of the strings
+     * <p/>
      *
-     * @param pEnd The End index of the substring. If negative, the index used will be "text.length() + End".
+     * @param pThis       The String to check the front of
+     * @param pStartsWith The String that <tt>pThis</tt>'s front must match
+     *
+     * @return <tt>true</tt> if <tt>pThis</tt> starts with <tt>pStartsWith</tt> ignoring
+     * the case
      */
-    public static String substring( String pText, int pStart, int pEnd ) {
-        assertNotNullNotEmpty( "text", pText );
-        Integers.assertNonNegative( "start", pStart );
-        return pText.substring( pStart, (pEnd >= 0) ? pEnd : pText.length() + pEnd );
+    public static boolean startsWithIgnoreCase( String pThis, String pStartsWith ) {
+        if ( (pThis != null) && (pStartsWith != null) ) {
+            int lenStartsWith = pStartsWith.length();
+            if ( lenStartsWith <= pThis.length() ) {
+                return pStartsWith.equalsIgnoreCase( pThis.substring( 0, lenStartsWith ) );
+            }
+        }
+        return false;
     }
 
     public static String trimLeadingSpaces( String pStr ) {
@@ -262,6 +359,231 @@ public class Strings {
         return "";
     }
 
+    public static String join( Iterable<?> iterable, String joinString ) {
+        Iterator<?> iter = iterable.iterator();
+        if ( iter.hasNext() ) {
+            StringBuilder buf = new StringBuilder( translateToString( iter.next() ) );
+            while ( iter.hasNext() ) {
+                buf.append( joinString );
+                buf.append( translateToString( iter.next() ) );
+            }
+            return buf.toString();
+        }
+        return "";
+    }
+
+    public static void appendAsLines( StringBuilder pSB, String... pLines ) {
+        if ( pLines != null ) {
+            for ( String zLine : pLines ) {
+                pSB.append( deNull( zLine ) ).append( NLchar );
+            }
+        }
+    }
+
+    public static String mergeLines( String... pLines ) {
+        StringBuilder buf = new StringBuilder();
+        if ( pLines != null ) {
+            for ( String zLine : pLines ) {
+                buf.append( zLine ).append( NLchar );
+            }
+        }
+        return buf.toString();
+    }
+
+    private static String translateToString( Object next ) {
+        return next == null ? "<NULL>" : next.toString();
+    }
+
+    private static String runningMaxIndentSpaces = "";
+
+    public static synchronized String indent( int indent ) { // 4 spaces per...
+        if ( indent < 1 ) {
+            return "";
+        }
+        int spacesNeeded = indent + indent + indent + indent;
+        if ( runningMaxIndentSpaces.length() < spacesNeeded ) {
+            StringBuilder sb = new StringBuilder( spacesNeeded );
+            for ( int i = spacesNeeded; i > 0; i-- ) {
+                sb.append( ' ' );
+            }
+            return runningMaxIndentSpaces = sb.toString();
+        }
+        return runningMaxIndentSpaces.substring( 0, spacesNeeded );
+    }
+
+    public static String makeIdFriendly( String text ) {
+        text = noEmpty( text );
+        if ( text == null ) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        boolean pendingUnderscore = false;
+        for ( int i = 0; i < text.length(); i++ ) {
+            char c = text.charAt( i );
+            if ( !Characters.is7BitAlphaNumeric( c ) ) {
+                pendingUnderscore = true;
+            } else {
+                if ( pendingUnderscore && (sb.length() != 0) ) {
+                    sb.append( '_' );
+                }
+                pendingUnderscore = false;
+                sb.append( c );
+            }
+        }
+        return noEmpty( sb.toString() );
+    }
+
+    public static String assertOptionalIdentifier( String what, String toCheck ) {
+        if ( null != (toCheck = noEmpty( toCheck )) ) {
+            validateIdentifier( what, toCheck );
+        }
+        return toCheck;
+    }
+
+    public static String assertNotEmptyIdentifier( String what, String toCheck ) {
+        if ( null != (toCheck = assertNotEmpty( what, toCheck )) ) {
+            validateIdentifier( what, toCheck );
+        }
+        return toCheck;
+    }
+
+    private static void validateIdentifier( String what, String toCheck ) {
+        int errorIndex = checkIdentifier( toCheck );
+        if ( errorIndex != -1 ) {
+            String zPrefix = (errorIndex == 0) ? "First Character" :
+                             "Character (" + (errorIndex + 1) + ":'" + toCheck.charAt( errorIndex ) + "')";
+            throw new IllegalArgumentException( zPrefix + " Unacceptable for Identifier " + what + ": '" + toCheck + "'" );
+        }
+    }
+
+    /**
+     * return the index of the first character that is unacceptable for that position to be part of an Identifier.
+     * <p/>
+     * An Identifier is a String that stars with a 7Bit Alpha or underscore, and is followed by any number of 7bit AlphaNumerics or underscores.
+     *
+     * @param toCheck not null or empty
+     *
+     * @return -1 if OK, otherwise the 'bad' character index.
+     */
+    public static int checkIdentifier( String toCheck ) {
+        if ( !Characters.is7BitAlphaUnderScore( toCheck.charAt( 0 ) ) ) {
+            return 0;
+        }
+        for ( int i = 1; i < toCheck.length(); i++ ) {
+            if ( !Characters.isAlphaNumericUnderScore7BitAscii( toCheck.charAt( i ) ) ) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Wrap the text (into multiple lines as needed) such that no 'line' exceeds 'maxCharactersPerLine' in length.
+     * <p/>
+     * The wrapping algorithm is four fold (applied in the following order):
+     * <li>1st New Line within the maxCharactersPerLine</li>
+     * <li>last space within the maxCharactersPerLine</li>
+     * <li>just beyond the last punctuation (non-AlphaNumeric character) within the 'maxCharactersPerLine'</li>
+     * <li>hard wrapped such that the line length is 'within the maxCharactersPerLine'</li>
+     *
+     * @param text                 to Wrap.
+     * @param maxCharactersPerLine Don't wrap if null  or < 1!
+     *
+     * @return !null result with wrapped text (lines) if maxCharactersPerLine > 0, (otherwise don't wrap)
+     */
+    public static String wrap( String text, Integer maxCharactersPerLine ) {
+        text = deNull( text ).trim();
+        if ( (maxCharactersPerLine == null) || (maxCharactersPerLine < 1) ) {
+            return text;
+        }
+        StringBuilder sb = new StringBuilder();
+        while ( maxCharactersPerLine < text.length() ) {
+            int breakAt = findBreakAtPosition( text, maxCharactersPerLine );
+            sb.append( text.substring( 0, breakAt ) ).append( NLchar );
+            text = text.substring( breakAt ).trim();
+        }
+        return sb.append( text ).toString();
+    }
+
+    private static int findBreakAtPosition( String text, int maxCharactersPerLine ) {
+        int at = text.indexOf( NLchar );
+        if ( at != -1 && (at <= maxCharactersPerLine) ) {
+            return at;
+        }
+        text = text.substring( 0, maxCharactersPerLine );
+        at = text.lastIndexOf( ' ' );
+        if ( at != -1 ) {
+            return at;
+        }
+        for ( at = maxCharactersPerLine - 1; 0 <= at; at-- ) {
+            if ( !Character.isLetterOrDigit( text.charAt( at ) ) ) {
+                return at + 1;
+            }
+        }
+        return maxCharactersPerLine;
+    }
+
+    public static int indexOfControlCharacter( String text ) {
+        if ( text != null ) {
+            for ( int i = 0; i < text.length(); i++ ) {
+                if ( Characters.isControlChar( text.charAt( i ) ) ) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    }
+
+    public static String lowercaseFirstCharacter( String pString ) {
+        if ( pString != null ) {
+            if ( pString.length() != 0 ) {
+                return pString.substring( 0, 1 ).toLowerCase() + pString.substring( 1 );
+            }
+        }
+        return pString;
+    }
+
+    /**
+     * Returns a substring of the specified text.
+     *
+     * @param pEnd The End index of the substring. If negative, the index used will be "text.length() + End".
+     */
+    public static String substring( String pText, int pStart, int pEnd ) {
+        assertNotNullNotEmpty( "text", pText );
+        Integers.assertNonNegative( "start", pStart );
+        return pText.substring( pStart, (pEnd >= 0) ? pEnd : pText.length() + pEnd );
+    }
+
+    public static String padLeft( char pPadWith, String pString, int pToLength ) {
+        if ( (pString != null) && (pToLength <= pString.length()) ) {
+            return pString;
+        }
+        StringBuilder sb = new StringBuilder( deNull( pString ) );
+        while ( sb.length() < pToLength ) {
+            sb.insert( 0, pPadWith );
+        }
+        return sb.toString();
+    }
+
+    public static String padRight( String pString, char pPadWith, int pToLength ) {
+        if ( (pString != null) && (pToLength <= pString.length()) ) {
+            return pString;
+        }
+        StringBuilder sb = new StringBuilder( deNull( pString ) );
+        while ( sb.length() < pToLength ) {
+            sb.append( pPadWith );
+        }
+        return sb.toString();
+    }
+
+    public static String normalizeNewLines( String pText ) {
+        return replace( replace( pText, "\r\n", "\n" ), "\r", "\n" );
+    }
+
+    public static String[] toLines( String pText ) {
+        return parseChar( normalizeNewLines( pText ), NLchar );
+    }
+
     public static String[] parseChar( String pStringToParse, char pSeparator ) {
         if ( isNullOrEmpty( pStringToParse ) ) {
             return new String[0];
@@ -278,6 +600,21 @@ public class Strings {
         }
         parts[count] = pStringToParse.substring( from );
         return parts;
+    }
+
+    public static String combine( char pSeparator, String... pStrings ) {
+        if ( Objects.isNullOrEmpty( pStrings ) ) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+
+        sb.append( pStrings[0] );
+
+        for ( int i = 1; i < pStrings.length; i++ ) {
+            sb.append( pSeparator );
+            sb.append( pStrings[i] );
+        }
+        return sb.toString();
     }
 
     public static String replace( String pSource, char pToFind, String pToReplaceWith ) {
@@ -306,14 +643,6 @@ public class Strings {
 
     public static String defaultIfNull( String pTestString, String pDefault ) {
         return isNullOrEmpty( pTestString ) ? pDefault : pTestString;
-    }
-
-    public static String normalizeNewLines( String pString ) {
-        pString = replace( pString, "\r\n", "\n" );
-        pString = replace( pString, "\n\r", "\n" );
-        pString = replace( pString, '\r', "\n" );
-
-        return pString;
     }
 
     public static String[] stringToLines( String pString ) {
@@ -361,7 +690,7 @@ public class Strings {
 
     public static void errorNullOrEmpty( String pErrorMessage, String pForm )
             throws IllegalArgumentException {
-        error( pForm, pErrorMessage, " not allowed to be null or empty" );
+        error( pForm, pErrorMessage, " not allowed to be null or empty!" );
     }
 
     public static void error( String pForm, String pErrorMessage, String pMessagePlus )
@@ -593,21 +922,6 @@ public class Strings {
         pString = normalizeNewLines( pString );
 
         return parseChar( pString, '\n' );
-    }
-
-    public static String combine( char pSeparator, String... pStrings ) {
-        if ( Objects.isNullOrEmpty( pStrings ) ) {
-            return null;
-        }
-        StringBuilder sb = new StringBuilder();
-
-        sb.append( pStrings[0] );
-
-        for ( int i = 1; i < pStrings.length; i++ ) {
-            sb.append( pSeparator );
-            sb.append( pStrings[i] );
-        }
-        return sb.toString();
     }
 
     public static void assertAll7BitAsciiAlpha( String pObjectName, String pToBeAssert )

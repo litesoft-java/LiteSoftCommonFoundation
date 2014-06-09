@@ -28,6 +28,23 @@
     <entry_points version="2.0" />
   </component>
   <component name="IdProvider" IDEtalkID="BD2BE166B97769C021B4193DFDFAE42F" />
+  <component name="InspectionProjectProfileManager">
+    <profiles>
+      <profile version="1.0" is_locked="false">
+        <option name="myName" value="Project Default" />
+        <option name="myLocal" value="false" />
+        <inspection_tool class="UnusedDeclaration" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+          <option name="ADD_MAINS_TO_ENTRIES" value="true" />
+          <option name="ADD_APPLET_TO_ENTRIES" value="true" />
+          <option name="ADD_SERVLET_TO_ENTRIES" value="true" />
+          <option name="ADD_NONJAVA_TO_ENTRIES" value="true" />
+        </inspection_tool>
+      </profile>
+    </profiles>
+    <option name="PROJECT_PROFILE" value="Project Default" />
+    <option name="USE_PROJECT_PROFILE" value="true" />
+    <version value="1.0" />
+  </component>
   <component name="Palette2">
     <group name="Swing">
       <item class="com.intellij.uiDesigner.HSpacer" tooltip-text="Horizontal Spacer" icon="/com/intellij/uiDesigner/icons/hspacer.png" removable="false" auto-create-binding="false" can-attach-label="false">
@@ -151,7 +168,7 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/LiteSoftCommonFoundation.iml" filepath="$PROJECT_DIR$/LiteSoftCommonFoundation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/LitesoftCommonFoundation.iml" filepath="$PROJECT_DIR$/LitesoftCommonFoundation.iml" />
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">

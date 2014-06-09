@@ -278,7 +278,7 @@ public class CsvSupport {
     private String removeWrappingQuotes( String field ) {
         int sLast = (field = field.trim()).length() - 1;
         if ( field.charAt( sLast ) != '"' ) {
-            throw new MalformedQuotedFieldException( "Appearently Quoted Field, but something after closing quote, in field: " + field );
+            throw new MalformedQuotedFieldException( "Apparently Quoted Field, but something after closing quote, in field: " + field );
         }
 
         return field.substring( 1, sLast );
