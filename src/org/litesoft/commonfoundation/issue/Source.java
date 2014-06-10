@@ -1,8 +1,8 @@
 package org.litesoft.commonfoundation.issue;
 
+import org.litesoft.commonfoundation.base.*;
 import org.litesoft.commonfoundation.indent.*;
 import org.litesoft.commonfoundation.typeutils.*;
-import org.litesoft.commonfoundation.typeutils.Objects;
 
 import java.util.*;
 
@@ -81,7 +81,7 @@ public class Source implements Indentable { // GSON friendly
 
     private Source( String pSource, Source pNext ) {
         this(); // To quite the unused...
-        source = Objects.assertNotNull( "Source", pSource );
+        source = Confirm.isNotNull( "Source", pSource );
         next = pNext;
     }
 

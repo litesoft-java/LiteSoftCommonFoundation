@@ -16,14 +16,6 @@ public class Integers extends Numerics {
         }
     };
 
-    public static int deNull( Integer pSource ) {
-        return deNull( pSource, ZERO );
-    }
-
-    public static int deNull( Integer pSource, int pDefault ) {
-        return (pSource != null) ? pSource : pDefault;
-    }
-
     public static Integer toInteger( Object pObject ) {
         if ( pObject instanceof Integer ) {
             return Cast.it( pObject );
@@ -32,7 +24,7 @@ public class Integers extends Numerics {
             return ((Number) pObject).intValue();
         }
         if ( pObject != null ) {
-            String zString = Strings.noEmpty( pObject.toString() );
+            String zString = ConstrainTo.significantOrNull( pObject.toString() );
             if ( zString != null ) {
                 try {
                     return Integer.valueOf( zString );

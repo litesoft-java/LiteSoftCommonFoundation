@@ -43,20 +43,21 @@ public class Lists {
     }
 
     public static <T> List<T> newArrayList( List<T> pList1, List<T> pList2 ) {
-        ArrayList<T> zMerged = newArrayList( deNull( pList1 ) );
-        zMerged.addAll( deNull( pList2 ) );
+        ArrayList<T> zMerged = newArrayList( ConstrainTo.notNull( pList1 ) );
+        zMerged.addAll( ConstrainTo.notNull( pList2 ) );
         return zMerged;
+    }
+
+    public static <T> List<T> deNullImmutable( List<T> pList ) {
+        if (isEmpty( pList )) {
+            return empty();
+        }
+        List<T> zList = newArrayList( pList ); // COPY!
+        return Collections.unmodifiableList( zList );
     }
 
     public static <T> List<T> empty() {
         return Collections.emptyList();
-    }
-
-    public static <T> List<T> deNull( List<T> pToCheck ) {
-        if ( pToCheck == null ) {
-            pToCheck = empty();
-        }
-        return pToCheck;
     }
 
     public static <T> List<T> deNullMutable( List<T> pToCheck ) {
@@ -83,13 +84,6 @@ public class Lists {
 
     public static boolean isNotNullOrEmpty( List<?> pToCheck ) {
         return (pToCheck != null && !pToCheck.isEmpty());
-    }
-
-    public static void assertNotNullNotEmpty( String pErrorMessage, List<?> pToAssert )
-            throws IllegalArgumentException {
-        if ( isNullOrEmpty( pToAssert ) ) {
-            Strings.errorNullOrEmpty( pErrorMessage, "Collection" );
-        }
     }
 
     public static <T> List<T> of( T pEntry ) {
@@ -152,7 +146,7 @@ public class Lists {
     }
 
     public static <T> Provider<T> toProvider( List<T> pSource ) {
-        return new SimpleProvider<T>( deNull( pSource ) );
+        return new SimpleProvider<T>( ConstrainTo.notNull( pSource ) );
     }
 
     public static <T> Provider<T> toProvider( T[] pSourceArray ) {

@@ -1,6 +1,7 @@
 // This Source Code is in the Public Domain per: http://unlicense.org
 package org.litesoft.commonfoundation.iterators;
 
+import org.litesoft.commonfoundation.base.*;
 import org.litesoft.commonfoundation.typeutils.*;
 
 import java.util.*;
@@ -27,8 +28,8 @@ public final class DropCommentsTextLinesOnlyFilteringIterator extends Iterators.
      */
     public DropCommentsTextLinesOnlyFilteringIterator( Iterator<String> pIterator, String... pCommentPrefixes ) {
         super( pIterator );
-        for ( String zPrefix : Strings.deNull( pCommentPrefixes ) ) {
-            if ( null != (zPrefix = Strings.noEmpty( zPrefix )) ) {
+        for ( String zPrefix : ConstrainTo.notNullImmutableList( pCommentPrefixes ) ) {
+            if ( null != (zPrefix = ConstrainTo.significantOrNull( zPrefix )) ) {
                 mCommentPrefixes.add( zPrefix );
             }
         }

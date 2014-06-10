@@ -1,5 +1,6 @@
 package org.litesoft.commonfoundation.issue;
 
+import org.litesoft.commonfoundation.base.*;
 import org.litesoft.commonfoundation.indent.*;
 import org.litesoft.commonfoundation.typeutils.*;
 
@@ -8,7 +9,7 @@ import java.util.*;
 public class Issues implements Indentable {
 
     public Issues( String pName ) {
-        mName = Strings.assertNotEmpty( "Name", pName );
+        mName = Confirm.significant( "Name", pName );
     }
 
     private final String mName;

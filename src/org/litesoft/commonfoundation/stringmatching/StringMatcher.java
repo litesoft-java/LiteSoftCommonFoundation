@@ -1,7 +1,7 @@
 // This Source Code is in the Public Domain per: http://unlicense.org
 package org.litesoft.commonfoundation.stringmatching;
 
-import org.litesoft.commonfoundation.typeutils.*;
+import org.litesoft.commonfoundation.base.*;
 
 public interface StringMatcher {
     public boolean matches( String pInQuestion );
@@ -33,7 +33,7 @@ public interface StringMatcher {
     public static final StringMatcher EMPTY = new StringMatcher() {
         @Override
         public boolean matches( String pInQuestion ) {
-            return (null == Strings.noEmpty( pInQuestion ));
+            return (null == ConstrainTo.significantOrNull( pInQuestion ));
         }
 
         @Override

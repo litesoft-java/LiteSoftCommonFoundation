@@ -14,18 +14,6 @@ public class Floats {
         }
     };
 
-    public static float deNull( Float pFloat ) {
-        return (pFloat != null) ? pFloat : ZERO;
-    }
-
-    public static float[] deNull( float[] pFloats ) {
-        return (pFloats != null) ? pFloats : PRIMITIVE_EMPTY_ARRAY;
-    }
-
-    public static Float[] deNull( Float[] pFloats ) {
-        return (pFloats != null) ? pFloats : EMPTY_ARRAY;
-    }
-
     public static Float toFloat( Object pObject ) {
         if ( pObject instanceof Float ) {
             return Cast.it( pObject );
@@ -34,7 +22,7 @@ public class Floats {
             return ((Number) pObject).floatValue();
         }
         if ( pObject != null ) {
-            String zString = Strings.noEmpty( pObject.toString() );
+            String zString = ConstrainTo.significantOrNull( pObject.toString() );
             if ( zString != null ) {
                 try {
                     return Float.valueOf( zString );

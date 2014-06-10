@@ -15,22 +15,6 @@ public abstract class Doubles {
         }
     };
 
-    public static double deNull( Double pDouble ) {
-        return (pDouble != null) ? pDouble : ZERO;
-    }
-
-    public static double[] deNull( double[] pDoubles ) {
-        return (pDoubles != null) ? pDoubles : PRIMITIVE_EMPTY_ARRAY;
-    }
-
-    public static Double[] deNull( Double[] pDoubles ) {
-        return (pDoubles != null) ? pDoubles : EMPTY_ARRAY;
-    }
-
-    public static Double firstNotNull( Double pValue1, Double pValue2 ) {
-        return (pValue1 != null) ? pValue1 : pValue2;
-    }
-
     public static Double toDouble( Object pObject ) {
         if ( pObject instanceof Double ) {
             return Cast.it( pObject );
@@ -39,7 +23,7 @@ public abstract class Doubles {
             return ((Number) pObject).doubleValue();
         }
         if ( pObject != null ) {
-            String zString = Strings.noEmpty( pObject.toString() );
+            String zString = ConstrainTo.significantOrNull( pObject.toString() );
             if ( zString != null ) {
                 try {
                     return Double.valueOf( zString );

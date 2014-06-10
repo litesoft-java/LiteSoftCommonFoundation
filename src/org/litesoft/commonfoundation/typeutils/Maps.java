@@ -22,13 +22,6 @@ public class Maps {
         return rv;
     }
 
-    public static <K, V> Map<K, V> deNull( Map<K, V> pToCheck ) {
-        if ( pToCheck == null ) {
-            pToCheck = empty();
-        }
-        return pToCheck;
-    }
-
     public static String[] stringMapToStringArray( Map<String, String> pMap ) {
         if ( pMap == null || pMap.isEmpty() ) {
             return Strings.EMPTY_ARRAY;

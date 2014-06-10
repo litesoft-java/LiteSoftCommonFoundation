@@ -1,7 +1,7 @@
 // This Source Code is in the Public Domain per: http://unlicense.org
 package org.litesoft.commonfoundation.exceptions;
 
-import org.litesoft.commonfoundation.typeutils.*;
+import org.litesoft.commonfoundation.base.*;
 
 import java.util.*;
 
@@ -14,8 +14,8 @@ public class DisplayableRuntimeException extends RuntimeException implements Dis
     public DisplayableRuntimeException( Throwable pCause, String pToResolveIdentifier, String... pParams ) {
         super( "Unresolved: " + pToResolveIdentifier );
 
-        mToResolveIdentifier = Strings.assertNotNullNotEmpty( "ToResolveIdentifier", pToResolveIdentifier );
-        mParams = Strings.deNull( pParams );
+        mToResolveIdentifier = Confirm.significant( "ToResolveIdentifier", pToResolveIdentifier );
+        mParams = ConstrainTo.notNull( pParams );
 
         if ( pCause != null ) {
             initCause( pCause );
@@ -23,7 +23,7 @@ public class DisplayableRuntimeException extends RuntimeException implements Dis
     }
 
     public DisplayableRuntimeException( Throwable pCause, String pToResolveIdentifier ) {
-        this( pCause, pToResolveIdentifier, Strings.EMPTY_ARRAY );
+        this( pCause, pToResolveIdentifier, NO_PARAMS );
     }
 
     public DisplayableRuntimeException( String pToResolveIdentifier, String... pParams ) {
@@ -31,7 +31,7 @@ public class DisplayableRuntimeException extends RuntimeException implements Dis
     }
 
     public DisplayableRuntimeException( String pToResolveIdentifier ) {
-        this( null, pToResolveIdentifier, Strings.EMPTY_ARRAY );
+        this( null, pToResolveIdentifier, NO_PARAMS );
     }
 
     @Override

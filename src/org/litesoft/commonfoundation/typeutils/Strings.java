@@ -2,7 +2,7 @@
 package org.litesoft.commonfoundation.typeutils;
 
 import org.litesoft.commonfoundation.annotations.*;
-import org.litesoft.commonfoundation.jdk8standins.function.*;
+import org.litesoft.commonfoundation.base.*;
 import org.litesoft.commonfoundation.stringmatching.*;
 
 import java.util.*;
@@ -108,10 +108,10 @@ public class Strings {
     }
 
     public static Strings parsePrefixOptionalSep( String pResponseText, String pPrefix, String pSep ) {
-        if ( (null == (pPrefix = noEmpty( pPrefix ))) || !pResponseText.startsWith( pPrefix ) ) {
+        if ( (null == (pPrefix = ConstrainTo.significantOrNull( pPrefix ))) || !pResponseText.startsWith( pPrefix ) ) {
             return null;
         }
-        int zSepAt = (null == (pSep = noEmpty( pSep ))) ? -1 : pResponseText.indexOf( pSep );
+        int zSepAt = (null == (pSep = ConstrainTo.significantOrNull( pSep ))) ? -1 : pResponseText.indexOf( pSep );
         if ( zSepAt == -1 ) {
             return new Strings( pResponseText.substring( pPrefix.length() ), null );
         }
@@ -160,41 +160,6 @@ public class Strings {
         return ((pStringToCheck != null) && (pStringToCheck.trim().length() != 0));
     }
 
-    public static String deNull( CharSequence pString ) {
-        return deNull( pString, "" );
-    }
-
-    public static String deNull( CharSequence pString, String pDefault ) {
-        return (pString != null) ? pString.toString() : pDefault;
-    }
-
-    public static String deNull( CharSequence pString, Supplier<String> pDefault ) {
-        return (pString != null) ? pString.toString() : pDefault.get();
-    }
-
-    public static String[] deNull( String[] pStrings ) {
-        return (pStrings != null) ? pStrings : EMPTY_ARRAY;
-    }
-
-    public static String noEmpty( String pString ) {
-        return noEmpty( pString, null );
-    }
-
-    public static String noEmpty( String pString, String pDefault ) {
-        if ( pString != null ) {
-            pString = pString.trim();
-            if ( pString.length() != 0 ) {
-                return pString;
-            }
-        }
-        return pDefault;
-    }
-
-    public static String deEmpty( String pString, String pDefault ) { // TODO: DUP!
-        pString = noEmpty( pString );
-        return (pString != null) ? pString : pDefault;
-    }
-
     public static String[] noEmpty( String[] pStrings ) {
         return (pStrings == null || pStrings.length == 0) ? null : pStrings;
     }
@@ -202,7 +167,7 @@ public class Strings {
     public static String[] noEmpties( String[] pStrings ) {
         if ( pStrings != null ) {
             for ( int i = pStrings.length; --i >= 0; ) {
-                String zString = noEmpty( pStrings[i] );
+                String zString = ConstrainTo.significantOrNull( pStrings[i] );
                 if ( zString == null ) {
                     pStrings = removeStringFromArray( pStrings, i );
                 }
@@ -249,18 +214,11 @@ public class Strings {
     }
 
     public static String assertNotEmptyToString( String pWhat, Object pToCheck ) {
-        return assertNotEmpty( pWhat, (pToCheck != null) ? pToCheck.toString() : null );
-    }
-
-    public static String assertNotEmpty( String pWhat, String pToCheck ) {
-        if ( null == (pToCheck = noEmpty( pToCheck )) ) {
-            throw failNullOrEmpty( pWhat );
-        }
-        return pToCheck;
+        return Confirm.significant( pWhat, (pToCheck != null) ? pToCheck.toString() : null );
     }
 
     public static void assertEmpty( String pWhy, String pToCheck ) {
-        if ( null != noEmpty( pToCheck ) ) {
+        if ( null != ConstrainTo.significantOrNull( pToCheck ) ) {
             throw new IllegalArgumentException( pWhy );
         }
     }
@@ -284,14 +242,14 @@ public class Strings {
     }
 
     public static int findIn( String pToSearch, String pFirstToFind, String... pAdditionalToFind ) {
-        Objects.assertNotNull( "ToSearch", pToSearch );
-        if ( deNull( pFirstToFind ).length() == 0 ) {
+        Confirm.isNotNull( "ToSearch", pToSearch );
+        if ( ConstrainTo.notNull( pFirstToFind ).length() == 0 ) {
             throw failNullOrEmpty( "FirstToFind" );
         }
         int zAt = pToSearch.indexOf( pFirstToFind );
         if ( (zAt == -1) && (pAdditionalToFind != null) ) {
             for ( int i = 0; i < pAdditionalToFind.length; i++ ) {
-                String zToFind = deNull( pAdditionalToFind[i] );
+                String zToFind = ConstrainTo.notNull( pAdditionalToFind[i] );
                 if ( zToFind.length() == 0 ) {
                     throw failNullOrEmpty( "AdditionalToFind[" + i + "]" );
                 }
@@ -301,6 +259,20 @@ public class Strings {
             }
         }
         return zAt;
+    }
+
+    public static boolean isConstrainedAsciiIdentifier( String pToTest ) {
+        if ( !isNullOrEmpty( pToTest ) ) {
+            if ( Characters.isAsciiLetter( pToTest.charAt( 0 ) ) ) {
+                for ( int i = 1; i < pToTest.length(); i++ ) {
+                    if ( !Characters.isNonFirstCharAsciiIdentifier( pToTest.charAt( i ) ) ) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     public static String trimTrailing( String pLine ) {
@@ -375,7 +347,7 @@ public class Strings {
     public static void appendAsLines( StringBuilder pSB, String... pLines ) {
         if ( pLines != null ) {
             for ( String zLine : pLines ) {
-                pSB.append( deNull( zLine ) ).append( NLchar );
+                pSB.append( ConstrainTo.notNull( zLine ) ).append( NLchar );
             }
         }
     }
@@ -412,7 +384,7 @@ public class Strings {
     }
 
     public static String makeIdFriendly( String text ) {
-        text = noEmpty( text );
+        text = ConstrainTo.significantOrNull( text );
         if ( text == null ) {
             return null;
         }
@@ -430,18 +402,18 @@ public class Strings {
                 sb.append( c );
             }
         }
-        return noEmpty( sb.toString() );
+        return ConstrainTo.significantOrNull( sb.toString() );
     }
 
     public static String assertOptionalIdentifier( String what, String toCheck ) {
-        if ( null != (toCheck = noEmpty( toCheck )) ) {
+        if ( null != (toCheck = ConstrainTo.significantOrNull( toCheck )) ) {
             validateIdentifier( what, toCheck );
         }
         return toCheck;
     }
 
     public static String assertNotEmptyIdentifier( String what, String toCheck ) {
-        if ( null != (toCheck = assertNotEmpty( what, toCheck )) ) {
+        if ( null != (toCheck = Confirm.significant( what, toCheck )) ) {
             validateIdentifier( what, toCheck );
         }
         return toCheck;
@@ -492,7 +464,7 @@ public class Strings {
      * @return !null result with wrapped text (lines) if maxCharactersPerLine > 0, (otherwise don't wrap)
      */
     public static String wrap( String text, Integer maxCharactersPerLine ) {
-        text = deNull( text ).trim();
+        text = ConstrainTo.notNull( text ).trim();
         if ( (maxCharactersPerLine == null) || (maxCharactersPerLine < 1) ) {
             return text;
         }
@@ -549,7 +521,7 @@ public class Strings {
      * @param pEnd The End index of the substring. If negative, the index used will be "text.length() + End".
      */
     public static String substring( String pText, int pStart, int pEnd ) {
-        assertNotNullNotEmpty( "text", pText );
+        Confirm.significant( "text", pText );
         Integers.assertNonNegative( "start", pStart );
         return pText.substring( pStart, (pEnd >= 0) ? pEnd : pText.length() + pEnd );
     }
@@ -558,7 +530,7 @@ public class Strings {
         if ( (pString != null) && (pToLength <= pString.length()) ) {
             return pString;
         }
-        StringBuilder sb = new StringBuilder( deNull( pString ) );
+        StringBuilder sb = new StringBuilder( ConstrainTo.notNull( pString ) );
         while ( sb.length() < pToLength ) {
             sb.insert( 0, pPadWith );
         }
@@ -569,7 +541,7 @@ public class Strings {
         if ( (pString != null) && (pToLength <= pString.length()) ) {
             return pString;
         }
-        StringBuilder sb = new StringBuilder( deNull( pString ) );
+        StringBuilder sb = new StringBuilder( ConstrainTo.notNull( pString ) );
         while ( sb.length() < pToLength ) {
             sb.append( pPadWith );
         }
@@ -661,7 +633,7 @@ public class Strings {
     }
 
     public static String makeNonBlankLines( String pSource, int pLinesToMake ) {
-        pSource = normalizeNewLines( deNull( pSource ) );
+        pSource = normalizeNewLines( ConstrainTo.notNull( pSource ) );
         StringBuilder sb = new StringBuilder();
         for ( int i = 0; i < pLinesToMake; i++ ) {
             int at = (pSource += '\n').indexOf( '\n' );
@@ -696,7 +668,7 @@ public class Strings {
     public static void error( String pForm, String pErrorMessage, String pMessagePlus )
             throws IllegalArgumentException {
         if ( isNullOrEmpty( pErrorMessage ) ) {
-            pErrorMessage = deNull( pForm );
+            pErrorMessage = ConstrainTo.notNull( pForm );
         }
         if ( -1 != pErrorMessage.indexOf( ' ' ) ) {
             throw new IllegalArgumentException( pErrorMessage );
@@ -705,13 +677,13 @@ public class Strings {
     }
 
     public static String padIt( int pMinDesiredLength, String pIt ) {
-        String rv = deNull( pIt );
+        String rv = ConstrainTo.notNull( pIt );
         int padBy = pMinDesiredLength - rv.length();
         return (padBy <= 0) ? rv : (spaces( padBy ) + rv);
     }
 
     public static String iTpad( String pIt, int pMinDesiredLength ) {
-        String rv = deNull( pIt );
+        String rv = ConstrainTo.notNull( pIt );
         int padBy = pMinDesiredLength - rv.length();
         return (padBy <= 0) ? rv : (rv + spaces( padBy ));
     }
@@ -820,7 +792,7 @@ public class Strings {
     public static String[] removeAllBlankOrCommentLines( String[] pLines ) {
         List<String> lines = Lists.newLinkedList();
 
-        for ( String line : deNull( pLines ) ) {
+        for ( String line : ConstrainTo.notNull( pLines ) ) {
             String s = line.trim();
             if ( (s.length() != 0) && !(s.startsWith( "#" ) || s.startsWith( "//" )) ) {
                 lines.add( line );
@@ -876,27 +848,27 @@ public class Strings {
 
     public static String appendNonEmpties( String pExisting, String pSeparator, String pToAppend ) {
         if ( isNullOrEmpty( pToAppend ) ) {
-            return deNull( pExisting ).trim();
+            return ConstrainTo.notNull( pExisting ).trim();
         }
         if ( isNullOrEmpty( pExisting ) ) {
             return pToAppend.trim();
         }
-        return pExisting.trim() + deNull( pSeparator ) + pToAppend.trim();
+        return pExisting.trim() + ConstrainTo.notNull( pSeparator ) + pToAppend.trim();
     }
 
     public static String trimToLength( String pSource, int pMaxAcceptableLength )
             throws IllegalArgumentException {
         pMaxAcceptableLength = Integers.assertNonNegative( "MaxAcceptableLength", pMaxAcceptableLength );
-        return ((pSource = deNull( pSource )).length() <= pMaxAcceptableLength) ? pSource : pSource.substring( 0, pMaxAcceptableLength );
+        return ((pSource = ConstrainTo.notNull( pSource )).length() <= pMaxAcceptableLength) ? pSource : pSource.substring( 0, pMaxAcceptableLength );
     }
 
     public static String trimToLength( String pSource, int pMaxAcceptableLength, String pTrimmedSuffix )
             throws IllegalArgumentException {
         pMaxAcceptableLength = Integers.assertNonNegative( "MaxAcceptableLength", pMaxAcceptableLength );
-        if ( (pSource = deNull( pSource )).length() <= pMaxAcceptableLength ) {
+        if ( (pSource = ConstrainTo.notNull( pSource )).length() <= pMaxAcceptableLength ) {
             return pSource;
         }
-        int zSuffixLength = (pTrimmedSuffix = deNull( pTrimmedSuffix )).length();
+        int zSuffixLength = (pTrimmedSuffix = ConstrainTo.notNull( pTrimmedSuffix )).length();
         if ( zSuffixLength == 0 ) {
             return pSource.substring( 0, pMaxAcceptableLength );
         }
@@ -926,7 +898,7 @@ public class Strings {
 
     public static void assertAll7BitAsciiAlpha( String pObjectName, String pToBeAssert )
             throws IllegalArgumentException {
-        Objects.assertNotNull( pObjectName, pToBeAssert );
+        Confirm.isNotNull( pObjectName, pToBeAssert );
         for ( int i = 0; i < pToBeAssert.length(); i++ ) {
             char c = pToBeAssert.charAt( i );
             if ( !(Characters.is7BitAsciiAlpha( c )) ) {
@@ -935,11 +907,12 @@ public class Strings {
         }
     }
 
-    public static void assertNotEmptyIfNotNull( String pParamName, String pToBeAsserted )
+    public static String assertNotEmptyIfNotNull( String pParamName, String pToBeAsserted )
             throws IllegalArgumentException {
         if ( (pToBeAsserted != null) && (pToBeAsserted.length() == 0) ) {
             throw new IllegalArgumentException( pParamName + ": Not allowed to be empty ('')" );
         }
+        return pToBeAsserted;
     }
 
     public static void assertNotNullNotEmptyNoSpaces( String pErrorMessage, String pStringToAssert )
@@ -947,15 +920,6 @@ public class Strings {
         if ( isNullOrEmptyOrSpaces( pStringToAssert ) ) {
             errorNullOrEmptyOrSpace( pErrorMessage, "String" );
         }
-    }
-
-    public static String assertNotNullNotEmpty( String pErrorMessage, String pStringToAssert )
-            throws IllegalArgumentException {
-        String rv = noEmpty( pStringToAssert );
-        if ( rv == null ) {
-            errorNullOrEmpty( pErrorMessage, "String" );
-        }
-        return rv;
     }
 
     public static void assertNullOrEmpty( String pErrorMessage, String pStringToAssert ) {
@@ -992,7 +956,7 @@ public class Strings {
             throws IllegalArgumentException {
         String[] rv = new String[pStringArrayToAssert.length];
         for ( int i = 0; i < pStringArrayToAssert.length; i++ ) {
-            String s = noEmpty( pStringArrayToAssert[i] );
+            String s = ConstrainTo.significantOrNull( pStringArrayToAssert[i] );
             if ( s == null ) {
                 errorNullOrEmpty( pErrorMessage + "[" + i + "]", "String[]" );
             }
@@ -1098,7 +1062,7 @@ public class Strings {
 
     public static String[] parseOptions( String pOptionsAsString )
             throws IllegalArgumentException {
-        if ( null == (pOptionsAsString = noEmpty( pOptionsAsString )) ) {
+        if ( null == (pOptionsAsString = ConstrainTo.significantOrNull( pOptionsAsString )) ) {
             return null;
         }
         char sep = pOptionsAsString.charAt( 0 );
@@ -1247,5 +1211,9 @@ public class Strings {
             }
         }
         return sb.toString();
+    }
+
+    public static String quote( String pValue ) {
+        return (pValue == null) ? null : '"' + cvtTextForDisplay( pValue ) + '"';
     }
 }

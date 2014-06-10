@@ -1,5 +1,6 @@
 package org.litesoft.commonfoundation.issue;
 
+import org.litesoft.commonfoundation.base.*;
 import org.litesoft.commonfoundation.indent.*;
 import org.litesoft.commonfoundation.typeutils.*;
 
@@ -28,8 +29,8 @@ public class Issue {
         }
 
         private Builder( String pGroup, Object pKeyDetail ) {
-            mGroup = Strings.assertNotEmpty( "Group", pGroup );
-            mKeyDetail = Strings.assertNotEmpty( "KeyDetail", toString( Objects.assertNotNull( "KeyDetail", pKeyDetail ) ) );
+            mGroup = Confirm.significant( "Group", pGroup );
+            mKeyDetail = Confirm.significant( "KeyDetail", toString( Confirm.isNotNull( "KeyDetail", pKeyDetail ) ) );
         }
 
         private static String toString( Object pKeyDetail ) {

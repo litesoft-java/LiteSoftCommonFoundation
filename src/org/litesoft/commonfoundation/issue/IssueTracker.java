@@ -1,7 +1,7 @@
 package org.litesoft.commonfoundation.issue;
 
+import org.litesoft.commonfoundation.base.*;
 import org.litesoft.commonfoundation.indent.*;
-import org.litesoft.commonfoundation.typeutils.*;
 
 public class IssueTracker implements Indentable {
     public static final String SEPARATOR = "*****************************************************************************";
@@ -10,7 +10,7 @@ public class IssueTracker implements Indentable {
      * @param pOverrides No Nulls!
      */
     public IssueTracker( IssueOverride... pOverrides ) {
-        mOverrides = Objects.deNull( pOverrides, IssueOverride.EMPTY_ARRAY );
+        mOverrides = ConstrainTo.notNull( pOverrides, IssueOverride.EMPTY_ARRAY );
     }
 
     public boolean hasIssues() {

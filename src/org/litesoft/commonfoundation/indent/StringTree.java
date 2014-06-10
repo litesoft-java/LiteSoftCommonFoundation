@@ -111,10 +111,10 @@ public class StringTree implements Indentable,
     private final StringTree[] mChildren;
 
     private StringTree( String pLine, List<StringTree> pChildren ) {
-        mLine = Strings.deNull( pLine ).trim();
+        mLine = ConstrainTo.notNull( pLine ).trim();
         mChildren = new StringTree[pChildren.size()];
         for ( int i = 0; i < pChildren.size(); i++ ) {
-            mChildren[i] = Objects.deNull( pChildren.get( i ), BLANK_LINE );
+            mChildren[i] = ConstrainTo.notNull( pChildren.get( i ), BLANK_LINE );
         }
     }
 

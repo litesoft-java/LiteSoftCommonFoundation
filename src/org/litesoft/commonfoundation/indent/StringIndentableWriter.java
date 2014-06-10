@@ -1,6 +1,6 @@
 package org.litesoft.commonfoundation.indent;
 
-import org.litesoft.commonfoundation.typeutils.*;
+import org.litesoft.commonfoundation.base.*;
 
 public class StringIndentableWriter implements IndentableWriter {
     private final String mIndentWith;
@@ -9,7 +9,7 @@ public class StringIndentableWriter implements IndentableWriter {
     private int mIndent = 0;
 
     public StringIndentableWriter( String pIndentWith ) {
-        mIndentWith = Objects.assertNotNull( "IndentWith", pIndentWith );
+        mIndentWith = Confirm.isNotNull( "IndentWith", pIndentWith );
     }
 
     @Override

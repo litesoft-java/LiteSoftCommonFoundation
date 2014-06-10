@@ -9,31 +9,6 @@ public class Objects {
     public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
     public static final String NOT_ALLOWED_TO_BE_NULL = ": Not allowed to be null";
 
-    public static void assertNull( String pObjectName, Object pToBeAssert )
-            throws IllegalArgumentException {
-        if ( pToBeAssert != null ) {
-            throw new IllegalArgumentException( pObjectName + ": Expected null, but was'" + pToBeAssert + "'" );
-        }
-    }
-
-    public static <T> T assertNotNull( String pObjectName, T pToBeAssert )
-            throws IllegalArgumentException {
-        if ( pToBeAssert == null ) {
-            throw new IllegalArgumentException( pObjectName + NOT_ALLOWED_TO_BE_NULL );
-        }
-        return pToBeAssert;
-    }
-
-    public static void assertEqual( String pObjectName, Object pExpected, Object pActual )
-            throws IllegalArgumentException {
-        if ( null == pExpected && null == pActual ) {
-            return;
-        }
-        if ( null != pExpected && !pExpected.equals( pActual ) ) {
-            throw new IllegalArgumentException( pObjectName + ": Expected '" + pExpected + "', but was '" + pActual + "'" );
-        }
-    }
-
     @SuppressWarnings("ConstantConditions")
     public static boolean areNonArraysEqual( Object pThis, Object pThat ) {
         if ( pThis == pThat ) // Same or both null
@@ -42,10 +17,6 @@ public class Objects {
         }
         // Both CAN'T be null
         return (pThis != null) ? pThis.equals( pThat ) : pThat.equals( pThis );
-    }
-
-    public static <T> T deNull( T pToCheck, T pDefault ) {
-        return (pToCheck != null) ? pToCheck : pDefault;
     }
 
     public static Object[] appendObjectArrays( Object[] pArray1, Object[] pArray2 ) {
@@ -91,36 +62,6 @@ public class Objects {
             return true;
         }
         return false;
-    }
-
-    private static void assertElementsNotNull( String pErrorMessage, Object[] pArrayToAssert )
-            throws IllegalArgumentException {
-        for ( int i = pArrayToAssert.length; --i >= 0; ) {
-            if ( pArrayToAssert[i] == null ) {
-                Strings.errorNullOrEmpty( pErrorMessage, "Object[" + i + "]" );
-            }
-        }
-    }
-
-    public static void assertNotNullAndElementsNotNull( String pErrorMessage, Object[] pArrayToAssert )
-            throws IllegalArgumentException {
-        if ( pArrayToAssert == null ) {
-            Strings.errorNullOrEmpty( pErrorMessage, "Object[]" );
-        }
-        assertElementsNotNull( pErrorMessage, pArrayToAssert );
-    }
-
-    public static void assertNotNullNotEmptyAndElementsNotNull( String pErrorMessage, Object[] pArrayToAssert )
-            throws IllegalArgumentException {
-        assertNotNullNotEmpty( pErrorMessage, pArrayToAssert );
-        assertElementsNotNull( pErrorMessage, pArrayToAssert );
-    }
-
-    public static void assertNotNullNotEmpty( String pErrorMessage, Object[] pArrayToAssert )
-            throws IllegalArgumentException {
-        if ( isNullOrEmpty( pArrayToAssert ) ) {
-            Strings.errorNullOrEmpty( pErrorMessage, "Object[]" );
-        }
     }
 
     public static boolean isNotNull( Object pToCheck ) {
@@ -249,11 +190,11 @@ public class Objects {
     }
 
     public static String deNullToString( Object value, Object defaultValue ) {
-        return Strings.deNull( noEmptyToString( value ), noEmptyToString( defaultValue ) );
+        return ConstrainTo.firstNonNull( noEmptyToString( value ), noEmptyToString( defaultValue ) );
     }
 
     public static String noEmptyToString( Object value ) {
-        return Strings.noEmpty( Strings.nullOKtoString( value ) );
+        return ConstrainTo.significantOrNull( Strings.nullOKtoString( value ) );
     }
 
     public static String combine( String pSeparator, List<?> pObjects ) {
@@ -306,7 +247,7 @@ public class Objects {
             Strings.errorNullOrEmpty( what, null );
         }
         if ( value instanceof String ) {
-            value = Cast.it( Strings.assertNotNullNotEmpty( what, value.toString() ) );
+            value = Cast.it( Confirm.significant( what, value.toString() ) );
         }
         return value;
     }
@@ -322,7 +263,7 @@ public class Objects {
     }
 
     public static String toStringOrNull( Object pObject ) {
-        return Strings.noEmpty( (pObject != null) ? pObject.toString() : null );
+        return ConstrainTo.significantOrNull( (pObject != null) ? pObject.toString() : null );
     }
 
     public static String toString( Object pObject ) {
@@ -354,15 +295,14 @@ public class Objects {
     }
 
     public static String optionsToString( Object[] pObjects ) {
-        if ( pObjects == null ) {
-            return "No Options Available";
+        List<Object> zObjects = ConstrainTo.notNullImmutableList( pObjects );
+        if ( zObjects.isEmpty() ) {
+            return "None Available";
         }
-        StringBuilder sb = new StringBuilder( "Valid Options are" );
-        String prefix = ": ";
-        //noinspection ForLoopReplaceableByForEach
-        for ( int i = 0; i < pObjects.length; i++ ) {
-            sb.append( prefix ).append( pObjects[i] );
-            prefix = ", ";
+        StringBuilder sb = new StringBuilder();
+        sb.append( zObjects.get( 0 ) );
+        for ( int i = 1; i < pObjects.length; i++ ) {
+            sb.append( ", " ).append( pObjects[i] );
         }
         return sb.toString();
     }

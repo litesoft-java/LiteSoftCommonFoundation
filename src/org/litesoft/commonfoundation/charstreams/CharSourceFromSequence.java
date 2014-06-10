@@ -2,14 +2,14 @@
 package org.litesoft.commonfoundation.charstreams;
 
 import org.litesoft.commonfoundation.annotations.*;
-import org.litesoft.commonfoundation.typeutils.*;
+import org.litesoft.commonfoundation.base.*;
 
 public class CharSourceFromSequence implements CharSource {
     private String mSource;
     private int mFrom, mTo;
 
     public CharSourceFromSequence( @Nullable CharSequence pSource, int pFrom ) {
-        mSource = Strings.deNull( pSource );
+        mSource = ConstrainTo.notNull( pSource );
         if ( (mFrom = pFrom) < 0 ) {
             throw new IllegalArgumentException( "'From' not allowed to be negative" );
         }

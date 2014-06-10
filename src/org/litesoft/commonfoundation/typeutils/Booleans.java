@@ -16,7 +16,7 @@ public class Booleans {
             return Cast.it( pObject );
         }
         if ( pObject != null ) {
-            return fromString( Strings.noEmpty( pObject.toString() ) );
+            return fromString( ConstrainTo.significantOrNull( pObject.toString() ) );
         }
         return null;
     }
@@ -31,23 +31,12 @@ public class Booleans {
         return null;
     }
 
-    public static Boolean deNull( Boolean pValue ) {
-        return (pValue != null) ? pValue : Boolean.FALSE;
-    }
-
     public static boolean areNonArraysEqual( boolean pThis, boolean pThat ) {
         return (pThis == pThat);
     }
 
     public static boolean isBooleanNotTrue( Object pObject ) {
         return pObject == null || Boolean.FALSE.equals( pObject );
-    }
-
-    public static void assertTrue( String pValueDescription, boolean pActual )
-            throws IllegalArgumentException {
-        if ( !pActual ) {
-            throw new IllegalArgumentException( pValueDescription + ": Expected to be true" );
-        }
     }
 
     public static String displayFormatFlag( boolean pFlag, String pTrueString ) {
@@ -80,18 +69,6 @@ public class Booleans {
     }
 
     public static String toDisplayString( Boolean pBoolean ) {
-        return deNull( pBoolean ).toString();
-    }
-
-    public static void assertFalse( boolean pFlag, String pMsg ) {
-        if ( pFlag ) {
-            throw new IllegalStateException( pMsg );
-        }
-    }
-
-    public static void assertTrue( boolean pFlag, String pMsg ) {
-        if ( !pFlag ) {
-            throw new IllegalStateException( pMsg );
-        }
+        return Boolean.valueOf( ConstrainTo.notNull( pBoolean ) ).toString();
     }
 }

@@ -1,7 +1,7 @@
 // This Source Code is in the Public Domain per: http://unlicense.org
 package org.litesoft.commonfoundation.stringmatching;
 
-import org.litesoft.commonfoundation.typeutils.*;
+import org.litesoft.commonfoundation.base.*;
 
 public class StringMatcherFactory {
     /**
@@ -85,7 +85,7 @@ public class StringMatcherFactory {
     }
 
     private static StringMatcher LLcreate( String[] pParts, boolean pSingleIsNotEqualsButStartsWith, boolean pIgnoreCase ) {
-        pParts = Strings.deNull( pParts );
+        pParts = ConstrainTo.notNull( pParts );
         String[] zParts = new String[pParts.length];
         int zPartsLength = 0;
         for ( int i = 0; i < pParts.length; i++ ) {
