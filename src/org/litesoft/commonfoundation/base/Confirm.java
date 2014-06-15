@@ -52,6 +52,14 @@ public class Confirm {
         return IllegalArgument.ifEmpty( pReferenceLabel, zValue, zValue.length() );
     }
 
+    public static String insignificant( String pReferenceLabel, String pToCheck ) {
+        if ( null != pToCheck ) {
+            if ((pToCheck = pToCheck.trim()).length() != 0)
+                throw IllegalArgument.exception( pReferenceLabel, "was NOT empty, but: " + pToCheck);
+        }
+        return null;
+    }
+
     public static boolean isTrue( String pReferenceLabel, boolean pToTest )
             throws IllegalArgumentException {
         return IllegalArgument.ifNotEqual( pReferenceLabel, pToTest, true );
@@ -95,6 +103,34 @@ public class Confirm {
     public static double isEqual( String pReferenceLabel, double pToTest, double pExpected )
             throws IllegalArgumentException {
         return IllegalArgument.ifNotEqual( pReferenceLabel, pToTest, pExpected );
+    }
+
+    public static <T> void areEqual( T pExpected, T pActual ) {
+        isEqual( null, pActual, pExpected );
+    }
+
+    public static void areEqual( int pExpected, int pActual ) {
+        isEqual( null, pActual, pExpected );
+    }
+
+    public static void areEqual( long pExpected, long pActual ) {
+        isEqual( null, pActual, pExpected );
+    }
+
+    public static void areEqualIgnoreCase( String pReferenceLabel, String pExpected, String pActual ) {
+        if ( !Currently.areEqualIgnoreCase( pExpected, pActual ) ) {
+            isEqual( null, pActual, pExpected );
+        }
+    }
+
+    public static String significantOfToStringOf( String pReferenceLabel, Object pToTest ) {
+        return significant( pReferenceLabel, (pToTest != null) ? pToTest.toString() : null );
+    }
+
+    public static void assertEndsWith( String pReferenceLabel, String pToTest, String pForString ) {
+        if ( !pToTest.endsWith( pForString ) ) {
+            throw IllegalArgument.exception( pReferenceLabel, "'" + pToTest + "' did not end with '" + pForString + "'!" );
+        }
     }
 
     private static <T> T[] testElementsNotNull( String pReferenceLabel, T[] pToTest ) {

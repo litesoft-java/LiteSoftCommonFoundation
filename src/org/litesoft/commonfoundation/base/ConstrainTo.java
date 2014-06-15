@@ -75,10 +75,6 @@ public class ConstrainTo {
         return IllegalArgument.ifNull( "notNull Supplier get()", zDefault );
     }
 
-    public static String[] notNull( String[] pStrings ) { // TODO: Convert to notNullImmutableList
-        return (pStrings != null) ? pStrings : EMPTY_STRING_ARRAY;
-    }
-
     public static <T> List<T> notNullImmutableList( T... pArray ) {
         if ( (pArray == null) || (pArray.length == 0) ) {
             return Collections.emptyList();
@@ -112,6 +108,10 @@ public class ConstrainTo {
         return (pValue != null) ? pValue : DEFAULT_FLOAT;
     }
 
+    public static String[] notNull( String[] pStrings ) { // TODO: Convert to notNullImmutableList
+        return (pStrings != null) ? pStrings : EMPTY_STRING_ARRAY;
+    }
+
     public static <T> List<T> notNull( List<T> pToCheck ) {
         if ( pToCheck == null ) {
             pToCheck = Collections.emptyList();
@@ -119,16 +119,16 @@ public class ConstrainTo {
         return pToCheck;
     }
 
-    public static <K, V> Map<K, V> notNull( Map<K, V> pToCheck ) {
+    public static <T> Set<T> notNull( Set<T> pToCheck ) {
         if ( pToCheck == null ) {
-            pToCheck = Collections.emptyMap();
+            pToCheck = Collections.emptySet();
         }
         return pToCheck;
     }
 
-    public static <T> Set<T> notNull( Set<T> pToCheck ) {
+    public static <K, V> Map<K, V> notNull( Map<K, V> pToCheck ) {
         if ( pToCheck == null ) {
-            pToCheck = Collections.emptySet();
+            pToCheck = Collections.emptyMap();
         }
         return pToCheck;
     }

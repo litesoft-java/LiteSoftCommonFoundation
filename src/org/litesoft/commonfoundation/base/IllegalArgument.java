@@ -88,7 +88,9 @@ public class IllegalArgument {
     }
 
     public static IllegalArgumentException ofNotEqual( String pReferenceLabel, Object pActual, Object pExpected ) {
-        return exception( pReferenceLabel, "Expected '" + pExpected + "', but was '" + pActual + "'!" );
+        return exception( ConstrainTo.notNull( pReferenceLabel, "Values Mismatch" ),
+                          "\n    Expected '" + pExpected + "'," +
+                          "\n     but was '" + pActual + "'!" );
     }
 
     public static IllegalArgumentException exception( String pReferenceLabel, String pWhy ) {
