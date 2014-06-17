@@ -1,4 +1,4 @@
-Onejar: LiteSoftCommonFoundation
+onejar: LiteSoftCommonFoundation
 
 classpath:
 - libs/LiteSoftUtilDateAdaptor.jar
