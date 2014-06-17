@@ -409,6 +409,25 @@ public class Strings {
         return pSource;
     }
 
+    public static String replace( String pSource, String pToFind0, String pToReplaceWith0, String pToFind1, String pToReplaceWith1,
+                                  String... additionalToFindToReplaceWithPairs ) {
+        if ( pSource != null ) {
+            pSource = replace( pSource, pToFind0, pToReplaceWith0 );
+            pSource = replace( pSource, pToFind1, pToReplaceWith1 );
+            if ( additionalToFindToReplaceWithPairs != null ) {
+                if ( !Currently.isEven( additionalToFindToReplaceWithPairs.length ) ) {
+                    throw new IllegalArgumentException( "additional ToFind ToReplace With Pair(s) not paired!" );
+                }
+                for ( int i = 0; i < additionalToFindToReplaceWithPairs.length; ) {
+                    String zToFind = additionalToFindToReplaceWithPairs[i++];
+                    String zToReplaceWith = additionalToFindToReplaceWithPairs[i++];
+                    pSource = replace( pSource, zToFind, zToReplaceWith );
+                }
+            }
+        }
+        return pSource;
+    }
+
     /**
      * Break the Line into chunks based on the Separators, stops if a Separator is not found.
      *
@@ -705,6 +724,10 @@ public class Strings {
             addWord();
             return mCollector.toString();
         }
+    }
+
+    public static String[] deNull( String[] pLines ) {
+        return (pLines != null) ? pLines : EMPTY_ARRAY;
     }
 
     // TODO: vvvvvvvvvvvvvvvvvvvvvvvv  NEW  vvvvvvvvvvvvvvvvvvvvvvvv :ODOT \\

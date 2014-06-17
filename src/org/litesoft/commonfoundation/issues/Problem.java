@@ -77,7 +77,6 @@ public class Problem implements Serializable {
      * One of <code>pProblemCode</code> or <code>pThrowable</code> must be specified.
      *
      * @param pThrowable            a Throwable or <code>null</code>
-     * @param pProblemCode
      * @param pProblemSupportValues additional info about <code>pProblemCode</code>, or <code>null</code>
      *
      * @throws IllegalArgumentException if <code>pProblemSupportValues</code> is

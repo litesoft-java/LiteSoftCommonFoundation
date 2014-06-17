@@ -84,16 +84,16 @@ public class Confirm {
         return testElementsNotNull( pReferenceLabel, isNotNull( pReferenceLabel, pToTest ) );
     }
 
-    public static String significant( String pReferenceLabel, String pToCheck )
+    public static String significant( String pReferenceLabel, String pToTest )
             throws IllegalArgumentException {
-        String zValue = IllegalArgument.ifNull( pReferenceLabel, pToCheck ).trim(); // Note the trim()!
+        String zValue = IllegalArgument.ifNull( pReferenceLabel, pToTest ).trim(); // Note the trim()!
         return IllegalArgument.ifEmpty( pReferenceLabel, zValue, zValue.length() );
     }
 
-    public static String insignificant( String pReferenceLabel, String pToCheck ) {
-        if ( null != pToCheck ) {
-            if ( (pToCheck = pToCheck.trim()).length() != 0 ) {
-                throw IllegalArgument.exception( pReferenceLabel, "was NOT empty, but: " + pToCheck );
+    public static String insignificant( String pReferenceLabel, String pToTest ) {
+        if ( null != pToTest ) {
+            if ( (pToTest = pToTest.trim()).length() != 0 ) {
+                throw IllegalArgument.exception( pReferenceLabel, "was NOT empty, but: " + pToTest );
             }
         }
         return null;
