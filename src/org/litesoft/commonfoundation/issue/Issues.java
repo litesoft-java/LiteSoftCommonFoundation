@@ -167,7 +167,7 @@ public class Issues implements Indentable {
         private final Map<String, SourceAsTree> mMap = Maps.newHashMap();
 
         public void add( List<String> pSource ) {
-            if ( Lists.isEmpty( pSource ) ) {
+            if ( Currently.isNullOrEmpty( pSource ) ) {
                 mMap.put( "No Source!", null );
             } else if ( pSource.size() == 1 ) {
                 mMap.put( "From (" + pSource.get( 0 ) + ").", null );

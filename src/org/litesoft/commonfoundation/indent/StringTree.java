@@ -3,7 +3,6 @@ package org.litesoft.commonfoundation.indent;
 import org.litesoft.commonfoundation.base.*;
 import org.litesoft.commonfoundation.iterators.*;
 import org.litesoft.commonfoundation.typeutils.*;
-import org.litesoft.commonfoundation.typeutils.Objects;
 
 import java.util.*;
 
@@ -18,7 +17,7 @@ public class StringTree implements Indentable,
     }
 
     public static StringTree from( String pLine, String... pChildren ) {
-        if ( Objects.isNullOrEmpty( pChildren ) ) {
+        if ( Currently.isNullOrEmpty( pChildren ) ) {
             return new StringTree( pLine );
         }
         StringTree[] zChildren = new StringTree[pChildren.length];

@@ -15,6 +15,10 @@ public abstract class Doubles {
         }
     };
 
+    public static Double firstNotNull( Double pValue1, Double pValue2 ) {
+        return (pValue1 != null) ? pValue1 : pValue2;
+    }
+
     public static Double toDouble( Object pObject ) {
         if ( pObject instanceof Double ) {
             return Cast.it( pObject );
@@ -62,17 +66,6 @@ public abstract class Doubles {
         if ( pAmounts != null ) {
             for ( double zAmount : pAmounts ) {
                 if ( zAmount != 0 ) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public static boolean allNull( Double... pAmounts ) {
-        if ( pAmounts != null ) {
-            for ( Double zAmount : pAmounts ) {
-                if ( zAmount != null ) {
                     return false;
                 }
             }

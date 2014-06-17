@@ -31,10 +31,6 @@ public class Booleans {
         return null;
     }
 
-    public static boolean areNonArraysEqual( boolean pThis, boolean pThat ) {
-        return (pThis == pThat);
-    }
-
     public static boolean isBooleanNotTrue( Object pObject ) {
         return pObject == null || Boolean.FALSE.equals( pObject );
     }
@@ -69,6 +65,6 @@ public class Booleans {
     }
 
     public static String toDisplayString( Boolean pBoolean ) {
-        return Boolean.valueOf( ConstrainTo.notNull( pBoolean ) ).toString();
+        return Boolean.toString( ConstrainTo.notNull( pBoolean ) );
     }
 }

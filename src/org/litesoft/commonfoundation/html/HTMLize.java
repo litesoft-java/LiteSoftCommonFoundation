@@ -3,7 +3,7 @@ package org.litesoft.commonfoundation.html;
 
 import org.litesoft.commonfoundation.base.*;
 
-public class HTMLize implements HTMLConstants {
+public class HTMLize {
     /**
      * HTML Encodes any markup in input (Spaces are left as Spaces).
      *
@@ -30,7 +30,7 @@ public class HTMLize implements HTMLConstants {
     public static final HTMLize INSTANCE_NO_WRAP = new HTMLize() {
         @Override
         protected String space() {
-            return NBSP;
+            return HtmlEntity.NBSP;
         }
     };
     public static final HTMLize INSTANCE_NO_ESCAPE = new HTMLize() {
@@ -52,19 +52,19 @@ public class HTMLize implements HTMLConstants {
                     zSB.append( space() );
                     break;
                 case '&':
-                    zSB.append( AMPERSAND );
+                    zSB.append( HtmlEntity.AMP.getString() );
                     break;
                 case '<':
-                    zSB.append( LESS_THAN );
+                    zSB.append( HtmlEntity.LT.getString() );
                     break;
                 case '>':
-                    zSB.append( GREATER_THAN );
+                    zSB.append( HtmlEntity.GT.getString() );
                     break;
                 case '"':
-                    zSB.append( DOUBLE_QUOTE );
+                    zSB.append( HtmlEntity.DOUBLE_QUOTE );
                     break;
                 case '\n':
-                    zSB.append( HTML_BR );
+                    zSB.append( HtmlEntity.HTML_BR );
                     break;
                 default:
                     if ( (' ' < c) && (c < 127) ) {

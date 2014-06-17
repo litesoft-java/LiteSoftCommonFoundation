@@ -35,58 +35,7 @@ public class Strings {
         return mRest;
     }
 
-    /**
-     * Adjust a String Array so that it is either null (error condition) or has the <code>DesiredLength</code>.
-     * <p/>
-     * Note: The <code>Source</code> (original) array may be return.
-     *
-     * @param pDesiredLength of the resulting array (must NOT be < 0)
-     * @param pSource        array
-     *
-     * @return null if the <code>Source</code> is longer then the <code>DesiredLength</code>; otherwise
-     * an Array that is exactly <code>DesiredLength</code> long (padded with nulls).
-     */
-    public static
-    @Nullable
-    String[] expectArray( int pDesiredLength, @Nullable String[] pSource ) {
-        Integers.assertNonNegative( "DesiredLength", pDesiredLength );
-        int zCurrentLength = (pSource == null) ? 0 : pSource.length;
-        if ( pDesiredLength < zCurrentLength ) {
-            return null;
-        }
-        if ( pDesiredLength == zCurrentLength ) {
-            return pSource;
-        }
-        String[] rv = new String[pDesiredLength];
-        if ( zCurrentLength != 0 ) {
-            System.arraycopy( pSource, 0, rv, 0, zCurrentLength );
-        }
-        return rv;
-    }
-
-    /**
-     * Return an String Array made up of the end elements of <code>Strings</code>, but who's first element is
-     * the <code>FromIndex</code> element of <code>Strings</code>.
-     * <p/>
-     * Note: It is OK for <code>Strings</code> to be too short (or even null).
-     * Note: The <code>Strings</code> (original) array may be return.
-     *
-     * @param pStrings   array
-     * @param pFromIndex is the index into <code>Strings</code> to start the resulting array from (must be >= 0).
-     *
-     * @return null if
-     */
-    public static
-    @Nullable
-    String[] everythingFrom( @Nullable String[] pStrings, int pFromIndex ) {
-        Integers.assertNonNegative( "FromIndex", pFromIndex );
-        if ( (pStrings == null) || (pStrings.length <= pFromIndex) ) {
-            return EMPTY_ARRAY;
-        }
-        String[] rv = new String[pStrings.length - pFromIndex];
-        System.arraycopy( pStrings, pFromIndex, rv, 0, rv.length );
-        return rv;
-    }
+    // TODO: ||||||||||||||||||||||||||||||||||||||||||||||||||||||| :ODOT \\
 
     public static String spaces( int pSpaces ) {
         if ( pSpaces < 1 ) {
@@ -104,7 +53,7 @@ public class Strings {
     }
 
     public static String path( String pSubDir, String pFileName ) {
-        return isNullOrEmpty( pSubDir ) ? pFileName : (pSubDir + "/" + pFileName);
+        return Currently.insignificant( pSubDir ) ? pFileName : (pSubDir + "/" + pFileName);
     }
 
     public static Strings parsePrefixOptionalSep( String pResponseText, String pPrefix, String pSep ) {
@@ -119,122 +68,41 @@ public class Strings {
                             pResponseText.substring( zSepAt + pSep.length() ) );
     }
 
-    public static String dupChars( char pCharToDup, int pDupCount ) {
-        if ( pDupCount < 1 ) {
-            return "";
-        }
-        StringBuilder sb = new StringBuilder( pDupCount );
-        while ( pDupCount-- > 0 ) {
-            sb.append( pCharToDup );
-        }
-        return sb.toString();
+    public static String padIt( int pMinDesiredLength, String pIt ) {
+        String rv = ConstrainTo.notNull( pIt );
+        int padBy = pMinDesiredLength - rv.length();
+        return (padBy <= 0) ? rv : (spaces( padBy ) + rv);
     }
 
-    public static String dup( String pToDup, int pDupCount ) {
-        if ( pToDup == null ) {
-            return null;
-        }
-        if ( pDupCount < 1 ) {
-            return "";
-        }
-        StringBuilder sb = new StringBuilder( pDupCount * pToDup.length() );
-        while ( pDupCount-- > 0 ) {
-            sb.append( pToDup );
-        }
-        return sb.toString();
+    public static String iTpad( String pIt, int pMinDesiredLength ) {
+
+        String rv = ConstrainTo.notNull( pIt );
+        int padBy = pMinDesiredLength - rv.length();
+        return (padBy <= 0) ? rv : (rv + spaces( padBy ));
     }
 
-    public static boolean contains( String pString, String pToFind ) {
-        return Objects.isNotNull( pString ) && isNotNullOrEmpty( pToFind ) && pString.contains( pToFind );
-    }
-
-    public static boolean contains( String pString, char pToFind ) {
-        return Objects.isNotNull( pString ) && (-1 != pString.indexOf( pToFind ));
-    }
-
-    public static boolean isNullOrEmpty( String pStringToCheck ) {
-        return ((pStringToCheck == null) || (pStringToCheck.trim().length() == 0));
-    }
-
-    public static boolean isNotNullOrEmpty( String pStringToCheck ) {
-        return ((pStringToCheck != null) && (pStringToCheck.trim().length() != 0));
-    }
-
-    public static String[] noEmpty( String[] pStrings ) {
-        return (pStrings == null || pStrings.length == 0) ? null : pStrings;
-    }
-
-    public static String[] noEmpties( String[] pStrings ) {
-        if ( pStrings != null ) {
-            for ( int i = pStrings.length; --i >= 0; ) {
-                String zString = ConstrainTo.significantOrNull( pStrings[i] );
-                if ( zString == null ) {
-                    pStrings = removeStringFromArray( pStrings, i );
-                }
-                pStrings[i] = zString;
-            }
-            if ( pStrings.length == 0 ) {
-                pStrings = null;
-            }
-        }
-        return pStrings;
-    }
-
-    public static boolean allEmpty( String[] pParts ) {
-        if ( pParts != null ) {
-            for ( String part : pParts ) {
-                if ( isNotNullOrEmpty( part ) ) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public static boolean isNullOrEmptyOrSpaces( String pStringToCheck ) {
-        return ((pStringToCheck == null) || //
-                (pStringToCheck.length() == 0) || //
-                (-1 != pStringToCheck.indexOf( ' ' )));
-    }
-
-    public static boolean isBlank( String pLine ) {
-        if ( pLine != null ) {
-            for ( int at = pLine.length(); --at >= 0; ) {
-                if ( pLine.charAt( at ) != ' ' ) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    public static boolean areEqualIgnoreCase( String a, String b ) {
-        // noinspection StringEquality
-        return (a == b) || ((null != a) && a.equalsIgnoreCase( b ));
-    }
-
-    public static String assertNotEmptyToString( String pWhat, Object pToCheck ) {
-        return Confirm.significant( pWhat, (pToCheck != null) ? pToCheck.toString() : null );
-    }
-
-    public static void assertEmpty( String pWhy, String pToCheck ) {
-        if ( null != ConstrainTo.significantOrNull( pToCheck ) ) {
-            throw new IllegalArgumentException( pWhy );
-        }
-    }
-
-    private static IllegalArgumentException failNullOrEmpty( String pWhat ) {
+    public static IllegalArgumentException errorNullOrEmpty( String pWhat ) {
         return new IllegalArgumentException( pWhat + " Not allowed to be null or empty!" );
+    }
+
+    public static void errorNullOrEmpty( String pErrorMessage, String pForm )
+            throws IllegalArgumentException {
+        error( pForm, pErrorMessage, " not allowed to be null or empty!" );
+    }
+
+    public static void error( String pForm, String pErrorMessage, String pMessagePlus )
+            throws IllegalArgumentException {
+        if ( Currently.insignificant( pErrorMessage ) ) {
+            pErrorMessage = ConstrainTo.notNull( pForm );
+        }
+        if ( -1 != pErrorMessage.indexOf( ' ' ) ) {
+            throw new IllegalArgumentException( pErrorMessage );
+        }
+        throw new IllegalArgumentException( pErrorMessage + pMessagePlus );
     }
 
     public static boolean hasNoSurroundingWhiteSpace( String pString ) {
         return (pString == null) || (pString.length() == pString.trim().length()); // No Leading or trailing White Space
-    }
-
-    public static void assertEndsWith( String pWhat, String pToCheck, String pForString ) {
-        if ( !pToCheck.endsWith( pForString ) ) {
-            throw new IllegalArgumentException( pWhat + " '" + pToCheck + "' did not end with '" + pForString + "'!" );
-        }
     }
 
     public static String removeIfEndsWith( String pToCheck, String pForString ) {
@@ -261,20 +129,6 @@ public class Strings {
         return zAt;
     }
 
-    public static boolean isConstrainedAsciiIdentifier( String pToTest ) {
-        if ( !isNullOrEmpty( pToTest ) ) {
-            if ( Characters.isAsciiLetter( pToTest.charAt( 0 ) ) ) {
-                for ( int i = 1; i < pToTest.length(); i++ ) {
-                    if ( !Characters.isNonFirstCharAsciiIdentifier( pToTest.charAt( i ) ) ) {
-                        return false;
-                    }
-                }
-                return true;
-            }
-        }
-        return false;
-    }
-
     public static String trimTrailing( String pLine ) {
         if ( (pLine != null) && (pLine.length() != 0) ) {
             if ( pLine.charAt( pLine.length() - 1 ) == ' ' ) {
@@ -282,53 +136,6 @@ public class Strings {
             }
         }
         return pLine;
-    }
-
-    /**
-     * Return if <tt>pThis</tt> starts with <tt>pStartsWith</tt> ignoring
-     * the case of the strings
-     * <p/>
-     *
-     * @param pThis       The String to check the front of
-     * @param pStartsWith The String that <tt>pThis</tt>'s front must match
-     *
-     * @return <tt>true</tt> if <tt>pThis</tt> starts with <tt>pStartsWith</tt> ignoring
-     * the case
-     */
-    public static boolean startsWithIgnoreCase( String pThis, String pStartsWith ) {
-        if ( (pThis != null) && (pStartsWith != null) ) {
-            int lenStartsWith = pStartsWith.length();
-            if ( lenStartsWith <= pThis.length() ) {
-                return pStartsWith.equalsIgnoreCase( pThis.substring( 0, lenStartsWith ) );
-            }
-        }
-        return false;
-    }
-
-    public static String trimLeadingSpaces( String pStr ) {
-        if ( (pStr == null) || !pStr.startsWith( " " ) ) {
-            return pStr;
-        }
-        int sLen = pStr.length();
-        for ( int i = 0; i < sLen; i++ ) {
-            if ( pStr.charAt( i ) != ' ' ) {
-                return pStr.substring( i );
-            }
-        }
-        return "";
-    }
-
-    public static String trimTrailingSpaces( String pStr ) {
-        if ( (pStr == null) || !pStr.endsWith( " " ) ) {
-            return pStr;
-        }
-        int sLen = pStr.length();
-        for ( int i = sLen - 1; --i >= 0; ) {
-            if ( pStr.charAt( i ) != ' ' ) {
-                return pStr.substring( 0, i + 1 );
-            }
-        }
-        return "";
     }
 
     public static String join( Iterable<?> iterable, String joinString ) {
@@ -515,17 +322,6 @@ public class Strings {
         return pString;
     }
 
-    /**
-     * Returns a substring of the specified text.
-     *
-     * @param pEnd The End index of the substring. If negative, the index used will be "text.length() + End".
-     */
-    public static String substring( String pText, int pStart, int pEnd ) {
-        Confirm.significant( "text", pText );
-        Integers.assertNonNegative( "start", pStart );
-        return pText.substring( pStart, (pEnd >= 0) ? pEnd : pText.length() + pEnd );
-    }
-
     public static String padLeft( char pPadWith, String pString, int pToLength ) {
         if ( (pString != null) && (pToLength <= pString.length()) ) {
             return pString;
@@ -557,7 +353,7 @@ public class Strings {
     }
 
     public static String[] parseChar( String pStringToParse, char pSeparator ) {
-        if ( isNullOrEmpty( pStringToParse ) ) {
+        if ( Currently.isNullOrEmpty( pStringToParse ) ) {
             return new String[0];
         }
         int count = 1;
@@ -575,7 +371,7 @@ public class Strings {
     }
 
     public static String combine( char pSeparator, String... pStrings ) {
-        if ( Objects.isNullOrEmpty( pStrings ) ) {
+        if ( Currently.isNullOrEmpty( pStrings ) ) {
             return null;
         }
         StringBuilder sb = new StringBuilder();
@@ -613,8 +409,353 @@ public class Strings {
         return pSource;
     }
 
-    public static String defaultIfNull( String pTestString, String pDefault ) {
-        return isNullOrEmpty( pTestString ) ? pDefault : pTestString;
+    /**
+     * Break the Line into chunks based on the Separators, stops if a Separator is not found.
+     *
+     * @param pLine       null will result in null returned.
+     * @param pSeparators of entries, none may be null of empty
+     *
+     * @return the list of the chunks (strings before, between, and after the Separators)
+     */
+    public static List<String> chunk( String pLine, String... pSeparators ) {
+        if ( pLine == null ) {
+            return null;
+        }
+        List<String> zChunks = Lists.newArrayList();
+        if ( Objects.isNullOrEmpty( pSeparators ) ) {
+            zChunks.add( pLine );
+        } else {
+            int zFrom = 0;
+            for ( String zSeparator : pSeparators ) {
+                if ( (zSeparator == null) || (zSeparator.length() == 0) ) {
+                    throw errorNullOrEmpty( "Separator" );
+                }
+                int zAt = pLine.indexOf( zSeparator, zFrom );
+                if ( zAt == -1 ) {
+                    break;
+                }
+                zChunks.add( pLine.substring( zFrom, zAt ) );
+                zFrom = zAt + zSeparator.length();
+            }
+            zChunks.add( pLine.substring( zFrom ) );
+        }
+        return zChunks;
+    }
+
+    /**
+     * Break the Line into chunks based on the Separators, ALL required.
+     *
+     * @param pLine       null will result in null returned.
+     * @param pSeparators of entries, none may be null of empty
+     *
+     * @return the list of the chunks (strings before, between, and after the Separators)
+     */
+    public static String[] chunkRequired( String pLine, String... pSeparators ) {
+        if ( (pLine == null) || Objects.isNullOrEmpty( pSeparators ) ) {
+            return null;
+        }
+        int i, zAt, zFrom = 0;
+        String[] zChunks = new String[pSeparators.length + 1];
+        for ( i = 0; i < pSeparators.length; i++ ) {
+            String zSeparator = pSeparators[i];
+            if ( (zSeparator == null) || (zSeparator.length() == 0) ) {
+                throw errorNullOrEmpty( "Separator" );
+            }
+            if ( -1 == (zAt = pLine.indexOf( zSeparator, zFrom )) ) {
+                return null;
+            }
+            zChunks[i] = pLine.substring( zFrom, zAt );
+            zFrom = zAt + zSeparator.length();
+        }
+        zChunks[i] = pLine.substring( zFrom );
+        return zChunks;
+    }
+
+    public static String[] toArray( Object pToString ) {
+        return copyAsStringsToArray( new String[1], 0, pToString );
+    }
+
+    public static String[] toArray( Object[] pToStrings ) {
+        return ((pToStrings != null) && (pToStrings.length != 0)) ?
+               copyAsStringsToArray( new String[pToStrings.length], 0, pToStrings ) :
+               EMPTY_ARRAY;
+    }
+
+    public static String[] toArray( Object pToString, Object... pToStrings ) {
+        if ( (pToStrings == null) || (pToStrings.length == 0) ) {
+            return toArray( pToString );
+        }
+        String[] zStrings = new String[pToStrings.length + 1];
+        copyAsStringsToArray( zStrings, 0, pToString );
+        return copyAsStringsToArray( zStrings, 1, pToStrings );
+    }
+
+    public static String[] toArray( Collection<?> pToStrings ) {
+        if ( pToStrings != null ) {
+            int zSize = pToStrings.size();
+            if ( zSize != 0 ) {
+                String[] zStrings = new String[zSize];
+                int i = 0;
+                for ( Object zObj : pToStrings ) {
+                    zStrings[i++] = (zObj == null) ? null : zObj.toString();
+                }
+                return zStrings;
+            }
+        }
+        return EMPTY_ARRAY;
+    }
+
+    public static String[] append( String[] pArray1, String... pArray2 ) {
+        Objects<String> zEither = Objects.prepAppend( pArray1, pArray2 );
+        return zEither.hasArray() ? zEither.getArray() :
+               Objects.appendTo( new String[zEither.getArrayLength()], pArray1, pArray2 );
+    }
+
+    public static String removeFromFront( String pSource, String... pStartsWiths ) {
+        if ( pStartsWiths != null ) {
+            for ( String zStartsWith : pStartsWiths ) {
+                if ( pSource.startsWith( zStartsWith ) ) {
+                    pSource = pSource.substring( zStartsWith.length() );
+                }
+            }
+        }
+        return pSource;
+    }
+
+    public static String removeFromEnd( String pSource, String... pEndsWiths ) {
+        if ( pEndsWiths != null ) {
+            for ( String zEndsWith : pEndsWiths ) {
+                if ( pSource.endsWith( zEndsWith ) ) {
+                    pSource = pSource.substring( 0, pSource.length() - zEndsWith.length() );
+                }
+            }
+        }
+        return pSource;
+    }
+
+    public static String maxLineLength( String pText, int pMaxLineLength ) {
+        if ( (pText == null) || (pText.length() < pMaxLineLength) ) {
+            return pText;
+        }
+        LineBuilder zBuilder = new LineBuilder( pMaxLineLength );
+        for ( int i = 0; i < pText.length(); i++ ) {
+            zBuilder.add( pText.charAt( i ) );
+        }
+        return zBuilder.toString();
+    }
+
+    public static String normalizeAsciiTextForContains( String pMessage ) {
+        StringBuilder sb = new StringBuilder();
+        if ( pMessage != null ) {
+            boolean zLastSP = true;
+            sb.append( ' ' );
+            for ( int i = 0; i < pMessage.length(); i++ ) {
+                char c = Character.toLowerCase( pMessage.charAt( i ) );
+                if ( Characters.is7BitAlphaNumeric( c ) ) {
+                    sb.append( c );
+                    zLastSP = false;
+                } else if ( !zLastSP ) {
+                    sb.append( ' ' );
+                    zLastSP = true;
+                }
+            }
+            if ( !zLastSP ) {
+                sb.append( ' ' );
+            }
+        }
+        return sb.toString();
+    }
+
+    @SuppressWarnings("ManualArrayToCollectionCopy")
+    public static String[] filterOutEmptyAndStartsWith( String pStartsWith, String... pSource ) {
+        if ( Objects.isNullOrEmpty( pSource ) ) {
+            return EMPTY_ARRAY;
+        }
+        for ( int i = 0; i < pSource.length; i++ ) {
+            if ( isEmptyOrStartsWith( pSource[i], pStartsWith ) ) {
+                List<String> rv = Lists.newArrayList( pSource.length - 1 );
+                for ( int j = 0; j < i; j++ ) {
+                    rv.add( pSource[j] );
+                }
+                for ( int j = i + 1; j < pSource.length; j++ ) {
+                    String s = pSource[j];
+                    if ( !isEmptyOrStartsWith( s, pStartsWith ) ) {
+                        rv.add( s );
+                    }
+                }
+                return rv.toArray( new String[rv.size()] );
+            }
+        }
+        return pSource;
+    }
+
+    public static boolean isEmptyOrStartsWith( String pSource, String pStartsWith ) {
+        return Currently.insignificant( pSource ) || pSource.startsWith( pStartsWith );
+    }
+
+    public static String[] removeNulls( String... pStrings ) {
+        int zNulls = nullEntries( pStrings );
+        if ( zNulls == 0 ) {
+            return pStrings;
+        }
+        String[] dest = new String[pStrings.length - zNulls];
+        int zTo = 0;
+        for ( String zString : pStrings ) {
+            if ( null != zString ) {
+                dest[zTo++] = zString;
+            }
+        }
+        return dest;
+    }
+
+    public static int nullEntries( String... pStrings ) {
+        int zNulls = 0;
+        if ( pStrings != null ) {
+            for ( String pString : pStrings ) {
+                if ( null == pString ) {
+                    zNulls++;
+                }
+            }
+        }
+        return zNulls;
+    }
+
+    public static boolean isDigits( String pStr ) {
+        for ( int i = 0; i < pStr.length(); i++ ) {
+            if ( !Character.isDigit( pStr.charAt( i ) ) ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isDottedVersionNumber( String pStr ) {
+        if ( pStr.length() > 0 ) {
+            for ( String zPart : parseChar( pStr, '.' ) ) {
+                if ( (zPart.length() == 0) || !isDigits( zPart ) ) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private static String[] copyAsStringsToArray( String[] pToArray, int pStartingIndex, Object... pToStrings ) {
+        for ( Object zObj : pToStrings ) {
+            pToArray[pStartingIndex++] = (zObj == null) ? null : zObj.toString();
+        }
+        return pToArray;
+    }
+
+    private static class LineBuilder {
+        private final StringBuilder mCollector = new StringBuilder();
+        private final int mMaxLineLength;
+        private int mCurrentLength = 0;
+        private boolean mLeadingSpace = false;
+        private StringBuilder mWord = new StringBuilder();
+
+        public LineBuilder( int pMaxLineLength ) {
+            mMaxLineLength = pMaxLineLength;
+        }
+
+        private int currentLength() {
+            int zLength = mCurrentLength + mWord.length();
+            return mLeadingSpace ? zLength + 1 : zLength;
+        }
+
+        private void addNewLine() {
+            mCollector.append( '\n' );
+            mLeadingSpace = false;
+            mCurrentLength = 0;
+        }
+
+        private void addWord() {
+            if ( currentLength() > mMaxLineLength ) {
+                addNewLine();
+            }
+            if ( mLeadingSpace ) {
+                mCurrentLength++;
+                mCollector.append( ' ' );
+                mLeadingSpace = false;
+            }
+            int zLength = mWord.length();
+            if ( zLength != 0 ) {
+                mCurrentLength += zLength;
+                mCollector.append( mWord.toString() );
+                mWord = new StringBuilder();
+            }
+        }
+
+        public void add( char pChar ) {
+            if ( pChar == ' ' ) {
+                addWord();
+                mLeadingSpace = true;
+                return;
+            }
+            if ( pChar == '\n' ) {
+                addWord();
+                addNewLine();
+                return;
+            }
+            mWord.append( pChar );
+        }
+
+        @Override
+        public String toString() {
+            addWord();
+            return mCollector.toString();
+        }
+    }
+
+    // TODO: vvvvvvvvvvvvvvvvvvvvvvvv  NEW  vvvvvvvvvvvvvvvvvvvvvvvv :ODOT \\
+
+    /**
+     * Adjust a String Array so that it is either null (error condition) or has the <code>DesiredLength</code>.
+     * <p/>
+     * Note: The <code>Source</code> (original) array may be return.
+     *
+     * @param pDesiredLength of the resulting array (must NOT be < 0)
+     * @param pSource        array
+     *
+     * @return null if the <code>Source</code> is longer then the <code>DesiredLength</code>; otherwise
+     * an Array that is exactly <code>DesiredLength</code> long (padded with nulls).
+     */
+    public static @Nullable String[] expectArray( int pDesiredLength, @Nullable String[] pSource ) {
+        Integers.assertNonNegative( "DesiredLength", pDesiredLength );
+        int zCurrentLength = (pSource == null) ? 0 : pSource.length;
+        if ( pDesiredLength < zCurrentLength ) {
+            return null;
+        }
+        if ( pDesiredLength == zCurrentLength ) {
+            return pSource;
+        }
+        String[] rv = new String[pDesiredLength];
+        if ( zCurrentLength != 0 ) {
+            System.arraycopy( pSource, 0, rv, 0, zCurrentLength );
+        }
+        return rv;
+    }
+
+    /**
+     * Return an String Array made up of the end elements of <code>Strings</code>, but who's first element is
+     * the <code>FromIndex</code> element of <code>Strings</code>.
+     * <p/>
+     * Note: It is OK for <code>Strings</code> to be too short (or even null).
+     * Note: The <code>Strings</code> (original) array may be return.
+     *
+     * @param pStrings   array
+     * @param pFromIndex is the index into <code>Strings</code> to start the resulting array from (must be >= 0).
+     *
+     * @return null if
+     */
+    public static @Nullable String[] everythingFrom( @Nullable String[] pStrings, int pFromIndex ) {
+        Integers.assertNonNegative( "FromIndex", pFromIndex );
+        if ( (pStrings == null) || (pStrings.length <= pFromIndex) ) {
+            return EMPTY_ARRAY;
+        }
+        String[] rv = new String[pStrings.length - pFromIndex];
+        System.arraycopy( pStrings, pFromIndex, rv, 0, rv.length );
+        return rv;
     }
 
     public static String[] stringToLines( String pString ) {
@@ -658,34 +799,6 @@ public class Strings {
     public static void errorNullOrEmptyOrSpace( String pErrorMessage, String pForm )
             throws IllegalArgumentException {
         error( pForm, pErrorMessage, " not allowed to be null or empty or have any spaces" );
-    }
-
-    public static void errorNullOrEmpty( String pErrorMessage, String pForm )
-            throws IllegalArgumentException {
-        error( pForm, pErrorMessage, " not allowed to be null or empty!" );
-    }
-
-    public static void error( String pForm, String pErrorMessage, String pMessagePlus )
-            throws IllegalArgumentException {
-        if ( isNullOrEmpty( pErrorMessage ) ) {
-            pErrorMessage = ConstrainTo.notNull( pForm );
-        }
-        if ( -1 != pErrorMessage.indexOf( ' ' ) ) {
-            throw new IllegalArgumentException( pErrorMessage );
-        }
-        throw new IllegalArgumentException( pErrorMessage + pMessagePlus );
-    }
-
-    public static String padIt( int pMinDesiredLength, String pIt ) {
-        String rv = ConstrainTo.notNull( pIt );
-        int padBy = pMinDesiredLength - rv.length();
-        return (padBy <= 0) ? rv : (spaces( padBy ) + rv);
-    }
-
-    public static String iTpad( String pIt, int pMinDesiredLength ) {
-        String rv = ConstrainTo.notNull( pIt );
-        int padBy = pMinDesiredLength - rv.length();
-        return (padBy <= 0) ? rv : (rv + spaces( padBy ));
     }
 
     public static String noSpaces( String pSource ) {
@@ -741,7 +854,7 @@ public class Strings {
     }
 
     public static String[] removeStringFromArray( String[] pArray, int pIndexToRemove ) {
-        if ( Objects.isNullOrEmpty( pArray ) || (pIndexToRemove < 0) || (pArray.length <= pIndexToRemove) ) {
+        if ( Currently.isNullOrEmpty( pArray ) || (pIndexToRemove < 0) || (pArray.length <= pIndexToRemove) ) {
             return pArray;
         }
         int zNewLength = pArray.length - 1;
@@ -756,10 +869,10 @@ public class Strings {
     }
 
     public static String[] appendStringArrays( String[] pArray1, String[] pArray2 ) {
-        if ( Objects.isNullOrEmpty( pArray2 ) ) {
+        if ( Currently.isNullOrEmpty( pArray2 ) ) {
             return pArray1;
         }
-        if ( Objects.isNullOrEmpty( pArray1 ) ) {
+        if ( Currently.isNullOrEmpty( pArray1 ) ) {
             return pArray2;
         }
         String[] joined = new String[pArray1.length + pArray2.length];
@@ -824,7 +937,7 @@ public class Strings {
     }
 
     public static boolean isAllUppercaseOrSpaces( String pToTest ) {
-        if ( isNotNullOrEmpty( pToTest ) ) {
+        if ( Currently.isNotNullOrEmpty( pToTest ) ) {
             for ( int i = 0; i < pToTest.length(); i++ ) {
                 char c = pToTest.charAt( i );
                 if ( (c != ' ') && !Character.isUpperCase( c ) ) {
@@ -836,7 +949,7 @@ public class Strings {
     }
 
     public static boolean isAllUppercase( String pToTest ) {
-        if ( isNotNullOrEmpty( pToTest ) ) {
+        if ( Currently.isNotNullOrEmpty( pToTest ) ) {
             for ( int i = 0; i < pToTest.length(); i++ ) {
                 if ( !Character.isUpperCase( pToTest.charAt( i ) ) ) {
                     return false;
@@ -847,10 +960,10 @@ public class Strings {
     }
 
     public static String appendNonEmpties( String pExisting, String pSeparator, String pToAppend ) {
-        if ( isNullOrEmpty( pToAppend ) ) {
+        if ( Currently.isNullOrEmpty( pToAppend ) ) {
             return ConstrainTo.notNull( pExisting ).trim();
         }
-        if ( isNullOrEmpty( pExisting ) ) {
+        if ( Currently.isNullOrEmpty( pExisting ) ) {
             return pToAppend.trim();
         }
         return pExisting.trim() + ConstrainTo.notNull( pSeparator ) + pToAppend.trim();
@@ -907,86 +1020,12 @@ public class Strings {
         }
     }
 
-    public static String assertNotEmptyIfNotNull( String pParamName, String pToBeAsserted )
-            throws IllegalArgumentException {
-        if ( (pToBeAsserted != null) && (pToBeAsserted.length() == 0) ) {
-            throw new IllegalArgumentException( pParamName + ": Not allowed to be empty ('')" );
-        }
-        return pToBeAsserted;
-    }
-
-    public static void assertNotNullNotEmptyNoSpaces( String pErrorMessage, String pStringToAssert )
-            throws IllegalArgumentException {
-        if ( isNullOrEmptyOrSpaces( pStringToAssert ) ) {
-            errorNullOrEmptyOrSpace( pErrorMessage, "String" );
-        }
-    }
-
-    public static void assertNullOrEmpty( String pErrorMessage, String pStringToAssert ) {
-        if ( !isNullOrEmpty( pStringToAssert ) ) {
-            error( "String", pErrorMessage, " must be 'empty' (null, empty, or nothing but whitespace" );
-        }
-    }
-
-    public static String assertNoLeadingOrTrailingWhiteSpace( String pErrorMessage, String pStringToAssert )
-            throws IllegalArgumentException {
-        if ( pStringToAssert != null ) {
-            String rv = pStringToAssert.trim();
-            if ( pStringToAssert.length() != rv.length() ) {
-                error( "String", pErrorMessage, " not allowed to have leading or trailing whitespace" );
-            }
-        }
-        return pStringToAssert;
-    }
-
-    public static String[] assertNotNullNotEmptyAndNoNullsOrEmptiesAndTrim( String pErrorMessage, String[] pStringArrayToAssert )
-            throws IllegalArgumentException {
-        assertNotNullNotEmpty( pErrorMessage, pStringArrayToAssert );
-        return assertNoNullsOrEmptiesAndTrim( pErrorMessage, pStringArrayToAssert );
-    }
-
-    public static void assertNotNullNotEmpty( String pErrorMessage, String[] pStringArrayToAssert )
-            throws IllegalArgumentException {
-        if ( Objects.isNullOrEmpty( pStringArrayToAssert ) ) {
-            errorNullOrEmpty( pErrorMessage, "String[]" );
-        }
-    }
-
-    public static String[] assertNoNullsOrEmptiesAndTrim( String pErrorMessage, String[] pStringArrayToAssert )
-            throws IllegalArgumentException {
-        String[] rv = new String[pStringArrayToAssert.length];
-        for ( int i = 0; i < pStringArrayToAssert.length; i++ ) {
-            String s = ConstrainTo.significantOrNull( pStringArrayToAssert[i] );
-            if ( s == null ) {
-                errorNullOrEmpty( pErrorMessage + "[" + i + "]", "String[]" );
-            }
-            rv[i] = s;
-        }
-        return rv;
-    }
-
     public static String multiLineHelper( String pLine, String pAppend ) {
-        return isNullOrEmpty( pLine ) ? "" : (pLine + pAppend);
+        return Currently.isNullOrEmpty( pLine ) ? "" : (pLine + pAppend);
     }
 
     public static String[] toArray( String pString ) {
         return new String[]{pString};
-    }
-
-    public static String[] toArray( Collection pCollection ) {
-        return (pCollection == null) ? null : toArray( pCollection.toArray() );
-    }
-
-    public static String[] toArray( Object[] pObjects ) {
-        if ( pObjects == null ) {
-            return null;
-        }
-        String[] zStrings = new String[pObjects.length];
-        for ( int i = 0; i < pObjects.length; i++ ) {
-            Object o = pObjects[i];
-            zStrings[i] = (o == null) ? null : o.toString();
-        }
-        return zStrings;
     }
 
     public static List<String> toList( Collection pCollection ) {
@@ -1096,7 +1135,7 @@ public class Strings {
     }
 
     public static boolean isAsciiIdentifier( String pToTest ) {
-        if ( !isNullOrEmpty( pToTest ) ) {
+        if ( !Currently.isNullOrEmpty( pToTest ) ) {
             if ( Characters.isFirstCharAsciiIdentifier( pToTest.charAt( 0 ) ) ) {
                 for ( int i = 1; i < pToTest.length(); i++ ) {
                     if ( !Characters.isNonFirstCharAsciiIdentifier( pToTest.charAt( i ) ) ) {
@@ -1110,7 +1149,7 @@ public class Strings {
     }
 
     public static boolean isNoSpaceAscii( String pToTest ) {
-        if ( !isNullOrEmpty( pToTest ) ) {
+        if ( !Currently.isNullOrEmpty( pToTest ) ) {
             for ( int i = 0; i < pToTest.length(); i++ ) {
                 if ( !Characters.isNoSpaceAscii( pToTest.charAt( i ) ) ) {
                     return false;
@@ -1216,4 +1255,146 @@ public class Strings {
     public static String quote( String pValue ) {
         return (pValue == null) ? null : '"' + cvtTextForDisplay( pValue ) + '"';
     }
+
+    public static String dupChars( char pCharToDup, int pDupCount ) {
+        if ( pDupCount < 1 ) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder( pDupCount );
+        while ( pDupCount-- > 0 ) {
+            sb.append( pCharToDup );
+        }
+        return sb.toString();
+    }
+
+    public static String dup( String pToDup, int pDupCount ) {
+        if ( pToDup == null ) {
+            return null;
+        }
+        if ( pDupCount < 1 ) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder( pDupCount * pToDup.length() );
+        while ( pDupCount-- > 0 ) {
+            sb.append( pToDup );
+        }
+        return sb.toString();
+    }
+
+    public static boolean contains( String pString, String pToFind ) {
+        return Currently.isNotNull( pString ) && Currently.isNotNullOrEmpty( pToFind ) && pString.contains( pToFind );
+    }
+
+    public static boolean contains( String pString, char pToFind ) {
+        return Currently.isNotNull( pString ) && (-1 != pString.indexOf( pToFind ));
+    }
+
+    public static String[] noEmpty( String[] pStrings ) {
+        return (pStrings == null || pStrings.length == 0) ? null : pStrings;
+    }
+
+    public static String[] noEmpties( String[] pStrings ) {
+        if ( pStrings != null ) {
+            for ( int i = pStrings.length; --i >= 0; ) {
+                String zString = ConstrainTo.significantOrNull( pStrings[i] );
+                if ( zString == null ) {
+                    pStrings = removeStringFromArray( pStrings, i );
+                }
+                pStrings[i] = zString;
+            }
+            if ( pStrings.length == 0 ) {
+                pStrings = null;
+            }
+        }
+        return pStrings;
+    }
+
+    public static boolean isBlank( String pLine ) {
+        if ( pLine != null ) {
+            for ( int at = pLine.length(); --at >= 0; ) {
+                if ( pLine.charAt( at ) != ' ' ) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private static IllegalArgumentException failNullOrEmpty( String pWhat ) {
+        return new IllegalArgumentException( pWhat + " Not allowed to be null or empty!" );
+    }
+
+    public static boolean isConstrainedAsciiIdentifier( String pToTest ) {
+        if ( !Currently.isNullOrEmpty( pToTest ) ) {
+            if ( Characters.isAsciiLetter( pToTest.charAt( 0 ) ) ) {
+                for ( int i = 1; i < pToTest.length(); i++ ) {
+                    if ( !Characters.isNonFirstCharAsciiIdentifier( pToTest.charAt( i ) ) ) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Return if <tt>pThis</tt> starts with <tt>pStartsWith</tt> ignoring
+     * the case of the strings
+     * <p/>
+     *
+     * @param pThis       The String to check the front of
+     * @param pStartsWith The String that <tt>pThis</tt>'s front must match
+     *
+     * @return <tt>true</tt> if <tt>pThis</tt> starts with <tt>pStartsWith</tt> ignoring
+     * the case
+     */
+    public static boolean startsWithIgnoreCase( String pThis, String pStartsWith ) {
+        if ( (pThis != null) && (pStartsWith != null) ) {
+            int lenStartsWith = pStartsWith.length();
+            if ( lenStartsWith <= pThis.length() ) {
+                return pStartsWith.equalsIgnoreCase( pThis.substring( 0, lenStartsWith ) );
+            }
+        }
+        return false;
+    }
+
+    public static String trimLeadingSpaces( String pStr ) {
+        if ( (pStr == null) || !pStr.startsWith( " " ) ) {
+            return pStr;
+        }
+        int sLen = pStr.length();
+        for ( int i = 0; i < sLen; i++ ) {
+            if ( pStr.charAt( i ) != ' ' ) {
+                return pStr.substring( i );
+            }
+        }
+        return "";
+    }
+
+    public static String trimTrailingSpaces( String pStr ) {
+        if ( (pStr == null) || !pStr.endsWith( " " ) ) {
+            return pStr;
+        }
+        int sLen = pStr.length();
+        for ( int i = sLen - 1; --i >= 0; ) {
+            if ( pStr.charAt( i ) != ' ' ) {
+                return pStr.substring( 0, i + 1 );
+            }
+        }
+        return "";
+    }
+
+    /**
+     * Returns a substring of the specified text.
+     *
+     * @param pEnd The End index of the substring. If negative, the index used will be "text.length() + End".
+     */
+    public static String substring( String pText, int pStart, int pEnd ) {
+        Confirm.significant( "text", pText );
+        Integers.assertNonNegative( "start", pStart );
+        return pText.substring( pStart, (pEnd >= 0) ? pEnd : pText.length() + pEnd );
+    }
+
+    // TODO: ^^^^^^^^^^^^^^^^^^^^^^^^  NEW  ^^^^^^^^^^^^^^^^^^^^^^^^ :ODOT \\
 }

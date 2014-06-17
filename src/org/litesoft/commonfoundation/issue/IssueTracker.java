@@ -3,7 +3,8 @@ package org.litesoft.commonfoundation.issue;
 import org.litesoft.commonfoundation.base.*;
 import org.litesoft.commonfoundation.indent.*;
 
-public class IssueTracker implements Indentable {
+public class IssueTracker implements IssueCollector,
+                                     Indentable {
     public static final String SEPARATOR = "*****************************************************************************";
 
     /**
@@ -13,22 +14,41 @@ public class IssueTracker implements Indentable {
         mOverrides = ConstrainTo.notNull( pOverrides, IssueOverride.EMPTY_ARRAY );
     }
 
+    @Override
     public boolean hasIssues() {
         return hasWarnings() || hasErrors();
     }
 
+    @Override
     public boolean hasErrors() {
         return mErrors.hasIssues();
     }
 
-    public <T> T addError( Issue pIssue ) {
-        return addIssue( pIssue, IssueOverride.Level.Error );
-    }
-
+    @Override
     public boolean hasWarnings() {
         return mWarnings.hasIssues();
     }
 
+    @Override
+    public <Value> Value addIssueIfNotRecognized( Value pRecognized, Source pSource, String pKeyDetails, String pLookupValue ) {
+        if ( pRecognized == null ) {
+            addWarning( Issue.of( "NotRecognized", pKeyDetails ).with( pLookupValue ).with( pSource ).build() );
+        }
+        return pRecognized;
+    }
+
+    /**
+     * @return null
+     */
+    @Override
+    public <T> T addError( Issue pIssue ) {
+        return addIssue( pIssue, IssueOverride.Level.Error );
+    }
+
+    /**
+     * @return null
+     */
+    @Override
     public <T> T addWarning( Issue pIssue ) {
         return addIssue( pIssue, IssueOverride.Level.Warning );
     }

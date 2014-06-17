@@ -48,14 +48,6 @@ public class Lists {
         return zMerged;
     }
 
-    public static <T> List<T> deNullImmutable( List<T> pList ) {
-        if (isEmpty( pList )) {
-            return empty();
-        }
-        List<T> zList = newArrayList( pList ); // COPY!
-        return Collections.unmodifiableList( zList );
-    }
-
     public static <T> List<T> empty() {
         return Collections.emptyList();
     }
@@ -74,17 +66,17 @@ public class Lists {
         return Collections.unmodifiableList( pToCheck );
     }
 
-    public static boolean isEmpty( List<?> list ) {
-        return (list == null) || list.isEmpty();
+    // TODO: vvvvvvvvvvvvvvvvvvvvvvvv  NEW  vvvvvvvvvvvvvvvvvvvvvvvv :ODOT \\
+
+    public static <T> List<T> deNullImmutable( List<T> pList ) {
+        if ( Currently.isNullOrEmpty( pList )) {
+            return empty();
+        }
+        List<T> zList = newArrayList( pList ); // COPY!
+        return Collections.unmodifiableList( zList );
     }
 
-    public static boolean isNullOrEmpty( List<?> pToCheck ) {
-        return (pToCheck == null || pToCheck.isEmpty());
-    }
-
-    public static boolean isNotNullOrEmpty( List<?> pToCheck ) {
-        return (pToCheck != null && !pToCheck.isEmpty());
-    }
+    // TODO: ^^^^^^^^^^^^^^^^^^^^^^^^  NEW  ^^^^^^^^^^^^^^^^^^^^^^^^ :ODOT \\
 
     public static <T> List<T> of( T pEntry ) {
         ArrayList<T> rv = newArrayList();

@@ -16,8 +16,32 @@ public class Source implements Indentable { // GSON friendly
         return new Source( pSource, this );
     }
 
+    public Source plus( Enum<?> pSource ) {
+        return new Source( pSource.name(), this );
+    }
+
+    public Source plus( PseudoEnum pSource ) {
+        return new Source( pSource.name(), this );
+    }
+
     public Source of( String pValue ) {
         return new Source( source + "='" + pValue + "'", next );
+    }
+
+    public Source of( Enum<?> pValue ) {
+        return of( pValue.name() );
+    }
+
+    public Source of( PseudoEnum pValue ) {
+        return of( pValue.name() );
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public Source getNext() {
+        return next;
     }
 
     @Override
@@ -70,6 +94,21 @@ public class Source implements Indentable { // GSON friendly
         return (this == them) || ((them != null)
                                   && (this.source.equals( them.source ))
                                   && areEqual( this.next, them.next ));
+    }
+
+    public String toString( String pSep ) {
+        return appendTo( new StringBuilder(), pSep ).toString();
+    }
+
+    public StringBuilder appendTo( StringBuilder pSB, String pSep ) {
+        if ( pSB.length() != 0 ) {
+            pSB.append( pSep );
+        }
+        pSB.append( source );
+        if ( next != null ) {
+            next.appendTo( pSB, pSep );
+        }
+        return pSB;
     }
 
     private void reverseOrderAddTo( List<String> pStrings ) {

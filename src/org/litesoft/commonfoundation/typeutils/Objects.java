@@ -5,25 +5,127 @@ import org.litesoft.commonfoundation.base.*;
 
 import java.util.*;
 
-public class Objects {
-    public static final Object[] EMPTY_OBJECT_ARRAY = new Object[0];
-    public static final String NOT_ALLOWED_TO_BE_NULL = ": Not allowed to be null";
+public class Objects<ArrayType> {
+    public static final Object[] EMPTY_ARRAY = new Object[0];
 
-    @SuppressWarnings("ConstantConditions")
-    public static boolean areNonArraysEqual( Object pThis, Object pThat ) {
-        if ( pThis == pThat ) // Same or both null
-        {
-            return true;
-        }
-        // Both CAN'T be null
-        return (pThis != null) ? pThis.equals( pThat ) : pThat.equals( pThis );
+    public static final String OBJECT_CLASS_NAME = Object.class.getName();
+
+    private final int mArrayLength;
+    private final ArrayType[] mArray;
+
+    private Objects( int pArrayLength, ArrayType[] pArray ) {
+        mArrayLength = pArrayLength;
+        mArray = pArray;
     }
 
+    public boolean hasArray() {
+        return (mArrayLength == -1);
+    }
+
+    public int getArrayLength() {
+        return mArrayLength;
+    }
+
+    public ArrayType[] getArray() {
+        return mArray;
+    }
+
+    // TODO: ||||||||||||||||||||||||||||||||||||||||||||||||||||||| :ODOT \\
+
+    public static <T> Objects<T> prepAppend( T[] pCurrent, T[] pAdditional ) {
+        int zAddLength = length( pAdditional );
+        if ( (pCurrent != null) && (0 == zAddLength) ) {
+            return new Objects<T>( -1, pCurrent );
+        }
+        int zCurLength = length( pCurrent );
+        if ( (pAdditional != null) && (0 == zCurLength) ) {
+            return new Objects<T>( -1, pAdditional );
+        }
+        return new Objects<T>( zCurLength + zAddLength, null );
+    }
+
+    public static int length( Object[] pArray ) {
+        return (pArray == null) ? 0 : pArray.length;
+    }
+
+    public static <T> T[] appendTo( T[] pTo, T[] pCurrent, T[] pAdditional ) {
+        Confirm.isNotNull( "To", pTo );
+        int zCurLength = length( pCurrent );
+        int zAddLength = length( pAdditional );
+        if ( pTo.length < (zCurLength + zAddLength) ) {
+            throw new IllegalArgumentException( "'To' array too short" );
+        }
+        if ( zCurLength != 0 ) {
+            System.arraycopy( pCurrent, 0, pTo, 0, zCurLength );
+        }
+        if ( zAddLength != 0 ) {
+            System.arraycopy( pAdditional, 0, pTo, zCurLength, zAddLength );
+        }
+        return pTo;
+    }
+
+    public static RuntimeException nullValueException( String pWhat ) {
+        return new IllegalArgumentException( pWhat + " Not allowed to be null!" );
+    }
+
+    public static boolean areNonArraysEqual( Object pThis, Object pThat ) {
+        return (pThis == pThat) || ((pThis != null) && pThis.equals( pThat ));
+    }
+
+    public static boolean isNullOrEmpty( Object[] pArrayToCheck ) {
+        return ((pArrayToCheck == null) || (pArrayToCheck.length == 0));
+    }
+
+    public static <T> boolean oneOf( T toTest, T... options ) {
+        if ( (toTest != null) && (options != null) ) {
+            for ( T option : options ) {
+                if ( toTest.equals( option ) ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static <T> T oneOfToString( String toTest, T... options ) {
+        if ( (toTest != null) && (options != null) ) {
+            for ( T option : options ) {
+                if ( option != null && toTest.equals( option.toString() ) ) {
+                    return option;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static <T> T oneOfToStringIgnoreCase( String toTest, T... options ) {
+        if ( (toTest != null) && (options != null) ) {
+            for ( T option : options ) {
+                if ( (option != null) && toTest.equalsIgnoreCase( option.toString() ) ) {
+                    return option;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static String toString( Object pObject ) {
+        return (pObject != null) ? pObject.toString() : null;
+    }
+
+    public static int hashCodeFor( Object pObject ) {
+        return (pObject != null) ? pObject.hashCode() : 0;
+    }
+
+    // TODO: vvvvvvvvvvvvvvvvvvvvvvvv  NEW  vvvvvvvvvvvvvvvvvvvvvvvv :ODOT \\
+
+    public static final String NOT_ALLOWED_TO_BE_NULL = ": Not allowed to be null";
+
     public static Object[] appendObjectArrays( Object[] pArray1, Object[] pArray2 ) {
-        if ( isNullOrEmpty( pArray2 ) ) {
+        if ( Currently.isNullOrEmpty( pArray2 ) ) {
             return pArray1;
         }
-        if ( isNullOrEmpty( pArray1 ) ) {
+        if ( Currently.isNullOrEmpty( pArray1 ) ) {
             return pArray2;
         }
         Object[] joined = new Object[pArray1.length + pArray2.length];
@@ -38,34 +140,6 @@ public class Objects {
 
     public static Object[] appendObject( Object[] pCurArray, Object pNewLast ) {
         return appendObjectArrays( pCurArray, new Object[]{pNewLast} );
-    }
-
-    public static boolean isNotNullOrEmpty( Object[] pArrayToCheck ) {
-        return ((pArrayToCheck != null) && (pArrayToCheck.length != 0));
-    }
-
-    public static boolean isNullOrEmpty( Object[] pArrayToCheck ) {
-        return ((pArrayToCheck == null) || (pArrayToCheck.length == 0));
-    }
-
-    public static boolean areArraysEqual( Object[] pThis, Object[] pThat ) {
-        if ( pThis == pThat ) // handles if both are null
-        {
-            return true;
-        }
-        if ( (pThis != null) && (pThat != null) && (pThis.length == pThat.length) ) {
-            for ( int i = pThis.length; --i >= 0; ) {
-                if ( !areEqual( pThis[i], pThat[i] ) ) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean isNotNull( Object pToCheck ) {
-        return (pToCheck != null);
     }
 
     public static int getNonNullEntryCount( Object[] pArrayToCheck ) {
@@ -103,8 +177,8 @@ public class Objects {
                                            Object[] pFrom, int pFromIndex, //
                                            Object[] pTo, int pToIndex ) {
         if ( (pCount > 0) && //
-             isNotNullOrEmpty( pFrom ) && (pFromIndex < pFrom.length) && //
-             isNotNullOrEmpty( pTo ) && (pToIndex < pTo.length) ) {
+             Currently.isNotNullOrEmpty( pFrom ) && (pFromIndex < pFrom.length) && //
+             Currently.isNotNullOrEmpty( pTo ) && (pToIndex < pTo.length) ) {
             pCount = lesserOf( pCount, pTo, pToIndex = unNegateIndex( pTo, pToIndex ) );
             pCount = lesserOf( pCount, pFrom, pFromIndex = unNegateIndex( pFrom, pFromIndex ) );
             while ( pCount-- > 0 ) {
@@ -178,17 +252,6 @@ public class Objects {
         return isNullEquivalent( pThis ) && isNullEquivalent( pThat );
     }
 
-    public static boolean areEqual( Object pThis, Object pThat ) {
-        if ( areNonArraysEqual( pThis, pThat ) ) {
-            return true;
-        }
-        // Both CAN'T be null
-        if ( (pThis instanceof Object[]) && (pThat instanceof Object[]) ) {
-            return areArraysEqual( (Object[]) pThis, (Object[]) pThat );
-        }
-        return (pThis instanceof int[]) && (pThat instanceof int[]) && Integers.areArraysEqual( (int[]) pThis, (int[]) pThat );
-    }
-
     public static String deNullToString( Object value, Object defaultValue ) {
         return ConstrainTo.firstNonNull( noEmptyToString( value ), noEmptyToString( defaultValue ) );
     }
@@ -202,7 +265,7 @@ public class Objects {
     }
 
     public static String combine( String pSeparator, Object... pObjects ) {
-        if ( isNullOrEmpty( pObjects ) ) {
+        if ( Currently.isNullOrEmpty( pObjects ) ) {
             return null;
         }
         StringBuilder sb = new StringBuilder();
@@ -266,20 +329,13 @@ public class Objects {
         return ConstrainTo.significantOrNull( (pObject != null) ? pObject.toString() : null );
     }
 
-    public static String toString( Object pObject ) {
-        if ( pObject != null ) {
-            String rv = pObject.toString();
-            if ( rv != null ) {
-                return rv;
-            }
-        }
-        return null;
-    }
-
-    public static boolean isOneOf( Object pToFind, Object[] pToSearch ) {
+    /**
+     * Not used where T is itself an array!
+     */
+    public static <T> boolean isOneOf( T pToFind, T... pToSearch ) {
         if ( pToSearch != null ) {
             for ( int i = pToSearch.length; --i >= 0; ) {
-                if ( areEqual( pToFind, pToSearch[i] ) ) {
+                if ( Currently.areEqual( pToFind, pToSearch[i] ) ) {
                     return true;
                 }
             }
@@ -287,7 +343,10 @@ public class Objects {
         return false;
     }
 
-    public static <T> T assertOneOf( T pToFind, T[] pToSearch ) {
+    /**
+     * Not used where T is itself an array!
+     */
+    public static <T> T assertOneOf( T pToFind, T... pToSearch ) {
         if ( isOneOf( pToFind, pToSearch ) ) {
             return pToFind;
         }
@@ -336,19 +395,9 @@ public class Objects {
         return Strings.iTpad( "" + pIt, pMinDesiredLength );
     }
 
-    public static boolean areNotNull( Object... pToChecks ) {
-        if ( pToChecks == null ) {
-            return false;
-        }
-        for ( Object toCheck : pToChecks ) {
-            if ( toCheck == null ) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public static boolean hasText( Object pValue ) {
         return (pValue != null) && (pValue.toString().trim().length() != 0);
     }
+
+    // TODO: ^^^^^^^^^^^^^^^^^^^^^^^^  NEW  ^^^^^^^^^^^^^^^^^^^^^^^^ :ODOT \\
 }

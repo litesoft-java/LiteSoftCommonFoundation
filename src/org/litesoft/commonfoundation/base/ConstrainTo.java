@@ -66,8 +66,7 @@ public class ConstrainTo {
         return IllegalArgument.ifNull( "notNull Default", pDefault );
     }
 
-    public static
-    @NotNull <T> T notNull( T pToCheck, @NotNull Supplier<T> pDefault ) {
+    public static @NotNull <T> T notNull( T pToCheck, @NotNull Supplier<T> pDefault ) {
         if ( pToCheck != null ) {
             return pToCheck;
         }

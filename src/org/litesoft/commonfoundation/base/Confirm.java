@@ -4,6 +4,44 @@ import java.util.*;
 
 @SuppressWarnings("UnusedDeclaration")
 public class Confirm {
+
+    // TODO: vvvvvvvvvvvvvvvvvvvvvvvv  NEW  vvvvvvvvvvvvvvvvvvvvvvvv :ODOT \\
+
+    public static String significantAsIs( String pReferenceLabel, String pToCheck )
+            throws IllegalArgumentException {
+        String zSignificant = significant( pReferenceLabel, pToCheck );
+        if ( zSignificant.length() != pToCheck.length() ) {
+            throw IllegalArgument.exception( pReferenceLabel, "may not have leading or trailing spaces: " + pToCheck );
+        }
+        return pToCheck;
+    }
+
+    public static String nullOrSignificantAsIs( String pReferenceLabel, String pToCheck )
+            throws IllegalArgumentException {
+        return (pToCheck == null) ? null : significantAsIs( pReferenceLabel, pToCheck );
+    }
+
+    public static String nullOrNotEmpty( String pReferenceLabel, String pToCheck )
+            throws IllegalArgumentException {
+        if ( (pToCheck != null) && (pToCheck.length() == 0) ) {
+            IllegalArgument.ifEmpty( pReferenceLabel, pToCheck, pToCheck.length() );
+        }
+        return pToCheck;
+    }
+
+    public static String[] notNullNotEmptyAllSignificant( String pReferenceLabel, String[] pToTest )
+            throws IllegalArgumentException {
+        String[] rv = new String[isNotNullOrEmpty( pReferenceLabel, pToTest ).length];
+        for ( int i = 0; i < pToTest.length; i++ ) {
+            if ( null == (rv[i] = ConstrainTo.significantOrNull( pToTest[i] )) ) {
+                throw IllegalArgument.ofEmpty( pReferenceLabel + "[" + i + "]" );
+            }
+        }
+        return rv;
+    }
+
+    // TODO: ^^^^^^^^^^^^^^^^^^^^^^^^  NEW  ^^^^^^^^^^^^^^^^^^^^^^^^ :ODOT \\
+
     public static void isNull( String pReferenceLabel, Object pToTest )
             throws IllegalArgumentException {
         IllegalArgument.ifNotNull( pReferenceLabel, pToTest );
@@ -54,8 +92,9 @@ public class Confirm {
 
     public static String insignificant( String pReferenceLabel, String pToCheck ) {
         if ( null != pToCheck ) {
-            if ((pToCheck = pToCheck.trim()).length() != 0)
-                throw IllegalArgument.exception( pReferenceLabel, "was NOT empty, but: " + pToCheck);
+            if ( (pToCheck = pToCheck.trim()).length() != 0 ) {
+                throw IllegalArgument.exception( pReferenceLabel, "was NOT empty, but: " + pToCheck );
+            }
         }
         return null;
     }
@@ -127,7 +166,7 @@ public class Confirm {
         return significant( pReferenceLabel, (pToTest != null) ? pToTest.toString() : null );
     }
 
-    public static void assertEndsWith( String pReferenceLabel, String pToTest, String pForString ) {
+    public static void endsWith( String pReferenceLabel, String pToTest, String pForString ) {
         if ( !pToTest.endsWith( pForString ) ) {
             throw IllegalArgument.exception( pReferenceLabel, "'" + pToTest + "' did not end with '" + pForString + "'!" );
         }

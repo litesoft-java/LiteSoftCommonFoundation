@@ -1,10 +1,20 @@
 // This Source Code is in the Public Domain per: http://unlicense.org
 package org.litesoft.commonfoundation.typeutils;
 
+import org.litesoft.commonfoundation.base.*;
+
 import java.util.*;
 
+@SuppressWarnings({"Convert2Diamond", "UnusedDeclaration"})
 public class Maps {
-    @SuppressWarnings("Convert2Diamond")
+    public static <K, V> IdentityHashMap<K, V> newIdentityHashMap() {
+        return new IdentityHashMap<K, V>();
+    }
+
+    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap() {
+        return new LinkedHashMap<K, V>();
+    }
+
     public static <K, V> Map<K, V> newHashMap() {
         return new HashMap<K, V>();
     }
@@ -12,6 +22,15 @@ public class Maps {
     public static <K, V> Map<K, V> empty() {
         return Collections.emptyMap();
     }
+
+    public static <K, V> Map<K, V> deNullMutable( Map<K, V> map ) {
+        if ( map != null ) { // Generics says can NOT be a Tertiary!
+            return map;
+        }
+        return newHashMap();
+    }
+
+    // TODO: vvvvvvvvvvvvvvvvvvvvvvvv  NEW  vvvvvvvvvvvvvvvvvvvvvvvv :ODOT \\
 
     public static <K, V> Map<K, V> copyHashMap( Map<K, V> pSource ) {
         if ( pSource == null || pSource.isEmpty() ) {
@@ -22,7 +41,7 @@ public class Maps {
         return rv;
     }
 
-    public static String[] stringMapToStringArray( Map<String, String> pMap ) {
+    public static String[] ToStringArray( Map<String, String> pMap ) {
         if ( pMap == null || pMap.isEmpty() ) {
             return Strings.EMPTY_ARRAY;
         }
@@ -72,7 +91,7 @@ public class Maps {
 
     public static Map<String, String> addPropertiesTo( Map<String, String> pMap, String... pProperty_NameValues )
             throws IllegalArgumentException {
-        if ( Objects.isNotNullOrEmpty( pProperty_NameValues ) ) {
+        if ( Currently.isNotNullOrEmpty( pProperty_NameValues ) ) {
             if ( (pProperty_NameValues.length & 1) != 0 ) {
                 throw new IllegalArgumentException( "Attempt to add Properties that were NOT Name/Value pairs" );
             }
@@ -81,5 +100,67 @@ public class Maps {
             }
         }
         return pMap;
+    }
+
+    // TODO: ^^^^^^^^^^^^^^^^^^^^^^^^  NEW  ^^^^^^^^^^^^^^^^^^^^^^^^ :ODOT \\
+
+    public static void addPairTo( Map<String, String> map, String key, String value ) {
+        if ( Currently.significant( value ) ) {
+            map.put( key, value );
+        }
+    }
+
+    public static <E extends Enum<E>> void addPairTo( Map<String, String> map, String key, E value ) {
+        if ( value != null ) {
+            map.put( key, value.name() );
+        }
+    }
+
+    public static LinkedHashMap<String, String> newLinkedHashMap( String key, String value, String... additionalKeyValuePairs ) {
+        LinkedHashMap<String, String> zMap = newLinkedHashMap();
+        addPairTo( zMap, key, value );
+        if ( additionalKeyValuePairs != null ) {
+            if ( !Currently.isEven( additionalKeyValuePairs.length ) ) {
+                throw new IllegalArgumentException( "key-value(s) not paired!" );
+            }
+            for ( int i = 0; i < additionalKeyValuePairs.length; ) {
+                String zKey = additionalKeyValuePairs[i++];
+                String zValue = additionalKeyValuePairs[i++];
+                zMap.put( zKey, zValue );
+            }
+        }
+        return zMap;
+    }
+
+    public static String makeStringKey( Object pKeyPart0, Object... pKeyPartNths ) {
+        String zKey = pKeyPart0.toString();
+        if ( pKeyPartNths != null ) {
+            for ( Object zNth : pKeyPartNths ) {
+                zKey += ":" + zNth;
+            }
+        }
+        return zKey;
+    }
+
+    public static <V> V fromStringKeyed( Map<String, V> pMap, Object pKeyPart0, Object... pKeyPartNths ) {
+        return pMap.get( makeStringKey( pKeyPart0, pKeyPartNths ) );
+    }
+
+    public static <V> Builder<V> stringKeyedBuilder( V pValue, Object pKeyPart0, Object... pKeyPartNths ) {
+        return new Builder<V>().add( pValue, pKeyPart0, pKeyPartNths );
+    }
+
+    public static class Builder<V> {
+        private Map<String, V> mMap = newHashMap();
+
+        public Builder<V> add( V pValue, Object pKeyPart0, Object... pKeyPartNths ) {
+            String zKey = makeStringKey( pKeyPart0, pKeyPartNths );
+            Confirm.isNull( "Duplicate Entry for: " + zKey, mMap.put( zKey, pValue ) );
+            return this;
+        }
+
+        public Map<String, V> toMap() {
+            return mMap;
+        }
     }
 }
