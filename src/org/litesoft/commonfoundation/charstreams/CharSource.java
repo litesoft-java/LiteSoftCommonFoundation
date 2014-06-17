@@ -36,4 +36,28 @@ public interface CharSource {
      * Return the Last Offset (from the stream), which the previous get/getRequired read from (it may be -1 if stream has not been successfully read from).
      */
     public int getLastOffset();
+
+    /**
+     * Return a string (and consume the characters) from the current position up to (but not including) the position of the 'c' character.  OR "" if 'c' is not found (nothing consumed).
+     */
+    public String getUpTo( char c );
+
+    /**
+     * Consume all the spaces (NOT white space) until either there are no more characters or a non space is encountered (NOT consumed).
+     *
+     * @return true if there are more characters.
+     */
+    public boolean consumeSpaces();
+
+    /**
+     * Return a string (and consume the characters) from the current position thru the end of the characters OR up to (but not including) a character that is not a visible 7-bit ascii character (' ' < c <= 126).
+     */
+    public String getUpToNonVisible7BitAscii();
+
+    /**
+     * Consume all the non-visible 7-bit ascii characters (visible c == ' ' < c <= 126) until either there are no more characters or a visible 7-bit ascii character is encountered (NOT consumed).
+     *
+     * @return true if there are more characters.
+     */
+    public boolean consumeNonVisible7BitAscii();
 }

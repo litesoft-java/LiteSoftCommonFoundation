@@ -5,12 +5,24 @@ import org.litesoft.commonfoundation.typeutils.*;
 import java.util.*;
 
 public class Currently {
+
+    // TODO: vvvvvvvvvvvvvvvvvvvvvvvv  NEW  vvvvvvvvvvvvvvvvvvvvvvvv :ODOT \\
+
     public static boolean isNullOrEmpty( String pStringToCheck ) {
         return ((pStringToCheck == null) || (pStringToCheck.trim().length() == 0));
     }
 
     public static boolean isNotNullOrEmpty( String pStringToCheck ) {
         return ((pStringToCheck != null) && (pStringToCheck.trim().length() != 0));
+    }
+
+    // TODO: ^^^^^^^^^^^^^^^^^^^^^^^^  NEW  ^^^^^^^^^^^^^^^^^^^^^^^^ :ODOT \\
+
+    @SuppressWarnings("StringEquality")
+    public static boolean areEqualIgnoreCase( String pStr1, String pStr2 ) {
+        return (pStr1 == pStr2) || // Same String or both null
+               ((pStr1 != null) && pStr1.equalsIgnoreCase( pStr2 )) ||
+               ((pStr2 != null) && pStr2.equalsIgnoreCase( pStr1 ));
     }
 
     public static boolean completelyInsignificant( String... pToTest ) {
@@ -22,15 +34,6 @@ public class Currently {
             }
         }
         return true;
-    }
-
-    // TODO: ||||||||||||||||||||||||||||||||||||||||||||||||||||||| :ODOT \\
-
-    @SuppressWarnings("StringEquality")
-    public static boolean areEqualIgnoreCase( String pStr1, String pStr2 ) {
-        return (pStr1 == pStr2) || // Same String or both null
-               ((pStr1 != null) && pStr1.equalsIgnoreCase( pStr2 )) ||
-               ((pStr2 != null) && pStr2.equalsIgnoreCase( pStr1 ));
     }
 
     public static boolean insignificant( String pToTest ) {

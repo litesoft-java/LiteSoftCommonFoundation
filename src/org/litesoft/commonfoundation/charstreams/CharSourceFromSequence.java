@@ -5,7 +5,7 @@ import org.litesoft.commonfoundation.annotations.*;
 import org.litesoft.commonfoundation.base.*;
 
 public class CharSourceFromSequence implements CharSource {
-    private String mSource;
+    private final String mSource;
     private int mFrom, mTo;
 
     public CharSourceFromSequence( @Nullable CharSequence pSource, int pFrom ) {
@@ -66,7 +66,50 @@ public class CharSourceFromSequence implements CharSource {
     }
 
     @Override
+    public String getUpTo( char c ) {
+        int at = mSource.indexOf( c, mFrom );
+        if ( at == -1 ) {
+            return "";
+        }
+        String rv = mSource.substring( mFrom, at );
+        mFrom = at;
+        return rv;
+    }
+
+    @Override
+    public boolean consumeSpaces() {
+        while ( peek() == ' ' ) {
+            mFrom++;
+        }
+        return anyRemaining();
+    }
+
+    @Override
+    public String getUpToNonVisible7BitAscii() {
+        if ( !anyRemaining() ) {
+            return "";
+        }
+        int zFrom = mFrom;
+        for ( int c = peek(); (c != -1) && isVisible7BitAscii( c ); c = peek() ) {
+            mFrom++;
+        }
+        return mSource.substring( zFrom, mFrom );
+    }
+
+    @Override
+    public boolean consumeNonVisible7BitAscii() {
+        for ( int c = peek(); (c != -1) && !isVisible7BitAscii( c ); c = peek() ) {
+            mFrom++;
+        }
+        return anyRemaining();
+    }
+
+    @Override
     public String toString() {
         return mSource.substring( mFrom, mTo );
+    }
+
+    private boolean isVisible7BitAscii( int c ) {
+        return (' ' < c) && (c <= 126);
     }
 }
