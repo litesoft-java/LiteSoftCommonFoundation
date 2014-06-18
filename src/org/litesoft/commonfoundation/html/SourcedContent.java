@@ -52,9 +52,12 @@ public class SourcedContent {
 
     public SourcedContent deeper( String pLevel, String pFrom, String pUpto, String... pToRemove ) {
         int zFromAt = indexOf( pFrom );
-        int zUptoAt = indexOf( pUpto, zFromAt + 1 );
-        if ( (zFromAt == -1) || (zUptoAt == -1) ) {
-            throw exception( "Unable to locate " + pLevel + " w/ Boundaries '" + pFrom + "' and '" + pUpto + "'", zFromAt, zUptoAt );
+        if ( zFromAt == -1 ) {
+            throw exception( "Unable to locate " + pLevel + " w/ Upper Boundary '" + pFrom + "'" );
+        }
+        int zUptoAt = (pUpto != null) ? indexOf( pUpto, zFromAt + 1 ) : mContent.length();
+        if ( zUptoAt == -1 ) {
+            throw exception( "Unable to locate " + pLevel + " w/ Boundaries '" + pFrom + "' and '" + pUpto + "'" );
         }
         return deeper( pLevel, zFromAt + pFrom.length(), zUptoAt ).remove( null, pToRemove );
     }
