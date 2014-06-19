@@ -1,7 +1,5 @@
 package org.litesoft.commonfoundation.base;
 
-import org.litesoft.commonfoundation.typeutils.*;
-
 import java.util.*;
 
 public class Currently {
@@ -44,7 +42,7 @@ public class Currently {
         return ((pToTest != null) && (pToTest.trim().length() != 0));
     }
 
-    public static <T> boolean areEqual(T[] pObjects1, T... pObjects2) {
+    public static <T> boolean areEqual( T[] pObjects1, T... pObjects2 ) {
         if ( pObjects1 != pObjects2 ) { // Not Same or not both null
             if ( (pObjects1 == null) || (pObjects2 == null) || (pObjects1.length != pObjects2.length) ) {
                 return false;
@@ -100,7 +98,6 @@ public class Currently {
     public static boolean isNullOrEmpty( Object[] pArrayToCheck ) {
         return ((pArrayToCheck == null) || (pArrayToCheck.length == 0));
     }
-
 
     public static boolean isNotNull( Object pToCheck ) {
         return (pToCheck != null);

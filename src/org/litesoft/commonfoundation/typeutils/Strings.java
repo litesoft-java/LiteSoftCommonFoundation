@@ -75,30 +75,9 @@ public class Strings {
     }
 
     public static String iTpad( String pIt, int pMinDesiredLength ) {
-
         String rv = ConstrainTo.notNull( pIt );
         int padBy = pMinDesiredLength - rv.length();
         return (padBy <= 0) ? rv : (rv + spaces( padBy ));
-    }
-
-    public static IllegalArgumentException errorNullOrEmpty( String pWhat ) {
-        return new IllegalArgumentException( pWhat + " Not allowed to be null or empty!" );
-    }
-
-    public static void errorNullOrEmpty( String pErrorMessage, String pForm )
-            throws IllegalArgumentException {
-        error( pForm, pErrorMessage, " not allowed to be null or empty!" );
-    }
-
-    public static void error( String pForm, String pErrorMessage, String pMessagePlus )
-            throws IllegalArgumentException {
-        if ( Currently.insignificant( pErrorMessage ) ) {
-            pErrorMessage = ConstrainTo.notNull( pForm );
-        }
-        if ( -1 != pErrorMessage.indexOf( ' ' ) ) {
-            throw new IllegalArgumentException( pErrorMessage );
-        }
-        throw new IllegalArgumentException( pErrorMessage + pMessagePlus );
     }
 
     public static boolean hasNoSurroundingWhiteSpace( String pString ) {
@@ -726,11 +705,35 @@ public class Strings {
         }
     }
 
+    private static IllegalArgumentException failNullOrEmpty( String pWhat ) {
+        return new IllegalArgumentException( pWhat + " Not allowed to be null or empty!" );
+    }
+
+    public static IllegalArgumentException errorNullOrEmpty( String pWhat ) {
+        return new IllegalArgumentException( pWhat + " Not allowed to be null or empty!" );
+    }
+
     public static String[] deNull( String[] pLines ) {
         return (pLines != null) ? pLines : EMPTY_ARRAY;
     }
 
     // TODO: vvvvvvvvvvvvvvvvvvvvvvvv  NEW  vvvvvvvvvvvvvvvvvvvvvvvv :ODOT \\
+
+    public static void errorNullOrEmpty( String pErrorMessage, String pForm )
+            throws IllegalArgumentException {
+        error( pForm, pErrorMessage, " not allowed to be null or empty!" );
+    }
+
+    public static void error( String pForm, String pErrorMessage, String pMessagePlus )
+            throws IllegalArgumentException {
+        if ( Currently.insignificant( pErrorMessage ) ) {
+            pErrorMessage = ConstrainTo.notNull( pForm );
+        }
+        if ( -1 != pErrorMessage.indexOf( ' ' ) ) {
+            throw new IllegalArgumentException( pErrorMessage );
+        }
+        throw new IllegalArgumentException( pErrorMessage + pMessagePlus );
+    }
 
     /**
      * Adjust a String Array so that it is either null (error condition) or has the <code>DesiredLength</code>.
@@ -1341,10 +1344,6 @@ public class Strings {
             }
         }
         return true;
-    }
-
-    private static IllegalArgumentException failNullOrEmpty( String pWhat ) {
-        return new IllegalArgumentException( pWhat + " Not allowed to be null or empty!" );
     }
 
     public static boolean isConstrainedAsciiIdentifier( String pToTest ) {
