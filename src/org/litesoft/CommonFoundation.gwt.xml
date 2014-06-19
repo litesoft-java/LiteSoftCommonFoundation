@@ -1,0 +1,6 @@
+<module>
+    <inherits name='org.litesoft.Deprecated'/>
+    <inherits name='java.util.jdk8functions'/>
+
+    <source path="commonfoundation"/>
+</module>

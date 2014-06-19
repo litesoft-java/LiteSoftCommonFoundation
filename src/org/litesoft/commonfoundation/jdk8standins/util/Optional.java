@@ -1,8 +1,7 @@
 package org.litesoft.commonfoundation.jdk8standins.util;
 
-import org.litesoft.commonfoundation.jdk8standins.function.*;
-
 import java.util.*;
+import java.util.function.*;
 
 public class Optional<T> {
     @SuppressWarnings("unchecked")

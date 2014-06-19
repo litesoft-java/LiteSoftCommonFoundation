@@ -1,9 +1,9 @@
 package org.litesoft.commonfoundation.base;
 
 import org.litesoft.commonfoundation.annotations.*;
-import org.litesoft.commonfoundation.jdk8standins.function.*;
 
 import java.util.*;
+import java.util.function.*;
 
 @SuppressWarnings({"unchecked", "UnusedDeclaration"})
 public class ConstrainTo {

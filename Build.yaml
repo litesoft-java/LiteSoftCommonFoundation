@@ -5,5 +5,6 @@ classpath:
 
 resources: 
 - $source$
+- src|**.xml
 - LICENSE
 
