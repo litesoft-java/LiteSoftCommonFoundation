@@ -106,6 +106,14 @@ public class Integers extends Numerics {
         return pValue;
     }
 
+    public static int assertFromThru( String pName, int pValue, int pFrom, int pThru )
+            throws IllegalArgumentException {
+        if ( (pValue < pFrom) || (pThru < pValue) ) {
+            throw new IllegalArgumentException( pName + "must be (" + pFrom + " <= x <= " + pThru + "), but was: " + pValue );
+        }
+        return pValue;
+    }
+
     public static void assertNotEqual( String pObjectName, int pNotExpected, int pActual )
             throws IllegalArgumentException {
         if ( pNotExpected == pActual ) {

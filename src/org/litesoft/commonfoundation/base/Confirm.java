@@ -1,5 +1,7 @@
 package org.litesoft.commonfoundation.base;
 
+import java8.util.function.*;
+
 import java.util.*;
 
 @SuppressWarnings("UnusedDeclaration")
@@ -104,13 +106,11 @@ public class Confirm {
         return IllegalArgument.ifNotEqual( pReferenceLabel, pToTest, true );
     }
 
-    public static boolean isFalse( String pReferenceLabel, boolean pToTest )
-            throws IllegalArgumentException {
+    public static boolean isFalse( String pReferenceLabel, boolean pToTest ) {
         return IllegalArgument.ifNotEqual( pReferenceLabel, pToTest, false );
     }
 
-    public static <T> T isEqual( String pReferenceLabel, T pToTest, T pExpected )
-            throws IllegalArgumentException {
+    public static <T> T isEqual( String pReferenceLabel, T pToTest, T pExpected ) {
         return IllegalArgument.ifNotEqual( pReferenceLabel, pToTest, pExpected );
     }
 
@@ -145,20 +145,44 @@ public class Confirm {
     }
 
     public static <T> void areEqual( T pExpected, T pActual ) {
-        isEqual( null, pActual, pExpected );
+        areEqual( null, pActual, pExpected );
     }
 
     public static void areEqual( int pExpected, int pActual ) {
-        isEqual( null, pActual, pExpected );
+        areEqual( null, pActual, pExpected );
     }
 
     public static void areEqual( long pExpected, long pActual ) {
-        isEqual( null, pActual, pExpected );
+        areEqual( null, pActual, pExpected );
     }
 
     public static void areEqualIgnoreCase( String pReferenceLabel, String pExpected, String pActual ) {
         if ( !Currently.areEqualIgnoreCase( pExpected, pActual ) ) {
-            isEqual( null, pActual, pExpected );
+            throw IllegalArgument.ofNotEqual( pReferenceLabel, pActual, pExpected );
+        }
+    }
+
+    public static <T> void areEqual( Supplier<String> pWhatSource, T pExpected, T pActual ) {
+        if ( !Currently.areEqual( pExpected, pActual ) ) {
+            throw IllegalArgument.ofNotEqual( pWhatSource, pActual, pExpected );
+        }
+    }
+
+    public static void areEqual( Supplier<String> pWhatSource, int pExpected, int pActual ) {
+        if ( !Currently.areEqual( pExpected, pActual ) ) {
+            throw IllegalArgument.ofNotEqual( pWhatSource, pActual, pExpected );
+        }
+    }
+
+    public static void areEqual( Supplier<String> pWhatSource, long pExpected, long pActual ) {
+        if ( !Currently.areEqual( pExpected, pActual ) ) {
+            throw IllegalArgument.ofNotEqual( pWhatSource, pActual, pExpected );
+        }
+    }
+
+    public static void areEqualIgnoreCase( Supplier<String> pWhatSource, String pExpected, String pActual ) {
+        if ( !Currently.areEqualIgnoreCase( pExpected, pActual ) ) {
+            throw IllegalArgument.ofNotEqual( pWhatSource, pActual, pExpected );
         }
     }
 

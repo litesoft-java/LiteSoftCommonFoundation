@@ -4,9 +4,12 @@ import org.litesoft.commonfoundation.base.*;
 import org.litesoft.commonfoundation.indent.*;
 import org.litesoft.commonfoundation.typeutils.*;
 
+import java8.util.function.*;
+
 import java.util.*;
 
-public class Source implements Indentable { // GSON friendly
+public class Source implements Indentable,
+                               Supplier<String> { // GSON friendly
 
     public Source( String pSource ) {
         this( pSource, null );
@@ -60,6 +63,11 @@ public class Source implements Indentable { // GSON friendly
             next.appendTo( pWriter );
             pWriter.outdent();
         }
+    }
+
+    @Override
+    public String get() {
+        return toString( " in " );
     }
 
     public List<String> toList() {

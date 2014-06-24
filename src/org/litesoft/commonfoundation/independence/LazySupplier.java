@@ -4,7 +4,7 @@ package org.litesoft.commonfoundation.independence;
 import org.litesoft.commonfoundation.annotations.*;
 import org.litesoft.commonfoundation.base.*;
 
-import java.util.function.*;
+import java8.util.function.*;
 
 public abstract class LazySupplier<T> implements Supplier<T> {
     private T mInstance;

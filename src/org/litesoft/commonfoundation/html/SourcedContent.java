@@ -18,12 +18,7 @@ public class SourcedContent {
     }
 
     public String getErrorPrefix() {
-        StringBuilder sb = new StringBuilder();
-        sb.append( mSource.getSource() );
-        for ( Source zSource = mSource.getNext(); zSource != null; zSource = zSource.getNext() ) {
-            sb.append( " in" ).append( zSource.getSource() );
-        }
-        return sb.toString();
+        return mSource.toString( " in" );
     }
 
     public String getContent() {

@@ -1,6 +1,6 @@
 package org.litesoft.commonfoundation.iterators;
 
-public class DescriptiveArrayIterator<T> extends ArrayIterator<T> {
+public class DescriptiveArrayIterator<T> extends ArrayIterator<T> implements DescriptiveIterator<T> {
     private final String mIndexPrefixTextForDescription;
     private final int mIndexAdjustment;
 
@@ -8,6 +8,10 @@ public class DescriptiveArrayIterator<T> extends ArrayIterator<T> {
         super( pArray );
         mIndexPrefixTextForDescription = pIndexPrefixTextForDescription;
         mIndexAdjustment = pIndexAdjustment;
+    }
+
+    public DescriptiveArrayIterator( String pIndexPrefixTextForDescription, T[] pArray ) {
+        this( pIndexPrefixTextForDescription, 0, pArray );
     }
 
     @Override

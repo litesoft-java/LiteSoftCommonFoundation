@@ -1,6 +1,8 @@
 // This Source Code is in the Public Domain per: http://unlicense.org
 package org.litesoft.commonfoundation.base;
 
+import java8.util.function.*;
+
 /**
  * @author George Smith
  * @version 1.0 02/02/02 Initial Version
@@ -88,12 +90,31 @@ public class IllegalArgument {
     }
 
     public static IllegalArgumentException ofNotEqual( String pReferenceLabel, Object pActual, Object pExpected ) {
-        return exception( ConstrainTo.notNull( pReferenceLabel, "Values Mismatch" ),
-                          "\n    Expected '" + pExpected + "'," +
-                          "\n     but was '" + pActual + "'!" );
+        return exception( notEqualText( ConstrainTo.notNull( pReferenceLabel, "Values Mismatch" ), pActual, pExpected ) );
+    }
+
+    public static IllegalArgumentException ofNotEqual( Supplier<String> pWhatSource, Object pActual, Object pExpected ) {
+        String zMessage = notEqualText( "Values Mismatch", pActual, pExpected );
+        if ( pWhatSource != null ) {
+            String zSource = pWhatSource.get();
+            if ( (zSource != null) && ((zSource = zSource.trim()).length() != 0) ) {
+                zMessage += "\n @ " + zSource;
+            }
+        }
+        return exception( zMessage );
+    }
+
+    public static String notEqualText( String pPrefixText, Object pActual, Object pExpected ) {
+        return pPrefixText +
+               "\n    Expected '" + pExpected + "'," +
+               "\n     but was '" + pActual + "'!";
     }
 
     public static IllegalArgumentException exception( String pReferenceLabel, String pWhy ) {
         return new IllegalArgumentException( pReferenceLabel + " " + pWhy );
+    }
+
+    public static IllegalArgumentException exception( String pMessage ) {
+        return new IllegalArgumentException( pMessage );
     }
 }
