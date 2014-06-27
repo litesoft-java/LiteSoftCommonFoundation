@@ -8,7 +8,7 @@ public class SourcedContent {
 
     public SourcedContent( Source pSource, String pContent ) {
         mSource = Confirm.isNotNull( "Source", pSource );
-        mContent = ConstrainTo.notNull( pContent ).trim();
+        mContent = ConstrainTo.notNull( pContent );
     }
 
     public SourcedContent using( IssueSink pIssueSink ) {
