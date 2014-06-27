@@ -3,14 +3,14 @@ package org.litesoft.commonfoundation.issue;
 import org.litesoft.commonfoundation.base.*;
 import org.litesoft.commonfoundation.indent.*;
 
-public class IssueTracker implements IssueCollector,
-                                     Indentable {
+public class IssueTrackerImpl implements IssueManager,
+                                         Indentable {
     public static final String SEPARATOR = "*****************************************************************************";
 
     /**
      * @param pOverrides No Nulls!
      */
-    public IssueTracker( IssueOverride... pOverrides ) {
+    public IssueTrackerImpl( IssueOverride... pOverrides ) {
         mOverrides = ConstrainTo.notNull( pOverrides, IssueOverride.EMPTY_ARRAY );
     }
 

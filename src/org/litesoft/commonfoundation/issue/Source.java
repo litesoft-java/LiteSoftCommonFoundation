@@ -10,9 +10,37 @@ import java.util.*;
 
 public class Source implements Indentable,
                                Supplier<String> { // GSON friendly
+    private transient IssueSink mIssueSink;
+    private String source;
+    private Source next;
 
-    public Source( String pSource ) {
-        this( pSource, null );
+    private Source() { // 4 GSON
+    }
+
+    private Source( String pSource ) {
+        this(); // To quite the unused...
+        source = Confirm.isNotNull( "Source", pSource );
+    }
+
+    private Source( String pSource, Source pNext ) {
+        this( pSource );
+        this.mIssueSink = (next = pNext).mIssueSink;
+    }
+
+    public Source( IssueSink pIssueSink, String pSource ) {
+        this( pSource );
+        mIssueSink = Confirm.isNotNull( "IssueCollector", pIssueSink );
+    }
+
+    private Source( IssueSink pIssueSink, String pSource, Source pNext ) {
+        mIssueSink = pIssueSink;
+        source = pSource;
+        next = pNext;
+    }
+
+    public Source using( IssueSink pIssueSink ) {
+        Confirm.isNotNull( "IssueCollector", pIssueSink );
+        return (mIssueSink == pIssueSink) ? this : new Source( pIssueSink, source, next );
     }
 
     public Source plus( String pSource ) {
@@ -119,6 +147,14 @@ public class Source implements Indentable,
         return pSB;
     }
 
+    public <T> T addWarning( Issue.Builder pIssue ) {
+        return mIssueSink.addWarning( pIssue.with( this ).build() );
+    }
+
+    public <T> T addError( Issue.Builder pIssue ) {
+        return mIssueSink.addError( pIssue.with( this ).build() );
+    }
+
     private void reverseOrderAddTo( List<String> pStrings ) {
         if ( next != null ) {
             next.reverseOrderAddTo( pStrings );
@@ -126,15 +162,7 @@ public class Source implements Indentable,
         pStrings.add( source );
     }
 
-    private Source( String pSource, Source pNext ) {
-        this(); // To quite the unused...
-        source = Confirm.isNotNull( "Source", pSource );
-        next = pNext;
+    public static Source test( String pSource ) {
+        return new Source( pSource );
     }
-
-    private Source() { // 4 GSON
-    }
-
-    private String source;
-    private Source next;
 }

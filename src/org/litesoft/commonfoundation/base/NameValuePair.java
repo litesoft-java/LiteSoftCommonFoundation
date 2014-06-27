@@ -2,7 +2,7 @@ package org.litesoft.commonfoundation.base;
 
 import java.io.*;
 
-public class NameValuePair implements Serializable
+public class NameValuePair implements NamedStringValueSource, Serializable
 {
     private static final long serialVersionUID = 1L;
 
@@ -14,11 +14,13 @@ public class NameValuePair implements Serializable
         mValue = pValue;
     }
 
+    @Override
     public String getName()
     {
         return mName;
     }
 
+    @Override
     public String getValue()
     {
         return mValue;
