@@ -3,7 +3,7 @@ package org.litesoft.commonfoundation.issue;
 import org.litesoft.commonfoundation.base.*;
 import org.litesoft.commonfoundation.indent.*;
 
-public class IssueTrackerImpl implements IssueManager,
+public class IssueTrackerImpl implements IssueTracker,
                                          Indentable {
     public static final String SEPARATOR = "*****************************************************************************";
 
