@@ -56,7 +56,7 @@ public class Source implements Indentable,
     }
 
     public Source of( String pValue ) {
-        return new Source( source + "='" + pValue + "'", next );
+        return new Source( mIssueSink, source + "='" + pValue + "'", next );
     }
 
     public Source of( Enum<?> pValue ) {
