@@ -1,6 +1,7 @@
 // This Source Code is in the Public Domain per: http://unlicense.org
 package org.litesoft.commonfoundation.csv;
 
+import org.litesoft.commonfoundation.annotations.*;
 import org.litesoft.commonfoundation.base.*;
 import org.litesoft.commonfoundation.exceptions.*;
 import org.litesoft.commonfoundation.iterators.*;
@@ -18,10 +19,12 @@ import java.util.*;
  */
 
 public class CsvIterator extends Iterators.AbstractReadOnly<String[]> {
+    public static final String CSV = "CSV";
+
     private final CsvSupport mCsvSupport = new CsvSupport();
     private final Iterator<String> mIterator;
 
-    private String mPreNextToString;
+    private String mPreNextToString, mPreNextRawText;
     private String[] mNext;
 
     public CsvIterator( Iterator<String> pIterator ) {
@@ -34,15 +37,15 @@ public class CsvIterator extends Iterators.AbstractReadOnly<String[]> {
         if ( !mIterator.hasNext() ) {
             return null;
         }
-        String zText = mIterator.next();
+        mPreNextRawText = mIterator.next();
         try {
-            return mCsvSupport.decode( zText ); // Happy Case!!!
+            return mCsvSupport.decode( mPreNextRawText ); // Happy Case!!!
         }
         catch ( UnclosedQuoteException zUnhappyException ) {
             for ( int zLines = 1; mIterator.hasNext() && (zLines < 20); zLines++ ) {
-                zText += "\n" + mIterator.next();
+                mPreNextRawText += "\n" + mIterator.next();
                 try {
-                    return mCsvSupport.decode( zText ); // Sort of Happy Case!!!
+                    return mCsvSupport.decode( mPreNextRawText ); // Sort of Happy Case!!!
                 }
                 catch ( UnclosedQuoteException e ) {
                     // Whatever
@@ -58,13 +61,19 @@ public class CsvIterator extends Iterators.AbstractReadOnly<String[]> {
     }
 
     @Override
-    public String[] next() {
+    public
+    @NotNull
+    String[] next() {
         if ( hasNext() ) {
             String[] zNext = mNext;
             mNext = populateNext();
             return zNext;
         }
         throw new NoSuchElementException();
+    }
+
+    public String getPreNextRawText() {
+        return mPreNextRawText;
     }
 
     @Override

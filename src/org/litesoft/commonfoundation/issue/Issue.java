@@ -34,7 +34,7 @@ public class Issue {
         }
 
         private static String toString( Object pKeyDetail ) {
-            return (pKeyDetail instanceof Class) ? ((Class) pKeyDetail).getSimpleName() : pKeyDetail.toString();
+            return (pKeyDetail instanceof Class) ? ClassName.simpleFromClass( (Class) pKeyDetail ) : pKeyDetail.toString();
         }
 
         private final String mGroup;

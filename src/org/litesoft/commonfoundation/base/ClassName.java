@@ -11,7 +11,13 @@ public class ClassName {
      * @return the substring beginning one character beyond the last of either: '.' or '$'; or null if the parameter is null
      */
     public static String simple( Object pObject ) {
-        return (pObject == null) ? null : toSimpleName( toClass( pObject ) );
+        return (pObject == null) ? null : simpleFromClass( toClass( pObject ) );
+    }
+
+    public static String simpleFromClass( Class pClass ) {
+        String zFullyQualifiedClassName = pClass.getName();
+        int zAt = Math.max( zFullyQualifiedClassName.lastIndexOf( '$' ), zFullyQualifiedClassName.lastIndexOf( '.' ) );
+        return (zAt != -1) ? zFullyQualifiedClassName.substring( zAt + 1 ) : zFullyQualifiedClassName;
     }
 
     /**
@@ -41,11 +47,5 @@ public class ClassName {
 
     private static Class<?> toClass( Object pObject ) {
         return (pObject instanceof Class) ? (Class) pObject : pObject.getClass();
-    }
-
-    private static String toSimpleName( Class pClass ) {
-        String zFullyQualifiedClassName = pClass.getName();
-        int zAt = Math.max( zFullyQualifiedClassName.lastIndexOf( '$' ), zFullyQualifiedClassName.lastIndexOf( '.' ) );
-        return (zAt != -1) ? zFullyQualifiedClassName.substring( zAt + 1 ) : zFullyQualifiedClassName;
     }
 }
