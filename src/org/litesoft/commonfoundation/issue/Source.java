@@ -165,4 +165,8 @@ public class Source implements Indentable,
     public static Source test( String pSource ) {
         return new Source( pSource );
     }
+
+    public Source merge( Source them ) {
+        return them; // TODO: XXX Merge this & them somehow!!!
+    }
 }

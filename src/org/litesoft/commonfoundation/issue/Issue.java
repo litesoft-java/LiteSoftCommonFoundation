@@ -4,7 +4,7 @@ import org.litesoft.commonfoundation.base.*;
 import org.litesoft.commonfoundation.indent.*;
 import org.litesoft.commonfoundation.typeutils.*;
 
-public class Issue {
+public class Issue implements SourceAccessor {
     public static class Builder {
         public Issue build() {
             return new Issue( mGroup, mKeyDetail, mDetails, mSource );
@@ -73,6 +73,7 @@ public class Issue {
         return mDetails;
     }
 
+    @Override
     public Source getSource() {
         return mSource;
     }

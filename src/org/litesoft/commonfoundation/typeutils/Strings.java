@@ -645,6 +645,11 @@ public class Strings {
         return pToArray;
     }
 
+    public static String caseProperNoun( String pName ) {
+        pName = Confirm.significant( "Name", pName );
+        return (pName.length() == 1) ? pName.toUpperCase() : (pName.substring( 0, 1 ).toUpperCase() + pName.substring( 1 ).toLowerCase());
+    }
+
     private static class LineBuilder {
         private final StringBuilder mCollector = new StringBuilder();
         private final int mMaxLineLength;
@@ -746,7 +751,9 @@ public class Strings {
      * @return null if the <code>Source</code> is longer then the <code>DesiredLength</code>; otherwise
      * an Array that is exactly <code>DesiredLength</code> long (padded with nulls).
      */
-    public static @Nullable String[] expectArray( int pDesiredLength, @Nullable String[] pSource ) {
+    public static
+    @Nullable
+    String[] expectArray( int pDesiredLength, @Nullable String[] pSource ) {
         Integers.assertNonNegative( "DesiredLength", pDesiredLength );
         int zCurrentLength = (pSource == null) ? 0 : pSource.length;
         if ( pDesiredLength < zCurrentLength ) {
@@ -774,7 +781,9 @@ public class Strings {
      *
      * @return null if
      */
-    public static @Nullable String[] everythingFrom( @Nullable String[] pStrings, int pFromIndex ) {
+    public static
+    @Nullable
+    String[] everythingFrom( @Nullable String[] pStrings, int pFromIndex ) {
         Integers.assertNonNegative( "FromIndex", pFromIndex );
         if ( (pStrings == null) || (pStrings.length <= pFromIndex) ) {
             return EMPTY_ARRAY;

@@ -2,7 +2,7 @@ package org.litesoft.commonfoundation.issue;
 
 import org.litesoft.commonfoundation.base.*;
 
-public class SourcedContent {
+public class SourcedContent implements SourceAccessor {
     private final Source mSource;
     private final String mContent;
 
@@ -20,6 +20,7 @@ public class SourcedContent {
         return Currently.significant( mContent );
     }
 
+    @Override
     public Source getSource() {
         return mSource;
     }
