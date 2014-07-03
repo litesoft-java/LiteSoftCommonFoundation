@@ -82,6 +82,7 @@ public class IssueTrackerImpl implements IssueTracker,
             return;
         }
         pWriter.printLn( "Issues:" );
+        addBeforeWarnings( pWriter );
         if ( hasWarnings() ) {
             pWriter.indent();
             mWarnings.appendTo( pWriter );
@@ -92,6 +93,15 @@ public class IssueTrackerImpl implements IssueTracker,
             mErrors.appendTo( pWriter );
             pWriter.outdent();
         }
+        addAfterErrors( pWriter );
+    }
+
+    @SuppressWarnings("UnusedParameters")
+    protected void addBeforeWarnings( IndentableWriter pWriter ) {
+    }
+
+    @SuppressWarnings("UnusedParameters")
+    protected void addAfterErrors( IndentableWriter pWriter ) {
     }
 
     private final IssueOverride[] mOverrides;

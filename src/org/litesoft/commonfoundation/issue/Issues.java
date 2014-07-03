@@ -157,7 +157,10 @@ public class Issues implements Indentable {
         public void appendTo( IndentableWriter pWriter ) {
             SourceAsTree zTree = new SourceAsTree();
             for ( Issue zIssue : mIssues ) {
-                zTree.add( zIssue.getSource().toList() );
+                Source zSource = zIssue.getSource();
+                if ( zSource != null ) {
+                    zTree.add( zSource.toList() );
+                }
             }
             zTree.appendTo( pWriter );
         }

@@ -98,6 +98,15 @@ public class Source implements Indentable,
         return toString( " in " );
     }
 
+    public StringTree toStringTree(String pPrefix) {
+        String zSource = ConstrainTo.notNull( pPrefix ) + source;
+        return (next == null) ? StringTree.from( zSource ) : StringTree.from( zSource, next.toStringTree() );
+    }
+
+    public StringTree toStringTree() {
+        return (next == null) ? StringTree.from( source ) : StringTree.from( source, next.toStringTree() );
+    }
+
     public List<String> toList() {
         List<String> zStrings = Lists.newArrayList();
         reverseOrderAddTo( zStrings );
