@@ -1,5 +1,6 @@
 package org.litesoft.commonfoundation.indent;
 
+import org.litesoft.commonfoundation.annotations.*;
 import org.litesoft.commonfoundation.base.*;
 import org.litesoft.commonfoundation.iterators.*;
 import org.litesoft.commonfoundation.typeutils.*;
@@ -48,7 +49,7 @@ public class StringTree implements Indentable,
     }
 
     @Override
-    public void appendTo( IndentableWriter pWriter ) {
+    public void appendTo( @NotNull IndentableWriter pWriter ) {
         pWriter.printLn( getLine() );
         pWriter.indent();
         for ( StringTree zChild : getChildren() ) {

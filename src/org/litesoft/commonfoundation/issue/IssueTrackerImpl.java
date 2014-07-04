@@ -1,5 +1,6 @@
 package org.litesoft.commonfoundation.issue;
 
+import org.litesoft.commonfoundation.annotations.*;
 import org.litesoft.commonfoundation.base.*;
 import org.litesoft.commonfoundation.indent.*;
 
@@ -41,7 +42,7 @@ public class IssueTrackerImpl implements IssueTracker,
      * @return null
      */
     @Override
-    public <T> T addError( Issue pIssue ) {
+    public <T> T addError( @NotNull Issue pIssue ) {
         return addIssue( pIssue, IssueOverride.Level.Error );
     }
 
@@ -49,7 +50,7 @@ public class IssueTrackerImpl implements IssueTracker,
      * @return null
      */
     @Override
-    public <T> T addWarning( Issue pIssue ) {
+    public <T> T addWarning( @NotNull Issue pIssue ) {
         return addIssue( pIssue, IssueOverride.Level.Warning );
     }
 
@@ -76,7 +77,7 @@ public class IssueTrackerImpl implements IssueTracker,
     }
 
     @Override
-    public void appendTo( IndentableWriter pWriter ) {
+    public void appendTo( @NotNull IndentableWriter pWriter ) {
         if ( !hasIssues() ) {
             pWriter.printLn( "No Issues!" );
             return;
@@ -97,11 +98,11 @@ public class IssueTrackerImpl implements IssueTracker,
     }
 
     @SuppressWarnings("UnusedParameters")
-    protected void addBeforeWarnings( IndentableWriter pWriter ) {
+    protected void addBeforeWarnings( @NotNull IndentableWriter pWriter ) {
     }
 
     @SuppressWarnings("UnusedParameters")
-    protected void addAfterErrors( IndentableWriter pWriter ) {
+    protected void addAfterErrors( @NotNull IndentableWriter pWriter ) {
     }
 
     private final IssueOverride[] mOverrides;

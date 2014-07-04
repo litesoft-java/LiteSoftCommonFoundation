@@ -1,5 +1,6 @@
 package org.litesoft.commonfoundation.issue;
 
+import org.litesoft.commonfoundation.annotations.*;
 import org.litesoft.commonfoundation.base.*;
 import org.litesoft.commonfoundation.indent.*;
 import org.litesoft.commonfoundation.typeutils.*;
@@ -84,7 +85,7 @@ public class Source implements Indentable,
     }
 
     @Override
-    public void appendTo( IndentableWriter pWriter ) {
+    public void appendTo( @NotNull IndentableWriter pWriter ) {
         pWriter.printLn( source );
         if ( next != null ) {
             pWriter.indent();
@@ -94,26 +95,26 @@ public class Source implements Indentable,
     }
 
     @Override
-    public String get() {
+    public @NotNull String get() {
         return toString( " in " );
     }
 
-    public StringTree toStringTree( String pPrefix ) {
+    public @NotNull StringTree toStringTree( String pPrefix ) {
         String zSource = ConstrainTo.notNull( pPrefix ) + source;
         return (next == null) ? StringTree.from( zSource ) : StringTree.from( zSource, next.toStringTree() );
     }
 
-    public StringTree toStringTree() {
+    public @NotNull StringTree toStringTree() {
         return (next == null) ? StringTree.from( source ) : StringTree.from( source, next.toStringTree() );
     }
 
-    public List<String> toList() {
+    public @NotNull List<String> toList() {
         List<String> zStrings = Lists.newArrayList();
         reverseOrderAddTo( zStrings );
         return Collections.unmodifiableList( zStrings );
     }
 
-    public static List<String> asList( Source pSource ) {
+    public static @NotNull List<String> asList( Source pSource ) {
         if ( pSource != null ) {
             return pSource.toList();
         }
@@ -141,11 +142,11 @@ public class Source implements Indentable,
                                   && areEqual( this.next, them.next ));
     }
 
-    public String toString( String pSep ) {
+    public @NotNull String toString( String pSep ) {
         return appendTo( new StringBuilder(), pSep ).toString();
     }
 
-    public StringBuilder appendTo( StringBuilder pSB, String pSep ) {
+    public @NotNull StringBuilder appendTo( @NotNull StringBuilder pSB, String pSep ) {
         if ( pSB.length() != 0 ) {
             pSB.append( pSep );
         }
@@ -156,11 +157,11 @@ public class Source implements Indentable,
         return pSB;
     }
 
-    public <T> T addWarning( Issue.Builder pIssue ) {
+    public <T> T addWarning( @NotNull Issue.Builder pIssue ) {
         return mIssueSink.addWarning( pIssue.with( this ).build() );
     }
 
-    public <T> T addError( Issue.Builder pIssue ) {
+    public <T> T addError( @NotNull Issue.Builder pIssue ) {
         return mIssueSink.addError( pIssue.with( this ).build() );
     }
 
@@ -171,7 +172,7 @@ public class Source implements Indentable,
         pStrings.add( source );
     }
 
-    public SourceAccessor asSourceAccessor() {
+    public @NotNull SourceAccessor asSourceAccessor() {
         return new SourceProxy( this );
     }
 

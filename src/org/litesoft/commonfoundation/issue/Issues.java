@@ -1,5 +1,6 @@
 package org.litesoft.commonfoundation.issue;
 
+import org.litesoft.commonfoundation.annotations.*;
 import org.litesoft.commonfoundation.base.*;
 import org.litesoft.commonfoundation.indent.*;
 import org.litesoft.commonfoundation.typeutils.*;
@@ -8,7 +9,7 @@ import java.util.*;
 
 public class Issues implements Indentable {
 
-    public Issues( String pName ) {
+    public Issues( @SignificantText String pName ) {
         mName = Confirm.significant( "Name", pName );
     }
 
@@ -19,7 +20,7 @@ public class Issues implements Indentable {
         return !mIssues.isEmpty();
     }
 
-    public void add( Issue pIssue ) {
+    public void add( @NotNull Issue pIssue ) {
         mIssues.add( pIssue );
     }
 
@@ -32,7 +33,7 @@ public class Issues implements Indentable {
     }
 
     @Override
-    public void appendTo( IndentableWriter pWriter ) {
+    public void appendTo( @NotNull IndentableWriter pWriter ) {
         if ( !hasIssues() ) {
             pWriter.printLn( "No ", mName, "!" );
             return;
@@ -50,7 +51,7 @@ public class Issues implements Indentable {
     private interface IssueAddable extends Indentable {
         int count();
 
-        void add( Issue pIssue );
+        void add( @NotNull Issue pIssue );
     }
 
     private static abstract class SortedKeyMap<Key extends Comparable<Key>, Value extends IssueAddable> implements IssueAddable {
@@ -70,7 +71,7 @@ public class Issues implements Indentable {
         }
 
         @Override
-        public void add( Issue pIssue ) {
+        public void add( @NotNull Issue pIssue ) {
             Key zKey = getKey( pIssue );
             Value zValue = mMap.get( zKey );
             if ( zValue == null ) {
@@ -79,9 +80,9 @@ public class Issues implements Indentable {
             zValue.add( pIssue );
         }
 
-        protected abstract Key getKey( Issue pIssue );
+        protected abstract @NotNull Key getKey( @NotNull Issue pIssue );
 
-        protected abstract Value createValue( Issue pIssue );
+        protected abstract @NotNull Value createValue( @NotNull Issue pIssue );
 
         @Override
         public String toString() {
@@ -92,7 +93,7 @@ public class Issues implements Indentable {
         }
 
         @Override
-        public void appendTo( IndentableWriter pWriter ) {
+        public void appendTo( @NotNull IndentableWriter pWriter ) {
             List<Key> zKeys = Lists.newArrayList( mMap.keySet() );
             Collections.sort( zKeys );
             for ( Key zKey : zKeys ) {
@@ -101,7 +102,7 @@ public class Issues implements Indentable {
             }
         }
 
-        protected void appendTo( IndentableWriter pWriter, Key pKey, Value pValue ) {
+        protected void appendTo( @NotNull IndentableWriter pWriter, Key pKey, @NotNull Value pValue ) {
             pWriter.printLn( formatLabel( pKey, pValue.count() ) );
             pWriter.indent();
             pValue.appendTo( pWriter );
@@ -111,45 +112,51 @@ public class Issues implements Indentable {
 
     private static class Groups extends SortedKeyMap<String, KeyDetails> {
         @Override
-        protected String getKey( Issue pIssue ) {
+        protected @NotNull String getKey( @NotNull Issue pIssue ) {
             return pIssue.getGroup();
         }
 
         @Override
-        protected KeyDetails createValue( Issue pIssue ) {
+        protected @NotNull KeyDetails createValue( @NotNull Issue pIssue ) {
             return new KeyDetails();
         }
     }
 
     private static class KeyDetails extends SortedKeyMap<String, Details> {
         @Override
-        protected String getKey( Issue pIssue ) {
+        protected @NotNull String getKey( @NotNull Issue pIssue ) {
             return pIssue.getKeyDetail();
         }
 
         @Override
-        protected Details createValue( Issue pIssue ) {
+        protected @NotNull Details createValue( @NotNull Issue pIssue ) {
             return new Details();
         }
     }
 
     private static class Details extends SortedKeyMap<StringTree, IssueList> {
+        private static final StringTree NO_DETAILS = StringTree.from( "" );
+
         @Override
-        protected StringTree getKey( Issue pIssue ) {
-            return pIssue.getDetails();
+        protected @NotNull StringTree getKey( @NotNull Issue pIssue ) {
+            return ConstrainTo.notNull( pIssue.getDetails(), NO_DETAILS);
         }
 
         @Override
-        protected IssueList createValue( Issue pIssue ) {
+        protected @NotNull IssueList createValue( @NotNull Issue pIssue ) {
             return new IssueList();
         }
 
         @Override
         protected void appendTo( IndentableWriter pWriter, StringTree pKey, IssueList pIssueList ) {
-            pKey.appendTo( pWriter );
-            pWriter.indent();
-            pIssueList.appendTo( pWriter );
-            pWriter.outdent();
+            if (pKey == NO_DETAILS) {
+                pIssueList.appendTo( pWriter );
+            } else {
+                pKey.appendTo( pWriter );
+                pWriter.indent();
+                pIssueList.appendTo( pWriter );
+                pWriter.outdent();
+            }
         }
     }
 
@@ -162,7 +169,7 @@ public class Issues implements Indentable {
         }
 
         @Override
-        public void add( Issue pIssue ) {
+        public void add( @NotNull Issue pIssue ) {
             mIssues.add( pIssue );
         }
 
@@ -175,7 +182,7 @@ public class Issues implements Indentable {
         }
 
         @Override
-        public void appendTo( IndentableWriter pWriter ) {
+        public void appendTo( @NotNull IndentableWriter pWriter ) {
             SourceAsTree zTree = new SourceAsTree();
             for ( Issue zIssue : mIssues ) {
                 Source zSource = zIssue.getSource();
@@ -214,7 +221,7 @@ public class Issues implements Indentable {
         }
 
         @Override
-        public void appendTo( IndentableWriter pWriter ) {
+        public void appendTo( @NotNull IndentableWriter pWriter ) {
             List<String> zKeys = Lists.newArrayList( mMap.keySet() );
             Collections.sort( zKeys );
             for ( String zKey : zKeys ) {

@@ -1,5 +1,6 @@
 package org.litesoft.commonfoundation.issue;
 
+import org.litesoft.commonfoundation.annotations.*;
 import org.litesoft.commonfoundation.base.*;
 import org.litesoft.commonfoundation.indent.*;
 import org.litesoft.commonfoundation.typeutils.*;
@@ -16,11 +17,11 @@ public class Issue implements SourceAccessor {
         }
 
         public Builder with( String pDetailLine ) {
-            return with( StringTree.from( pDetailLine ) );
+            return with( StringTree.from( Confirm.significant( "DetailLine", pDetailLine ) ) );
         }
 
         public Builder with( StringTree pDetails ) {
-            mDetails = pDetails;
+            mDetails = Confirm.isNotNull( "Details", pDetails );
             return this;
         }
 
@@ -43,7 +44,7 @@ public class Issue implements SourceAccessor {
         private Source mSource;
     }
 
-    public static Builder of( String pGroup, Object pKeyDetail ) {
+    public static Builder of( @SignificantText String pGroup, @SignificantText Object pKeyDetail ) {
         return new Builder( pGroup, pKeyDetail );
     }
 
@@ -61,20 +62,20 @@ public class Issue implements SourceAccessor {
         return pDefault;
     }
 
-    public String getGroup() {
+    public @SignificantText  String getGroup() {
         return mGroup;
     }
 
-    public String getKeyDetail() {
+    public @SignificantText String getKeyDetail() {
         return mKeyDetail;
     }
 
-    public StringTree getDetails() {
+    public @Nullable StringTree getDetails() {
         return mDetails;
     }
 
     @Override
-    public Source getSource() {
+    public @Nullable Source getSource() {
         return mSource;
     }
 
