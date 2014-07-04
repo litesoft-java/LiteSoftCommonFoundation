@@ -37,13 +37,19 @@ public class Issues implements Indentable {
             pWriter.printLn( "No ", mName, "!" );
             return;
         }
-        pWriter.printLn( mName, ":" );
+        pWriter.printLn( formatLabel( mName, mIssues.count() ) );
         pWriter.indent();
         mIssues.appendTo( pWriter );
         pWriter.outdent();
     }
 
+    private static String formatLabel( Object pKey, int pCount ) {
+        return (pCount < 2) ? (pKey + ":") : (pKey + " (" + pCount + "):");
+    }
+
     private interface IssueAddable extends Indentable {
+        int count();
+
         void add( Issue pIssue );
     }
 
@@ -54,6 +60,16 @@ public class Issues implements Indentable {
             return mMap.isEmpty();
         }
 
+        @Override
+        public int count() {
+            int zCount = 0;
+            for ( Value zValue : mMap.values() ) {
+                zCount += zValue.count();
+            }
+            return zCount;
+        }
+
+        @Override
         public void add( Issue pIssue ) {
             Key zKey = getKey( pIssue );
             Value zValue = mMap.get( zKey );
@@ -85,8 +101,8 @@ public class Issues implements Indentable {
             }
         }
 
-        protected void appendTo( IndentableWriter pWriter, Key zKey, Value pValue ) {
-            pWriter.printLn( zKey, ":" );
+        protected void appendTo( IndentableWriter pWriter, Key pKey, Value pValue ) {
+            pWriter.printLn( formatLabel( pKey, pValue.count() ) );
             pWriter.indent();
             pValue.appendTo( pWriter );
             pWriter.outdent();
@@ -129,8 +145,8 @@ public class Issues implements Indentable {
         }
 
         @Override
-        protected void appendTo( IndentableWriter pWriter, StringTree zKey, IssueList pIssueList ) {
-            zKey.appendTo( pWriter );
+        protected void appendTo( IndentableWriter pWriter, StringTree pKey, IssueList pIssueList ) {
+            pKey.appendTo( pWriter );
             pWriter.indent();
             pIssueList.appendTo( pWriter );
             pWriter.outdent();
@@ -139,6 +155,11 @@ public class Issues implements Indentable {
 
     private static class IssueList implements IssueAddable {
         private final List<Issue> mIssues = Lists.newArrayList();
+
+        @Override
+        public int count() {
+            return mIssues.size();
+        }
 
         @Override
         public void add( Issue pIssue ) {

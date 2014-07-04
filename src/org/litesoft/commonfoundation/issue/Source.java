@@ -98,7 +98,7 @@ public class Source implements Indentable,
         return toString( " in " );
     }
 
-    public StringTree toStringTree(String pPrefix) {
+    public StringTree toStringTree( String pPrefix ) {
         String zSource = ConstrainTo.notNull( pPrefix ) + source;
         return (next == null) ? StringTree.from( zSource ) : StringTree.from( zSource, next.toStringTree() );
     }
@@ -169,6 +169,23 @@ public class Source implements Indentable,
             next.reverseOrderAddTo( pStrings );
         }
         pStrings.add( source );
+    }
+
+    public SourceAccessor asSourceAccessor() {
+        return new SourceProxy( this );
+    }
+
+    private static class SourceProxy implements SourceAccessor {
+        private final Source mSource;
+
+        public SourceProxy( Source pSource ) {
+            mSource = pSource;
+        }
+
+        @Override
+        public Source getSource() {
+            return mSource;
+        }
     }
 
     public static Source test( String pSource ) {
