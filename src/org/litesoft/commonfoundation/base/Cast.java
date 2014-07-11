@@ -15,6 +15,7 @@ public class Cast {
         return (Class<T>) pClass;
     }
 
+    @SuppressWarnings("UnusedParameters")
     public static <T> T tryObject( Class<T> pType, Object pInstance ) {
         return (T) pInstance;
     }
