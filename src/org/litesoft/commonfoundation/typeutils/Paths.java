@@ -1,6 +1,8 @@
 // This Source Code is in the Public Domain per: http://unlicense.org
 package org.litesoft.commonfoundation.typeutils;
 
+import org.litesoft.commonfoundation.base.*;
+
 public class Paths {
     public static boolean endsWithSep( String pPath ) {
         return (pPath != null) && Characters.isPathSep( pPath.charAt( pPath.length() - 1 ) );
@@ -59,5 +61,18 @@ public class Paths {
     public static String justTheLastName( String pPath ) {
         pPath = "/\\" + pPath;
         return pPath.substring( Math.max( pPath.lastIndexOf( '/' ), pPath.lastIndexOf( '\\' ) ) + 1 );
+    }
+
+    public static String getExtension( String pPath ) {
+        pPath = "/" + forwardSlash( ConstrainTo.notNull( pPath ) ).trim();
+        String zName = pPath.substring( pPath.lastIndexOf( '/' ) );
+        int zDotAt = zName.lastIndexOf( '.' );
+        if ( zDotAt != -1 ) {
+            String zExtension = zName.substring( zDotAt + 1 );
+            if ( zExtension.length() != 0 ) {
+                return zExtension;
+            }
+        }
+        return null;
     }
 }
