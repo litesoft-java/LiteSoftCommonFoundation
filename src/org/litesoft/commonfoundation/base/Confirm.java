@@ -54,6 +54,11 @@ public class Confirm {
         return IllegalArgument.ifNull( pReferenceLabel, pToTest );
     }
 
+    public static String isNotNullOrEmpty( String pReferenceLabel, String pToTest )
+            throws IllegalArgumentException {
+        return IllegalArgument.ifEmpty( pReferenceLabel, pToTest, IllegalArgument.ifNull( pReferenceLabel, pToTest ).length() );
+    }
+
     public static <T extends Collection<?>> T isNotNullOrEmpty( String pReferenceLabel, T pToTest )
             throws IllegalArgumentException {
         return IllegalArgument.ifEmpty( pReferenceLabel, pToTest, IllegalArgument.ifNull( pReferenceLabel, pToTest ).size() );
