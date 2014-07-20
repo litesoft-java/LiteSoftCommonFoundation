@@ -75,4 +75,11 @@ public class Paths {
         }
         return null;
     }
+
+    public static String append( String pCurrentPath, String pEntry ) {
+        if ( (pCurrentPath == null) || (pCurrentPath.length() == 0) ) {
+            return pEntry;
+        }
+        return endsWithSep( pCurrentPath ) ? (pCurrentPath + pEntry) : (pCurrentPath + "/" + pEntry);
+    }
 }
