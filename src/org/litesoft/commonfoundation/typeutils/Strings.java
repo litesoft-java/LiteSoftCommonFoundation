@@ -1090,6 +1090,18 @@ public class Strings {
         return true;
     }
 
+    public static boolean isAll7BitAlphaNumeric( String pString, int pMinLength ) {
+        if ( (pString == null) || (pString.length() < pMinLength) ) {
+            return false;
+        }
+        for ( int i = 0; i < pString.length(); i++ ) {
+            if ( !Characters.is7BitAlphaNumeric( pString.charAt( i ) ) ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static boolean isAlphaNumeric( String pString, int pMinLength ) {
         if ( (pString == null) || (pString.length() < pMinLength) ) {
             return false;
