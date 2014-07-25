@@ -166,7 +166,7 @@ public class Iterators {
          *
          * @param pIterator Iterator to be <i>Filtered</i> (!null).<p>
          *
-         * @see AbstractWrappingIterator
+         * @see AbstractWrapping
          * @see <a href="http://java.sun.com/j2se/1.3/docs/api/java/lang/Util/Iterator.html">java.util.Iterator</a>
          */
         protected AbstractFiltering( Iterator<T> pIterator ) {
@@ -203,9 +203,18 @@ public class Iterators {
         @Override
         public final boolean hasNext() {
             while ( !lookAheadValid && super.hasNext() ) {
-                lookAheadValid = keepThis( lookAheadObject = super.next() );
+                T zNext = super.next();
+                if ( !keepThis( zNext ) ) {
+                    continue;
+                }
+                lookAheadObject = filter( zNext );
+                return lookAheadValid = true;
             }
             return lookAheadValid;
+        }
+
+        protected T filter( T pValue ) {
+            return pValue;
         }
 
         /**
