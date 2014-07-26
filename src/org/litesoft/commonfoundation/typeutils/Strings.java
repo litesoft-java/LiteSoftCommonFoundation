@@ -650,6 +650,10 @@ public class Strings {
         return (pName.length() == 1) ? pName.toUpperCase() : (pName.substring( 0, 1 ).toUpperCase() + pName.substring( 1 ).toLowerCase());
     }
 
+    public static String getFirstEntry( String... pStrings ) {
+        return (deNull( pStrings ).length > 0) ? pStrings[0] : null;
+    }
+
     private static class LineBuilder {
         private final StringBuilder mCollector = new StringBuilder();
         private final int mMaxLineLength;
