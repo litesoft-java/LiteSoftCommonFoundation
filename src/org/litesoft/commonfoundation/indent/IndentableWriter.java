@@ -1,7 +1,11 @@
 package org.litesoft.commonfoundation.indent;
 
 public interface IndentableWriter {
+    String getDefaultIndentWith();
+
     void indent();
+
+    void indent( String pPrefix );
 
     void outdent();
 
@@ -14,8 +18,19 @@ public interface IndentableWriter {
     int currentLineOffset();
 
     static final IndentableWriter NULL = new IndentableWriter() {
+
+        @Override
+        public String getDefaultIndentWith() {
+            return "";
+        }
+
         @Override
         public void indent() {
+            // Do Nothing
+        }
+
+        @Override
+        public void indent( String pIndentWith ) {
             // Do Nothing
         }
 
