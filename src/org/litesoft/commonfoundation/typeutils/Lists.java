@@ -8,6 +8,27 @@ import java.util.*;
 
 @SuppressWarnings("Convert2Diamond")
 public class Lists {
+    public static Integer max( List<Integer> pIntegers ) {
+        if ( Currently.isNullOrEmpty( pIntegers ) ) {
+            return null;
+        }
+        Iterator<Integer> zIterator = pIntegers.iterator();
+        Integer z1stNonNull = zIterator.next();
+        for (; z1stNonNull == null; z1stNonNull = zIterator.next() ) {
+            if ( !zIterator.hasNext() ) {
+                return null;
+            }
+        }
+        int zMax = z1stNonNull;
+        while ( zIterator.hasNext() ) {
+            Integer zInt = zIterator.next();
+            if ( zInt != null ) {
+                zMax = Math.max( zMax, zInt );
+            }
+        }
+        return zMax;
+    }
+
     public interface Provider<T> {
         List<T> get();
     }
@@ -69,7 +90,7 @@ public class Lists {
     // TODO: vvvvvvvvvvvvvvvvvvvvvvvv  NEW  vvvvvvvvvvvvvvvvvvvvvvvv :ODOT \\
 
     public static <T> List<T> deNullImmutable( List<T> pList ) {
-        if ( Currently.isNullOrEmpty( pList )) {
+        if ( Currently.isNullOrEmpty( pList ) ) {
             return empty();
         }
         List<T> zList = newArrayList( pList ); // COPY!
