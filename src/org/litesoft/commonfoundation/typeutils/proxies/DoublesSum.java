@@ -10,6 +10,11 @@ public class DoublesSum {
         return pValue;
     }
 
+    public DoublesSum accumulate( Double pValue ) {
+        add( pValue );
+        return this;
+    }
+
     public Double getSum() {
         return mSum;
     }
