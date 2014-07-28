@@ -332,7 +332,7 @@ public class Strings {
     }
 
     public static String[] parseChar( String pStringToParse, char pSeparator ) {
-        if ( Currently.isNullOrEmpty( pStringToParse ) ) {
+        if ( pStringToParse == null ) {
             return new String[0];
         }
         int count = 1;
@@ -650,6 +650,20 @@ public class Strings {
         return (pName.length() == 1) ? pName.toUpperCase() : (pName.substring( 0, 1 ).toUpperCase() + pName.substring( 1 ).toLowerCase());
     }
 
+    public static String getFirstEntry( String... pStrings ) {
+        return (deNull( pStrings ).length > 0) ? pStrings[0] : null;
+    }
+
+    public static int maxEntryLength( List<String> pLines ) {
+        int zMaxLength = 0;
+        for ( String zLine : pLines ) {
+            if ( zLine != null ) {
+                zMaxLength = Math.max( zMaxLength, zLine.length() );
+            }
+        }
+        return zMaxLength;
+    }
+
     private static class LineBuilder {
         private final StringBuilder mCollector = new StringBuilder();
         private final int mMaxLineLength;
@@ -752,8 +766,7 @@ public class Strings {
      * an Array that is exactly <code>DesiredLength</code> long (padded with nulls).
      */
     public static
-    @Nullable
-    String[] expectArray( int pDesiredLength, @Nullable String[] pSource ) {
+    @Nullable String[] expectArray( int pDesiredLength, @Nullable String[] pSource ) {
         Integers.assertNonNegative( "DesiredLength", pDesiredLength );
         int zCurrentLength = (pSource == null) ? 0 : pSource.length;
         if ( pDesiredLength < zCurrentLength ) {
@@ -782,8 +795,7 @@ public class Strings {
      * @return null if
      */
     public static
-    @Nullable
-    String[] everythingFrom( @Nullable String[] pStrings, int pFromIndex ) {
+    @Nullable String[] everythingFrom( @Nullable String[] pStrings, int pFromIndex ) {
         Integers.assertNonNegative( "FromIndex", pFromIndex );
         if ( (pStrings == null) || (pStrings.length <= pFromIndex) ) {
             return EMPTY_ARRAY;
@@ -1084,6 +1096,18 @@ public class Strings {
         }
         for ( int i = 0; i < pString.length(); i++ ) {
             if ( !Characters.is7BitAsciiAlpha( pString.charAt( i ) ) ) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isAll7BitAlphaNumeric( String pString, int pMinLength ) {
+        if ( (pString == null) || (pString.length() < pMinLength) ) {
+            return false;
+        }
+        for ( int i = 0; i < pString.length(); i++ ) {
+            if ( !Characters.is7BitAlphaNumeric( pString.charAt( i ) ) ) {
                 return false;
             }
         }

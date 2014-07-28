@@ -11,14 +11,17 @@ import java.util.*;
  * and only if the Strings are:
  * not null, not of zero length after trim(), and do not start with
  * the CommentPrefix (again after trimming).<p>
+ * <p/>
+ * Optionally it can be specified that inline comments can be dropped.
  *
  * @author George Smith
  * @version 1.0 7/28/01
  */
-
-public final class DropCommentsTextLinesOnlyFilteringIterator extends Iterators.AbstractFiltering<String> {
+public final class DropCommentsTextLinesOnlyFilteringIterator extends Iterators.AbstractFiltering<String> implements DescriptiveIterator<String> {
     public static final String HASH_COMMENT_PREFIX = "#";
     public static final String SLASH_SLASH_COMMENT_PREFIX = "//";
+
+    private boolean mRemoveInline;
 
     /**
      * Construct an Iterator that filters another Iterator by only returning
@@ -26,7 +29,7 @@ public final class DropCommentsTextLinesOnlyFilteringIterator extends Iterators.
      *
      * @param pIterator the filtered Iterator.
      */
-    public DropCommentsTextLinesOnlyFilteringIterator( Iterator<String> pIterator, String... pCommentPrefixes ) {
+    public DropCommentsTextLinesOnlyFilteringIterator( DescriptiveIterator<String> pIterator, String... pCommentPrefixes ) {
         super( pIterator );
         for ( String zPrefix : ConstrainTo.notNullImmutableList( pCommentPrefixes ) ) {
             if ( null != (zPrefix = ConstrainTo.significantOrNull( zPrefix )) ) {
@@ -36,6 +39,11 @@ public final class DropCommentsTextLinesOnlyFilteringIterator extends Iterators.
         if ( mCommentPrefixes.isEmpty() ) {
             mCommentPrefixes.add( HASH_COMMENT_PREFIX );
         }
+    }
+
+    public DropCommentsTextLinesOnlyFilteringIterator dropInline() {
+        mRemoveInline = true;
+        return this;
     }
 
     /**
@@ -52,8 +60,7 @@ public final class DropCommentsTextLinesOnlyFilteringIterator extends Iterators.
      */
     @Override
     protected boolean keepThis( String pPossibleValue ) {
-        if ( (pPossibleValue == null) || (pPossibleValue = pPossibleValue.trim()).isEmpty() ) // weed out null
-        {
+        if ( (pPossibleValue == null) || (pPossibleValue = pPossibleValue.trim()).isEmpty() ) { // weed out null
             return false;
         }
         for ( String zPrefix : mCommentPrefixes ) {
@@ -64,5 +71,23 @@ public final class DropCommentsTextLinesOnlyFilteringIterator extends Iterators.
         return true;
     }
 
+    @Override
+    protected String filter( String pValue ) {
+        if ( mRemoveInline ) {
+            for ( String zPrefix : mCommentPrefixes ) {
+                int zAt = pValue.indexOf( zPrefix );
+                if ( zAt != -1 ) {
+                    pValue = pValue.substring( 0, zAt ).trim();
+                }
+            }
+        }
+        return super.filter( pValue );
+    }
+
     private final Set<String> mCommentPrefixes = Sets.newHashSet();
+
+    @Override
+    public String toString() {
+        return mIterator.toString();
+    }
 }
