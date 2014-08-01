@@ -15,9 +15,14 @@ public class ClassName {
     }
 
     public static String simpleFromClass( Class pClass ) {
-        String zFullyQualifiedClassName = pClass.getName();
-        int zAt = Math.max( zFullyQualifiedClassName.lastIndexOf( '$' ), zFullyQualifiedClassName.lastIndexOf( '.' ) );
-        return (zAt != -1) ? zFullyQualifiedClassName.substring( zAt + 1 ) : zFullyQualifiedClassName;
+        String zName = "." + Confirm.isNotNull( "Class", pClass ).getName();
+        zName = zName.substring( zName.lastIndexOf( '.' ) + 1 );
+        for ( int at; -1 != (at = zName.lastIndexOf( '$' )); ) {
+            String right = ConstrainTo.significantOrNull( zName.substring( at + 1 ), "1" ); // "1" force ignore if Empty
+            char c = right.charAt( 0 );
+            zName = ((c < '0') || ('9' < c)) ? right : zName.substring( 0, at );
+        }
+        return zName;
     }
 
     /**

@@ -9,7 +9,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" scope="RUNTIME">
+    <orderEntry type="module-library" exported="" scope="RUNTIME">
       <library name="Source">
         <CLASSES>
           <root url="file://$MODULE_DIR$/src" />

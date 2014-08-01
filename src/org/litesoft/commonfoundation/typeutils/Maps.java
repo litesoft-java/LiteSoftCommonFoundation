@@ -19,6 +19,14 @@ public class Maps {
         return new HashMap<K, V>();
     }
 
+    public static <K, V> HashMap<K, V> newHashMap(Map<K, V> pMap) {
+        HashMap<K, V> zHashMap = newHashMap();
+        if (pMap != null) {
+            zHashMap.putAll( pMap );
+        }
+        return zHashMap;
+    }
+
     public static <K, V> Map<K, V> empty() {
         return Collections.emptyMap();
     }

@@ -41,27 +41,22 @@ public class ExceptionStackTracePrintStream extends PrintStream {
 
         private static final String MESSAGE = "FIXME: this method should never be called";
 
-        @Override
         public void write( int b ) {
             throw new AssertionError( MESSAGE );
         }
 
-        @Override
         public void write( byte[] b ) {
             throw new AssertionError( MESSAGE );
         }
 
-        @Override
         public void write( byte[] b, int off, int len ) {
             throw new AssertionError( MESSAGE );
         }
 
-        @Override
         public void flush() {
             throw new AssertionError( MESSAGE );
         }
 
-        @Override
         public void close() {
             throw new AssertionError( MESSAGE );
         }
