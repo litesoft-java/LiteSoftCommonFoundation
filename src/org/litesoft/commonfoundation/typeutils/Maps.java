@@ -15,6 +15,10 @@ public class Maps {
         return new LinkedHashMap<K, V>();
     }
 
+    public static <K, V> LinkedHashMap<K, V> newLinkedHashMap(int pInitialCapacity) {
+        return new LinkedHashMap<K, V>(pInitialCapacity);
+    }
+
     public static <K, V> HashMap<K, V> newHashMap() {
         return new HashMap<K, V>();
     }

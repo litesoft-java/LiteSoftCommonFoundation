@@ -25,6 +25,14 @@ public class Sets {
         return zSet;
     }
 
+    public static <T> LinkedHashSet<T> newLinkedHashSet() {
+        return new LinkedHashSet<T>();
+    }
+
+    public static <T> LinkedHashSet<T> newLinkedHashSet( int zInitialSize ) {
+        return new LinkedHashSet<T>( Math.max( 1, zInitialSize ) );
+    }
+
     public static <T> Set<T> copy( Set<T> pSet ) {
         Set<T> zCopy = newHashSet();
         zCopy.addAll( ConstrainTo.notNull( pSet ) );
