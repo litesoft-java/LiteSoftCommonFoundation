@@ -1,17 +1,22 @@
 // This Source Code is in the Public Domain per: http://unlicense.org
-package org.litesoft.commonfoundation.issues;
+package org.litesoft.commonfoundation.problems;
 
 import org.litesoft.commonfoundation.annotations.*;
 import org.litesoft.commonfoundation.base.*;
+import org.litesoft.commonfoundation.indent.*;
+import org.litesoft.commonfoundation.iterators.*;
 import org.litesoft.commonfoundation.typeutils.*;
 
 import java.io.*;
 import java.util.*;
 
+@SuppressWarnings("Convert2Diamond")
 public class Problem implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private /* final */ String mProblemCode;
+    private /* final */ Enum<?> mProblemCode;
+
+    private /* final */ Throwable mThrowable;
 
     private /* final */ String[] mProblemSupportValues;
 
@@ -23,52 +28,48 @@ public class Problem implements Serializable {
     protected Problem() {
     }
 
-    public Problem( @NotNull Throwable pThrowable ) {
-        this( pThrowable, null, (String[]) null );
-    }
-
-    public Problem( @NotNull String pProblemCode ) {
+    public Problem( @NotNull Enum<?> pProblemCode ) {
         this( null, pProblemCode, (String[]) null );
     }
 
-    public Problem( @NotNull String pProblemCode, String[] pProblemSupportValues ) {
+    public Problem( @NotNull Enum<?> pProblemCode, String[] pProblemSupportValues ) {
         this( null, pProblemCode, pProblemSupportValues );
     }
 
-    public Problem( @NotNull String pProblemCode, String pProblemSupportValue ) {
+    public Problem( @NotNull Enum<?> pProblemCode, String pProblemSupportValue ) {
         this( null, pProblemCode, new String[]{pProblemSupportValue} );
     }
 
-    public Problem( @NotNull String pProblemCode, String pProblemSupportValue0, String pProblemSupportValue1 ) {
+    public Problem( @NotNull Enum<?> pProblemCode, String pProblemSupportValue0, String pProblemSupportValue1 ) {
         this( null, pProblemCode, new String[]{pProblemSupportValue0, pProblemSupportValue1} );
     }
 
-    public Problem( @NotNull String pProblemCode, String pProblemSupportValue0, String pProblemSupportValue1, String pProblemSupportValue2 ) {
+    public Problem( @NotNull Enum<?> pProblemCode, String pProblemSupportValue0, String pProblemSupportValue1, String pProblemSupportValue2 ) {
         this( null, pProblemCode, new String[]{pProblemSupportValue0, pProblemSupportValue1, pProblemSupportValue2} );
     }
 
-    public Problem( @NotNull String pProblemCode, String pProblemSupportValue0, String pProblemSupportValue1, String pProblemSupportValue2,
+    public Problem( @NotNull Enum<?> pProblemCode, String pProblemSupportValue0, String pProblemSupportValue1, String pProblemSupportValue2,
                     String pProblemSupportValue3 ) {
         this( null, pProblemCode, new String[]{pProblemSupportValue0, pProblemSupportValue1, pProblemSupportValue2, pProblemSupportValue3} );
     }
 
-    public Problem( Throwable pThrowable, String pProblemCode ) {
+    public Problem( Throwable pThrowable, Enum<?> pProblemCode ) {
         this( pThrowable, pProblemCode, (String[]) null );
     }
 
-    public Problem( Throwable pThrowable, String pProblemCode, String pProblemSupportValue ) {
+    public Problem( Throwable pThrowable, Enum<?> pProblemCode, String pProblemSupportValue ) {
         this( pThrowable, pProblemCode, new String[]{pProblemSupportValue} );
     }
 
-    public Problem( Throwable pThrowable, String pProblemCode, String pProblemSupportValue0, String pProblemSupportValue1 ) {
+    public Problem( Throwable pThrowable, Enum<?> pProblemCode, String pProblemSupportValue0, String pProblemSupportValue1 ) {
         this( pThrowable, pProblemCode, new String[]{pProblemSupportValue0, pProblemSupportValue1} );
     }
 
-    public Problem( Throwable pThrowable, String pProblemCode, String pProblemSupportValue0, String pProblemSupportValue1, String pProblemSupportValue2 ) {
+    public Problem( Throwable pThrowable, Enum<?> pProblemCode, String pProblemSupportValue0, String pProblemSupportValue1, String pProblemSupportValue2 ) {
         this( pThrowable, pProblemCode, new String[]{pProblemSupportValue0, pProblemSupportValue1, pProblemSupportValue2} );
     }
 
-    public Problem( Throwable pThrowable, String pProblemCode, String pProblemSupportValue0, String pProblemSupportValue1, String pProblemSupportValue2,
+    public Problem( Throwable pThrowable, Enum<?> pProblemCode, String pProblemSupportValue0, String pProblemSupportValue1, String pProblemSupportValue2,
                     String pProblemSupportValue3 ) {
         this( pThrowable, pProblemCode, new String[]{pProblemSupportValue0, pProblemSupportValue1, pProblemSupportValue2, pProblemSupportValue3} );
     }
@@ -82,40 +83,28 @@ public class Problem implements Serializable {
      * @throws IllegalArgumentException if <code>pProblemSupportValues</code> is
      *                                  specified without <code>pProblemCode</code>
      */
-    public Problem( Throwable pThrowable, String pProblemCode, String[] pProblemSupportValues ) {
+    public Problem( Throwable pThrowable, Enum<?> pProblemCode, String[] pProblemSupportValues ) {
         this( pThrowable, pProblemCode, pProblemSupportValues, null );
     }
 
-    private Problem( Throwable pThrowable, String pProblemCode, String[] pProblemSupportValues, List<NameValuePair> pNamedSupportValues ) {
-        pProblemCode = ConstrainTo.significantOrNull( pProblemCode );
+    private Problem( Throwable pThrowable, Enum<?> pProblemCode, String[] pProblemSupportValues, List<NameValuePair> pNamedSupportValues ) {
+        mThrowable = pThrowable;
+        mProblemCode = Confirm.isNotNull( "ProblemCode", pProblemCode );
         pProblemSupportValues = Strings.noEmpty( pProblemSupportValues );
         pNamedSupportValues = ConstrainTo.notNull( pNamedSupportValues );
-        if ( (pThrowable == null) && (pProblemCode == null) ) {
-            throw new IllegalArgumentException( "Either the Throwable or the ProblemCode must not be null" );
-        }
-        if ( (pProblemCode == null) && ((pProblemSupportValues != null) || !pNamedSupportValues.isEmpty()) ) {
-            throw new IllegalArgumentException( "...SupportValues not allowed when there is no ProblemCode" );
-        }
-
         List<String> zProblemSupportValues = Lists.newArrayList();
         if ( pProblemSupportValues != null ) {
             zProblemSupportValues.addAll( Arrays.asList( pProblemSupportValues ) );
         }
-        if ( pThrowable != null ) {
-            if ( pProblemCode == null ) {
-                pProblemCode = pThrowable.getMessage();
-            }
-            else {
-                zProblemSupportValues.add( pThrowable.getMessage() );
-            }
-            zProblemSupportValues.add( Throwables.printStackTraceToString( pThrowable ) );
-        }
-        mProblemCode = pProblemCode;
         mProblemSupportValues = zProblemSupportValues.toArray( new String[zProblemSupportValues.size()] );
         mNamedSupportValues = Lists.deNullImmutable( pNamedSupportValues );
     }
 
-    public @NotNull String getProblemCode() {
+    public Throwable getThrowable() {
+        return mThrowable;
+    }
+
+    public @NotNull Enum<?> getProblemCode() {
         return mProblemCode;
     }
 
@@ -128,12 +117,12 @@ public class Problem implements Serializable {
     }
 
     public static class Builder {
-        private final String mProblemCode;
+        private final Enum<?> mProblemCode;
         private final List<NameValuePair> mPairs = Lists.newArrayList();
         private final Set<String> mNames = Sets.newHashSet();
 
-        public Builder( String pProblemCode ) {
-            mProblemCode = ConstrainTo.significantOrNull( "ProblemCode", pProblemCode );
+        public Builder( Enum<?> pProblemCode ) {
+            mProblemCode = Confirm.isNotNull( "ProblemCode", pProblemCode );
         }
 
         public Builder add( String pName, Object pValue ) {
@@ -152,19 +141,39 @@ public class Problem implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append( mProblemCode );
-        if ( mProblemSupportValues != null ) { // null during construction!
-            String zOrigPrepend = "( ";
-            String zPrepend = zOrigPrepend;
-            for ( String zValue : mProblemSupportValues ) {
-                sb.append( zPrepend ).append( Strings.quote( zValue ) );
-                zPrepend = ", ";
-            }
-            if ( !zPrepend.equals( zOrigPrepend ) ) {
-                sb.append( " )" );
-            }
+        StringIndentableWriter zWriter = new StringIndentableWriter( "   " );
+        append( zWriter );
+        return zWriter.toString();
+    }
+
+    public void append( IndentableWriter pWriter ) {
+        pWriter.print( mProblemCode );
+        if ( Currently.isNotNullOrEmpty( mProblemSupportValues ) ) { // null during construction!
+            render( pWriter, new ArrayIterator<String>( mProblemSupportValues ) );
         }
-        return (sb.length() == 0) ? "?" : sb.toString();
+        if ( Currently.isNotNullOrEmpty( mNamedSupportValues ) ) { // null during construction!
+            render( pWriter, mNamedSupportValues.iterator() );
+        }
+        if ( mThrowable != null ) {
+            pWriter.printLn();
+            pWriter.indent();
+            pWriter.print( Throwables.printStackTraceToString( mThrowable ) );
+            if ( 0 != pWriter.currentLineOffset() ) {
+                pWriter.printLn();
+            }
+            pWriter.outdent();
+        }
+    }
+
+    private void render( IndentableWriter pWriter, Iterator<?> pIterator ) {
+        for ( String zPrepend = "( "; pIterator.hasNext(); zPrepend = ", " ) {
+            pWriter.print( zPrepend );
+            pWriter.print( stringify( pIterator.next() ) );
+        }
+        pWriter.print( " )" );
+    }
+
+    private String stringify( Object pEntry ) {
+        return (pEntry instanceof String) ? Strings.quote( pEntry.toString() ) : pEntry.toString();
     }
 }

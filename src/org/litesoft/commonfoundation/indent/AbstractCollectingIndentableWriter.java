@@ -19,10 +19,12 @@ public abstract class AbstractCollectingIndentableWriter extends AbstractIndenta
         return collectorToString() + mCurrentLine;
     }
 
+    @Override
     protected void addIndentIgnorant( char pToAdd ) {
         mCurrentLine.append( pToAdd );
     }
 
+    @Override
     protected void newLine() {
         appendCurrentLine();
     }
