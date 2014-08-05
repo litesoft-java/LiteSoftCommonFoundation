@@ -82,4 +82,13 @@ public class Paths {
         }
         return endsWithSep( pCurrentPath ) ? (pCurrentPath + pEntry) : (pCurrentPath + "/" + pEntry);
     }
+
+    public static String relativeFrom( String pTargetPathToMakeRelative, String pBasePathToMakeRelativeFrom ) {
+        // TODO: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        System.out.println( "Paths.relativeFrom(" + // TODO: XXXXXXXXXXXXXXXXXXXXXXXXX
+                            "TP(" + pTargetPathToMakeRelative + ")," + // TODO: XXXXXX
+                            "BP(" + pBasePathToMakeRelativeFrom + ")" + // TODO: XXXXX
+                            ")" ); // TODO: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+        return pTargetPathToMakeRelative;
+    }
 }
