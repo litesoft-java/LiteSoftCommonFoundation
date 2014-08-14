@@ -127,6 +127,14 @@ public class Currently {
         return (pArrayToCheck == null || pArrayToCheck.length == 0);
     }
 
+    public static boolean isNullOrEmpty( long[] pArrayToCheck ) {
+        return (pArrayToCheck == null || pArrayToCheck.length == 0);
+    }
+
+    public static boolean isNullOrEmpty( double[] pArrayToCheck ) {
+        return (pArrayToCheck == null || pArrayToCheck.length == 0);
+    }
+
     public static boolean areEqual( int[] pThis, int... pThat ) {
         if ( pThis == pThat ) // handles if both are null
         {

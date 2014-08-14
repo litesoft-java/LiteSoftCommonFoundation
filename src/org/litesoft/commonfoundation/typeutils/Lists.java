@@ -239,6 +239,15 @@ public class Lists {
         return sb.toString();
     }
 
+    public static <T> int identityIndexOfIn( T pToFind, List<T> pList ) {
+        for ( int i = 0; i < pList.size(); i++ ) {
+            if ( pToFind == pList.get( i ) ) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     private static class SimpleProvider<T> implements Provider<T> {
         private final List<T> mList;
 

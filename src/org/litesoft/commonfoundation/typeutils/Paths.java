@@ -26,7 +26,7 @@ public class Paths {
     /**
      * Given path(s) that may be system dependent, create a path
      * that is converted to a system independent form (forward Slashes).
-     * Note: Ignore null entries (null, or all nulls returns null).
+     * Note: Ignore null (or empty) entries (null, or all nulls returns null).
      */
     public static String forwardSlashCombine( String... pPaths ) {
         StringBuilder sb = null;
