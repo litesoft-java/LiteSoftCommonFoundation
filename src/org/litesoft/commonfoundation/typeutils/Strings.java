@@ -440,6 +440,23 @@ public class Strings {
         return zChunks;
     }
 
+    public static boolean areWhiteSpaceEntries( List<String> pChunks, int... pIndexesExpectedToBeWhiteSpace ) {
+        if ( pIndexesExpectedToBeWhiteSpace != null ) {
+            if ( pChunks == null ) {
+                return false;
+            }
+            for ( int zIndex : pIndexesExpectedToBeWhiteSpace ) {
+                if ( (zIndex < 0) || (pChunks.size() <= zIndex) ) {
+                    return false;
+                }
+                if ( null != ConstrainTo.significantOrNull( pChunks.get( zIndex ) ) ) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     /**
      * Break the Line into chunks based on the Separators, ALL required.
      *
