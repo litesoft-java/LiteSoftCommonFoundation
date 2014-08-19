@@ -1,6 +1,8 @@
 package org.litesoft.commonfoundation.indent;
 
 public interface IndentableWriter {
+    static final String DEFAULT_INDENT_WITH = "    ";
+
     String getDefaultIndentWith();
 
     void indent();
@@ -16,6 +18,8 @@ public interface IndentableWriter {
     void close();
 
     int currentLineOffset();
+
+    IndentableWriter applyToAndClose(Indentable pIndentable);
 
     static final IndentableWriter NULL = new IndentableWriter() {
 
@@ -57,6 +61,11 @@ public interface IndentableWriter {
         @Override
         public int currentLineOffset() {
             return 0;
+        }
+
+        @Override
+        public IndentableWriter applyToAndClose( Indentable pIndentable ) {
+            return this;
         }
     };
 }

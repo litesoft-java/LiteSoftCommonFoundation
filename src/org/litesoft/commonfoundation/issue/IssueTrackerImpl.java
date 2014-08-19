@@ -58,7 +58,7 @@ public class IssueTrackerImpl implements IssueTracker,
         if ( !hasIssues() ) {
             return false;
         }
-        StringIndentableWriter zWriter = new StringIndentableWriter( "    " );
+        StringIndentableWriter zWriter = new StringIndentableWriter();
         zWriter.printLn();
         zWriter.printLn( SEPARATOR );
         appendTo( zWriter );
@@ -70,31 +70,29 @@ public class IssueTrackerImpl implements IssueTracker,
 
     @Override
     public String toString() {
-        StringIndentableWriter zWriter = new StringIndentableWriter( "    " );
-        appendTo( zWriter );
-        zWriter.close();
-        return zWriter.toString();
+        return StringIndentableWriter.formatWith( this );
     }
 
     @Override
-    public void appendTo( @NotNull IndentableWriter pWriter ) {
+    public IndentableWriter appendTo( @NotNull IndentableWriter pWriter ) {
         if ( !hasIssues() ) {
             pWriter.printLn( "No Issues!" );
-            return;
+        } else {
+            pWriter.printLn( "Issues:" );
+            addBeforeWarnings( pWriter );
+            if ( hasWarnings() ) {
+                pWriter.indent();
+                mWarnings.appendTo( pWriter );
+                pWriter.outdent();
+            }
+            if ( hasErrors() ) {
+                pWriter.indent();
+                mErrors.appendTo( pWriter );
+                pWriter.outdent();
+            }
+            addAfterErrors( pWriter );
         }
-        pWriter.printLn( "Issues:" );
-        addBeforeWarnings( pWriter );
-        if ( hasWarnings() ) {
-            pWriter.indent();
-            mWarnings.appendTo( pWriter );
-            pWriter.outdent();
-        }
-        if ( hasErrors() ) {
-            pWriter.indent();
-            mErrors.appendTo( pWriter );
-            pWriter.outdent();
-        }
-        addAfterErrors( pWriter );
+        return pWriter;
     }
 
     @SuppressWarnings("UnusedParameters")

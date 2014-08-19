@@ -58,6 +58,15 @@ public abstract class AbstractIndentableWriter implements IndentableWriter {
         addNewLine();
     }
 
+    @Override
+    public IndentableWriter applyToAndClose( Indentable pIndentable ) {
+        if ( pIndentable != null ) {
+            pIndentable.appendTo( this );
+        }
+        close();
+        return this;
+    }
+
     private void addArray( Object[] pToAdd ) {
         if ( (pToAdd != null) && (pToAdd.length > 0) ) {
             add( pToAdd[0] );

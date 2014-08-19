@@ -26,22 +26,20 @@ public class Issues implements Indentable {
 
     @Override
     public String toString() {
-        StringIndentableWriter zWriter = new StringIndentableWriter( "    " );
-        appendTo( zWriter );
-        zWriter.close();
-        return zWriter.toString();
+        return StringIndentableWriter.formatWith( this );
     }
 
     @Override
-    public void appendTo( @NotNull IndentableWriter pWriter ) {
+    public IndentableWriter appendTo( @NotNull IndentableWriter pWriter ) {
         if ( !hasIssues() ) {
             pWriter.printLn( "No ", mName, "!" );
-            return;
+        } else {
+            pWriter.printLn( formatLabel( mName, mIssues.count() ) );
+            pWriter.indent();
+            mIssues.appendTo( pWriter );
+            pWriter.outdent();
         }
-        pWriter.printLn( formatLabel( mName, mIssues.count() ) );
-        pWriter.indent();
-        mIssues.appendTo( pWriter );
-        pWriter.outdent();
+        return pWriter;
     }
 
     private static String formatLabel( Object pKey, int pCount ) {
@@ -80,26 +78,28 @@ public class Issues implements Indentable {
             zValue.add( pIssue );
         }
 
-        protected abstract @NotNull Key getKey( @NotNull Issue pIssue );
+        protected abstract
+        @NotNull
+        Key getKey( @NotNull Issue pIssue );
 
-        protected abstract @NotNull Value createValue( @NotNull Issue pIssue );
+        protected abstract
+        @NotNull
+        Value createValue( @NotNull Issue pIssue );
 
         @Override
         public String toString() {
-            StringIndentableWriter zWriter = new StringIndentableWriter( "    " );
-            appendTo( zWriter );
-            zWriter.close();
-            return zWriter.toString();
+            return StringIndentableWriter.formatWith( this );
         }
 
         @Override
-        public void appendTo( @NotNull IndentableWriter pWriter ) {
+        public IndentableWriter appendTo( @NotNull IndentableWriter pWriter ) {
             List<Key> zKeys = Lists.newArrayList( mMap.keySet() );
             Collections.sort( zKeys );
             for ( Key zKey : zKeys ) {
                 Value zValue = mMap.get( zKey );
                 appendTo( pWriter, zKey, zValue );
             }
+            return pWriter;
         }
 
         protected void appendTo( @NotNull IndentableWriter pWriter, Key pKey, @NotNull Value pValue ) {
@@ -112,24 +112,32 @@ public class Issues implements Indentable {
 
     private static class Groups extends SortedKeyMap<String, KeyDetails> {
         @Override
-        protected @NotNull String getKey( @NotNull Issue pIssue ) {
+        protected
+        @NotNull
+        String getKey( @NotNull Issue pIssue ) {
             return pIssue.getGroup();
         }
 
         @Override
-        protected @NotNull KeyDetails createValue( @NotNull Issue pIssue ) {
+        protected
+        @NotNull
+        KeyDetails createValue( @NotNull Issue pIssue ) {
             return new KeyDetails();
         }
     }
 
     private static class KeyDetails extends SortedKeyMap<String, Details> {
         @Override
-        protected @NotNull String getKey( @NotNull Issue pIssue ) {
+        protected
+        @NotNull
+        String getKey( @NotNull Issue pIssue ) {
             return pIssue.getKeyDetail();
         }
 
         @Override
-        protected @NotNull Details createValue( @NotNull Issue pIssue ) {
+        protected
+        @NotNull
+        Details createValue( @NotNull Issue pIssue ) {
             return new Details();
         }
     }
@@ -138,18 +146,22 @@ public class Issues implements Indentable {
         private static final StringTree NO_DETAILS = StringTree.from( "" );
 
         @Override
-        protected @NotNull StringTree getKey( @NotNull Issue pIssue ) {
-            return ConstrainTo.notNull( pIssue.getDetails(), NO_DETAILS);
+        protected
+        @NotNull
+        StringTree getKey( @NotNull Issue pIssue ) {
+            return ConstrainTo.notNull( pIssue.getDetails(), NO_DETAILS );
         }
 
         @Override
-        protected @NotNull IssueList createValue( @NotNull Issue pIssue ) {
+        protected
+        @NotNull
+        IssueList createValue( @NotNull Issue pIssue ) {
             return new IssueList();
         }
 
         @Override
         protected void appendTo( IndentableWriter pWriter, StringTree pKey, IssueList pIssueList ) {
-            if (pKey == NO_DETAILS) {
+            if ( pKey == NO_DETAILS ) {
                 pIssueList.appendTo( pWriter );
             } else {
                 pKey.appendTo( pWriter );
@@ -175,14 +187,11 @@ public class Issues implements Indentable {
 
         @Override
         public String toString() {
-            StringIndentableWriter zWriter = new StringIndentableWriter( "    " );
-            appendTo( zWriter );
-            zWriter.close();
-            return zWriter.toString();
+            return StringIndentableWriter.formatWith( this );
         }
 
         @Override
-        public void appendTo( @NotNull IndentableWriter pWriter ) {
+        public IndentableWriter appendTo( @NotNull IndentableWriter pWriter ) {
             SourceAsTree zTree = new SourceAsTree();
             for ( Issue zIssue : mIssues ) {
                 Source zSource = zIssue.getSource();
@@ -191,6 +200,7 @@ public class Issues implements Indentable {
                 }
             }
             zTree.appendTo( pWriter );
+            return pWriter;
         }
     }
 
@@ -221,7 +231,7 @@ public class Issues implements Indentable {
         }
 
         @Override
-        public void appendTo( @NotNull IndentableWriter pWriter ) {
+        public IndentableWriter appendTo( @NotNull IndentableWriter pWriter ) {
             List<String> zKeys = Lists.newArrayList( mMap.keySet() );
             Collections.sort( zKeys );
             for ( String zKey : zKeys ) {
@@ -233,6 +243,7 @@ public class Issues implements Indentable {
                     pWriter.outdent();
                 }
             }
+            return pWriter;
         }
     }
 }

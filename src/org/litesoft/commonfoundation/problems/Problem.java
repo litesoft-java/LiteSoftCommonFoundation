@@ -11,7 +11,7 @@ import java.io.*;
 import java.util.*;
 
 @SuppressWarnings("Convert2Diamond")
-public class Problem implements Serializable {
+public class Problem implements Serializable, Indentable {
     private static final long serialVersionUID = 1L;
 
     private /* final */ Enum<?> mProblemCode;
@@ -104,15 +104,19 @@ public class Problem implements Serializable {
         return mThrowable;
     }
 
-    public @NotNull Enum<?> getProblemCode() {
+    @NotNull
+    public Enum<?> getProblemCode() {
         return mProblemCode;
     }
 
-    public @NotNull String[] getProblemSupportValues() {
+    @NotNull
+    public String[] getProblemSupportValues() {
         return mProblemSupportValues;
     }
 
-    public @NotNull @Immutable List<NameValuePair> getNamedSupportValues() {
+    @NotNull
+    @Immutable
+    public List<NameValuePair> getNamedSupportValues() {
         return mNamedSupportValues;
     }
 
@@ -141,12 +145,11 @@ public class Problem implements Serializable {
 
     @Override
     public String toString() {
-        StringIndentableWriter zWriter = new StringIndentableWriter( "   " );
-        append( zWriter );
-        return zWriter.toString();
+        return StringIndentableWriter.formatWith( this );
     }
 
-    public void append( IndentableWriter pWriter ) {
+    @Override
+    public IndentableWriter appendTo( @NotNull IndentableWriter pWriter ) {
         pWriter.print( mProblemCode );
         if ( Currently.isNotNullOrEmpty( mProblemSupportValues ) ) { // null during construction!
             render( pWriter, new ArrayIterator<String>( mProblemSupportValues ) );
@@ -163,6 +166,7 @@ public class Problem implements Serializable {
             }
             pWriter.outdent();
         }
+        return pWriter;
     }
 
     private void render( IndentableWriter pWriter, Iterator<?> pIterator ) {

@@ -3,5 +3,6 @@ package org.litesoft.commonfoundation.indent;
 import org.litesoft.commonfoundation.annotations.*;
 
 public interface Indentable {
-    void appendTo( @NotNull IndentableWriter pWriter );
+    @NotNull
+    IndentableWriter appendTo( @NotNull IndentableWriter pWriter );
 }

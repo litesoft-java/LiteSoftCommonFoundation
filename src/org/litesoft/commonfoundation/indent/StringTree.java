@@ -42,20 +42,18 @@ public class StringTree implements Indentable,
 
     @Override
     public String toString() {
-        StringIndentableWriter zWriter = new StringIndentableWriter( "    " );
-        appendTo( zWriter );
-        zWriter.close();
-        return zWriter.toString();
+        return StringIndentableWriter.formatWith( this );
     }
 
     @Override
-    public void appendTo( @NotNull IndentableWriter pWriter ) {
+    public IndentableWriter appendTo( @NotNull IndentableWriter pWriter ) {
         pWriter.printLn( getLine() );
         pWriter.indent();
         for ( StringTree zChild : getChildren() ) {
             zChild.appendTo( pWriter );
         }
         pWriter.outdent();
+        return pWriter;
     }
 
     @Override

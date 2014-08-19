@@ -1,13 +1,14 @@
 // This Source Code is in the Public Domain per: http://unlicense.org
 package org.litesoft.commonfoundation.problems;
 
+import org.litesoft.commonfoundation.annotations.*;
 import org.litesoft.commonfoundation.indent.*;
 import org.litesoft.commonfoundation.typeutils.*;
 
 import java.io.*;
 import java.util.*;
 
-public class ProblemCollector implements Serializable {
+public class ProblemCollector implements Serializable, Indentable {
     private static final long serialVersionUID = 1L;
 
     private /* final */ List<Problem> mProblems = Lists.newArrayList();
@@ -36,18 +37,19 @@ public class ProblemCollector implements Serializable {
     }
 
     @Override
-    public String toString() {
-        if ( isEmpty() ) {
-            return "No Problems";
-        }
-        StringIndentableWriter zWriter = new StringIndentableWriter( "    " );
+    public IndentableWriter appendTo( @NotNull IndentableWriter pWriter ) {
         Problem[] zProblems = problems();
-        zWriter.printLn( "Problems (", zProblems.length, "):" );
-        zWriter.indent();
+        pWriter.printLn( "Problems (", zProblems.length, "):" );
+        pWriter.indent();
         for ( Problem zProblem : zProblems ) {
-            zProblem.append( zWriter );
+            zProblem.appendTo( pWriter );
         }
-        zWriter.outdent();
-        return zWriter.toString();
+        pWriter.outdent();
+        return pWriter;
+    }
+
+    @Override
+    public String toString() {
+        return isEmpty() ? "No Problems" : StringIndentableWriter.formatWith( this );
     }
 }

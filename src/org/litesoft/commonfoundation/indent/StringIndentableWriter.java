@@ -7,6 +7,10 @@ public class StringIndentableWriter extends AbstractCollectingIndentableWriter {
         super( pDefaultIndentWith );
     }
 
+    public StringIndentableWriter() {
+        this( DEFAULT_INDENT_WITH );
+    }
+
     @Override
     protected void newLine() {
         super.newLine();
@@ -21,5 +25,9 @@ public class StringIndentableWriter extends AbstractCollectingIndentableWriter {
     @Override
     protected String collectorToString() {
         return mPreviousLines.toString();
+    }
+
+    public static String formatWith( Indentable pIndentable ) {
+        return new StringIndentableWriter().applyToAndClose( pIndentable ).toString();
     }
 }

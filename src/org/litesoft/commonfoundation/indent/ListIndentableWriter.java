@@ -11,6 +11,10 @@ public class ListIndentableWriter extends AbstractCollectingIndentableWriter {
         super( pDefaultIndentWith );
     }
 
+    public ListIndentableWriter() {
+        this( DEFAULT_INDENT_WITH );
+    }
+
     @Override
     protected void collectLine( String pLine ) {
         mPreviousLines.add( pLine );

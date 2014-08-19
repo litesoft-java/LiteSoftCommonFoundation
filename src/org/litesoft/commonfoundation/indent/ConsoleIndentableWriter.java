@@ -11,9 +11,8 @@ public class ConsoleIndentableWriter extends AbstractIndentableWriter {
         mConsole = ConstrainTo.firstNonNull( pConsole, Console.NULL );
     }
 
-    @Override
-    public void close() {
-        mConsole.close();
+    public ConsoleIndentableWriter( Console pConsole ) {
+        this( DEFAULT_INDENT_WITH, pConsole );
     }
 
     @Override
